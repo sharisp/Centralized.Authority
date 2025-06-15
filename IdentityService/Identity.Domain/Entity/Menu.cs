@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Identity.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 namespace Identity.Domain.Entity
 {
 
-    public class Menu
+    public class Menu : BaseEntity, IAggregateRoot
     {
-        public Menu()
+        private Menu()
         {
 
         }

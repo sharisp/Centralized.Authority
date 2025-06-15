@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Identity.Domain.ValueObject
 {
+
+    //用record有问题
     public record PhoneNumber
     {
         private PhoneNumber()

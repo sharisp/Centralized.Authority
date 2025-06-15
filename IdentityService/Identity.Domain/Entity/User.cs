@@ -5,40 +5,48 @@ using Identity.Domain.ValueObject;
 
 namespace Identity.Domain.Entity
 {
-    public class User: BaseEntity, IAggregateRoot
+    public class User: BaseAuditableEntity, IAggregateRoot
     {
         //For EF Core Use
         private User()
         {
-
         }
-        public long UserId { get; private set; }
         public string UserName { get; private set; } = default!;
         public string? RealName { get; private set; } = default!;
         public string PasswordHash { get; private set; } = default!;
         public string? Email { get; private set; } = default!;
-        public PhoneNumber Phone { get; private set; } = default!;
+        public PhoneNumber? Phone { get; private set; } = default!;
 
-        public string NickName { get; private set; } = default!;
+        public string? NickName { get; private set; } = default!;
 
+        public string? Description { get; set; }
+        public List<Role> Roles { get; set; } = new List<Role>();
 
+        public UserAccessFail AccessFail { get;private set; }
 
-        public User(string userName, string passwordHash, PhoneNumber phone, string? email, string? nickName, string? realName)
+        public User(string userName, string passwordHash, PhoneNumber phone, string? email, string? nickName, string? realName, string? description)
         {
-            UserId = IdGeneratorFactory.NewId();
-            PasswordHash = passwordHash;
+
+            PasswordHash = HashHelper.ComputeMd5Hash(passwordHash);
             NickName = nickName;
             UserName = userName;
             RealName = realName;
             Email = email;
             Phone = phone;
-
+            Description = description;
+            AccessFail = new UserAccessFail(this);
             AddDomainEvent(new UserAddEvents(this));
+       
+        }
+
+        public bool CheckPassword(string password)
+        {
+            return PasswordHash == HashHelper.ComputeMd5Hash(password);
         }
 
         public void ChangePassword(string passwordHash)
         {
-            PasswordHash = passwordHash;
+            PasswordHash =HashHelper.ComputeMd5Hash(passwordHash) ;
             AddDomainEvent(new UserUpdateEvents(this));
     }
         public void ChangeNickName(string nickName)

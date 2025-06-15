@@ -5,11 +5,22 @@ namespace Identity.Domain
 {
     public class BaseEntity
     {
-      //  public long Id { get; set; }
-        [NotMapped]
-        public List<INotification> events = new();
+        public long Id { get; init; }
 
-      public  void AddDomainEvent(INotification eventItem)
+        public BaseEntity()
+        {
+
+            Id = IdGeneratorFactory.NewId();
+        }
+
+        /// <summary>
+        /// 领域事件
+        /// </summary>
+
+        [NotMapped]
+        private List<INotification> events = new();
+
+        public void AddDomainEvent(INotification eventItem)
         {
             events.Add(eventItem);
         }

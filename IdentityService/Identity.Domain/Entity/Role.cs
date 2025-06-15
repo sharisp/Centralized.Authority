@@ -1,13 +1,15 @@
 ﻿
+using Identity.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Identity.Domain.Events;
 
 namespace Identity.Domain.Entity
 {
-    public class Role 
+    public class Role :  BaseAuditableEntity, IAggregateRoot
     {
         private Role()
         {
@@ -19,12 +21,25 @@ namespace Identity.Domain.Entity
             RoleName = roleName;
             this.CreateTime = DateTime.Now;
             this.Description = description;
-            this.RoleId = IdGeneratorFactory.NewId();
+            AddDomainEvent(new RoleAddEvents(this));
         }
 
-        public long RoleId { get;private set; }
         public string RoleName { get; set; }
         public string? Description { get; set; }
         public DateTime CreateTime { get; set; } 
+        public List<User> Users { get; set; } = new List<User>(); // 角色对应的用户列表
+
+        public void ChangeRoleName(string roleName)
+        {
+          
+            RoleName = roleName;
+            AddDomainEvent(new RoleChangeEvents(this));
+        }
+        public void ChangeDescription(string? description)
+        {
+
+            Description = description;
+            AddDomainEvent(new RoleChangeEvents(this));
+        }
     }
 }

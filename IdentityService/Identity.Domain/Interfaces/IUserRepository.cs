@@ -9,10 +9,11 @@ namespace Identity.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        public User GetUserById(long userId);
-        public User GetUsers();
-        public void AddUser();
-        public void UpdateUser(User user);
-        public void DeleteUser(long userId);
+        public Task<User?> GetUserByIdAsync(long userId);
+        public Task<User?> GetUseByNameAsync(string userName);
+        public Task<List<User>> GetUsersAsync();
+        public  Task AddUserAsync(User user);
+        public void UpdateUserAsync(User user);
+        public void DeleteUser(User user);
     }
 }
