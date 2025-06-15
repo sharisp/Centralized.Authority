@@ -25,13 +25,13 @@ namespace Identity.Api.MiddleWares
 
                 httpContext.Response.ContentType = "application/json";
                 httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                _logger.LogError("WebApi——异常", ex);
+                _logger.LogError("WebApi——error", ex);
                 var res = ApiResponse<string>.Fail(ex.Message);
 
-                // await httpContext.Response.WriteAsJsonAsync(res); //这个写法存在大小写问题
+             await httpContext.Response.WriteAsJsonAsync(res); //这个写法存在大小写问题
                 //Serialize the problem details object to the Response as JSON (using System.Text.Json)
-                var stream = httpContext.Response.Body;
-                await JsonSerializer.SerializeAsync(stream, res);
+               // var stream = httpContext.Response.Body;
+               // await JsonSerializer.SerializeAsync(stream, res);
             }
         }
     }
