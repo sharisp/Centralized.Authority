@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
-using Identity.Api.ViewModels;
+using Identity.Api.Contracts.Dtos.Response;
 
 namespace Identity.Api.MiddleWares
 {

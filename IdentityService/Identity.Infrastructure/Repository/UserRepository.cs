@@ -31,7 +31,7 @@ namespace Identity.Infrastructure.DbContext
 
         public async Task<User?> GetUseByNameAsync(string userName)
         {
-          var res=  await dbContext.Users.FirstOrDefaultAsync(t => t.UserName == userName);
+          var res=  await dbContext.Users.Include(t=>t.AccessFail).FirstOrDefaultAsync(t => t.UserName == userName);
           return res;
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Identity.Domain.Entity;
+using Identity.Domain.Enums;
 using Identity.Domain.Interfaces;
 
 namespace Identity.Domain.Services
@@ -11,33 +12,33 @@ namespace Identity.Domain.Services
     public class UserDomainService(IUserRepository userRepository)
     {
 
-        public async Task<bool> LoginByNameAndPwd(string userName, string passWord)
+        public async Task<(User?,LoginResult)> LoginByNameAndPwdAsync(string userName, string passWord)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(passWord))
             {
-                throw new ArgumentException("用户名或密码不能为空");
+                return (null,LoginResult.Fail);
             }
 
             var existUser = await userRepository.GetUseByNameAsync(userName);
 
             if (existUser == null)
             {
-                throw new Exception("用户名或者密码错误");
+                return (null, LoginResult.UserNotFound);
             }
             if (existUser.AccessFail.CheckIfLocked())
             {
                 existUser.AccessFail.Fail();
-                throw new Exception("已经锁定");
+                return (null, LoginResult.UserLocked);
             }
-            if (!existUser.CheckPassword(existUser.PasswordHash))
+            if (!existUser.CheckPassword(passWord))
             {
                 existUser.AccessFail.Fail();
-                throw new Exception("密码错误");
+
+                return (null, LoginResult.PasswordError);
             }
             existUser.AccessFail.Reset();
 
-
-            return true;
+            return (existUser, LoginResult.Success);
         }
 
         public async Task RegisterUserAsync(User user)

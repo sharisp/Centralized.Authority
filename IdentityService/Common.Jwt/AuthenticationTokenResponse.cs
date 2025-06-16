@@ -10,12 +10,12 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Common.Jwt
 {
-    public class AuthenticationExtensions(IOptionsSnapshot<JwtOptions> optionsSnapshot)
+    public class AuthenticationTokenResponse(IOptionsSnapshot<JwtOptions> optionsSnapshot)
     {
-        public TokenWithExpireResponse GetResponseToken(long userID,string userName)
+        public TokenWithExpireResponse GetResponseToken(long userId,string userName,List<string> roles=null)
         {
             var claims = new List<Claim>();
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, userID.ToString()));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, userId.ToString()));
             claims.Add(new Claim(ClaimTypes.Name, userName));
             //I do not want to use roles as claims
              var jwtExpire = DateTime.Now.AddSeconds(optionsSnapshot.Value.ExpiresMinutes);

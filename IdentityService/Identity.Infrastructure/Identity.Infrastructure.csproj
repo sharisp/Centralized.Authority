@@ -20,8 +20,4 @@
     <ProjectReference Include="..\Identity.Domain\Identity.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="新文件夹\" />
-  </ItemGroup>
-
 </Project>

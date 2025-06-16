@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Identity.Api.ViewModels
+namespace Identity.Api.Contracts.Dtos.Response
 {
 
 

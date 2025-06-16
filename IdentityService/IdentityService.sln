@@ -5,13 +5,13 @@ VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Domain", "Identity.Domain\Identity.Domain.csproj", "{72B027A8-39B5-4B63-8A82-1AE654B0CE57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Infrastructure", "Identity.Infrastructure\Identity.Infrastructure.csproj", "{9EA5DCE5-4618-4D1E-A8E4-3494AA9D2B77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Infrastructure", "Identity.Infrastructure\Identity.Infrastructure.csproj", "{9EA5DCE5-4618-4D1E-A8E4-3494AA9D2B77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Api", "Identity.Api\Identity.Api.csproj", "{F6333BF7-A25E-4865-8AE1-AB3A42346DC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Api", "Identity.Api\Identity.Api.csproj", "{F6333BF7-A25E-4865-8AE1-AB3A42346DC8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commons", "Commons", "{79953EEC-1FC5-44D4-8729-874D5390A72C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Jwt", "Common.Jwt\Common.Jwt.csproj", "{557C3886-F9B3-46C2-9577-06319F811034}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Jwt", "Common.Jwt\Common.Jwt.csproj", "{557C3886-F9B3-46C2-9577-06319F811034}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

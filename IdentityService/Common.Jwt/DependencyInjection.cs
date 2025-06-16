@@ -34,6 +34,8 @@ namespace Common.Jwt
                 });
 
 
+
+            services.AddScoped<AuthenticationTokenResponse>();
             return services;
         }
     }
