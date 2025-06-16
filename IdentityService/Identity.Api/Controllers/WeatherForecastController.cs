@@ -5,6 +5,7 @@ using Identity.Domain.Services;
 using Identity.Domain.ValueObject;
 using Identity.Infrastructure.Repository;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.Api.Controllers
@@ -45,6 +46,7 @@ namespace Identity.Api.Controllers
             })
             .ToArray();
         }
+        [Authorize]
         [HttpGet("Test")]
         public async  Task<int> Test()
         {
