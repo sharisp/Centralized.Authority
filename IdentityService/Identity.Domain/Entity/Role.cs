@@ -16,7 +16,7 @@ namespace Identity.Domain.Entity
 
         }
 
-        public Role(string roleName,string? description)
+        public Role(string roleName,string? description = null)
         {
             RoleName = roleName;
             this.CreateTime = DateTime.Now;
@@ -28,6 +28,8 @@ namespace Identity.Domain.Entity
         public string? Description { get; set; }
         public DateTime CreateTime { get; set; } 
         public List<User> Users { get; set; } = new List<User>(); // 角色对应的用户列表
+
+        public List<Permission> Permissions { get; set; }=new List<Permission>(); // 角色对应的权限列表)
 
         public void ChangeRoleName(string roleName)
         {

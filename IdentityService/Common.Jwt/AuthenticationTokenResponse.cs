@@ -23,9 +23,11 @@ namespace Common.Jwt
             var secKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(optionsSnapshot.Value.SecKey));
 
             var credentials = new SigningCredentials(secKey, SecurityAlgorithms.HmacSha256Signature);
-            var tokenDescription =
-                new JwtSecurityToken(claims: claims, expires: jwtExpire, signingCredentials: credentials);
-            var jwToken = new JwtSecurityTokenHandler().WriteToken(tokenDescription);
+         
+
+            var tokenDescriptor = new JwtSecurityToken(optionsSnapshot.Value.Issuer, optionsSnapshot.Value.Audience, claims,
+                expires: jwtExpire, signingCredentials: credentials);
+            var jwToken = new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
             return new TokenWithExpireResponse
             {
                 AccessToken = jwToken,

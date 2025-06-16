@@ -48,7 +48,6 @@ namespace Identity.Api.Controllers
                 )));
             }
 
-
         }
 
     }

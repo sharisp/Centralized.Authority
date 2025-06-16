@@ -27,6 +27,7 @@ namespace Identity.Infrastructure.DbContext
         public  void DeleteUser(User user)
         {
             dbContext.Users.Remove(user);
+
         }
 
         public async Task<User?> GetUseByNameAsync(string userName)

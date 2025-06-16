@@ -27,8 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Contracts\Mapping\" />
-    <Folder Include="Mapping\" />
+    <Folder Include="CommonHelper\" />
   </ItemGroup>
 
 </Project>

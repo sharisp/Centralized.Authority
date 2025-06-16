@@ -15,6 +15,7 @@ using Identity.Infrastructure.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using CSRedis;
 
 
 namespace Identity.Infrastructure
@@ -30,12 +31,18 @@ namespace Identity.Infrastructure
             {
                 opt.UseSqlServer(configuration.GetConnectionString("SqlServer"));
             });
-         
+
+            #region 注入redis
+            string redisConnectionString = configuration["RedisConnection"];
+            CSRedisClient cSRedisClient = new CSRedisClient(redisConnectionString);
+            RedisHelper.Initialization(cSRedisClient);
+            #endregion
 
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddScoped<IUserRepository,UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
 
+            services.AddSingleton(new AppHelper(configuration));
 
             services.AddScoped<UserDomainService>();
 
@@ -44,7 +51,6 @@ namespace Identity.Infrastructure
             // Register event handlers
             services.AddScoped<UserAddEventHandler>();
 
-            services.AddScoped<UserUpdateEventHandler>();
             services.AddScoped<LoginFailEventHandler>();
             services.AddScoped<LoginSuccessEventHandler>();
             return services;

@@ -4,6 +4,7 @@ using Identity.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Identity.Infrastructure.Migrations
 {
     [DbContext(typeof(BaseDbContext))]
-    partial class BaseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250616065659_renametable")]
+    partial class renametable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,6 +71,9 @@ namespace Identity.Infrastructure.Migrations
                     b.Property<DateTimeOffset?>("CreateDateTime")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<long?>("CreatorUserId")
                         .HasColumnType("bigint");
 
@@ -77,6 +83,9 @@ namespace Identity.Infrastructure.Migrations
                     b.Property<long?>("DeleterUserId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Descriptions")
                         .HasColumnType("nvarchar(max)");
 
@@ -84,6 +93,9 @@ namespace Identity.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDel")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("PermissionKey")
@@ -95,6 +107,9 @@ namespace Identity.Infrastructure.Migrations
 
                     b.Property<DateTimeOffset?>("UpdateDateTime")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<DateTime>("UpdateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<long?>("UpdaterUserId")
                         .HasColumnType("bigint");

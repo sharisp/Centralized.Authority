@@ -11,20 +11,20 @@ namespace Identity.Domain.Entity
         private User()
         {
         }
-        public string UserName { get; private set; } = default!;
-        public string? RealName { get; private set; } = default!;
+        public string UserName { get;  set; } = default!;
+        public string? RealName { get;  set; } = default!;
         public string PasswordHash { get; private set; } = default!;
-        public string? Email { get; private set; } = default!;
-        public PhoneNumber? Phone { get; private set; } = default!;
+        public string? Email { get;  set; } = default!;
+        public PhoneNumber? Phone { get;  set; } = default!;
 
-        public string? NickName { get; private set; } = default!;
+        public string? NickName { get;  set; } = default!;
 
         public string? Description { get; set; }
         public List<Role> Roles { get; set; } = new List<Role>();
 
         public UserAccessFail AccessFail { get;private set; }
 
-        public User(string userName, string passwordHash, PhoneNumber phone, string? email, string? nickName, string? realName, string? description)
+        public User(string userName, string passwordHash, PhoneNumber? phone=null, string? email=null, string? nickName=null, string? realName = null, string? description = null)
         {
 
             PasswordHash = HashHelper.ComputeMd5Hash(passwordHash);

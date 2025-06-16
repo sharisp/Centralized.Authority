@@ -19,6 +19,8 @@ namespace Identity.Infrastructure.Config
 
             builder.HasKey(e => e.Id);
             builder.Property(e => e.Id).ValueGeneratedNever();
+
+            builder.HasQueryFilter(t => t.IsDel == false);
         }
     }
 }

@@ -26,7 +26,9 @@ namespace Identity.Infrastructure.Config
 
             builder.Property(e => e.PasswordHash).HasMaxLength(100).IsRequired();
 
-            builder.HasMany(e => e.Roles).WithMany(t => t.Users);
+            builder.HasMany(e => e.Roles).WithMany(t => t.Users).UsingEntity(j => j.ToTable("T_UserRole"));
+
+            builder.HasQueryFilter(t => t.IsDel == false);
         }
     }
 }

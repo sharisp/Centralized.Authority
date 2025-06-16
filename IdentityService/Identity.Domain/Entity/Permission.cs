@@ -22,10 +22,7 @@ namespace Identity.Domain.Entity
 
         public string? Controller { get; set; }
         public string? Action { get; set; }
-        public string? Description { get; set; }
-        public DateTime CreateTime { get; set; }
 
-        public DateTime UpdateTime { get; set; }
-        public bool IsDeleted { get; set; }
+        public List<Role> Roles { get; set; }= new List<Role>(); // 权限对应的角色列表
     }
 }
