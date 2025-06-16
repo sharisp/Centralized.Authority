@@ -15,6 +15,7 @@ using Azure;
 using Identity.Domain.Events;
 using Identity.Infrastructure.Repository;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Api.Controllers
 {
@@ -22,7 +23,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, IMediator mediator) : ControllerBase
+    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository,PermissionRepository permissionRepository, IMediator mediator) : ControllerBase
     {
 
         [HttpPost]
@@ -77,6 +78,21 @@ namespace Identity.Api.Controllers
 
 
             return Ok(ApiResponse<string>.Ok("create error"));
+        }
+
+        [HttpPost("Assign/{id}")]
+        [PermissionKey("Permission.Assign")]
+        public async Task<ActionResult<ApiResponse<bool>>> Assign(long id, List<long> permissionIds)
+        {
+            if (permissionIds.Count == 0)
+                return BadRequest(ApiResponse<bool>.Fail(" permissions should not be empty"));
+            var role = await repository.GetByIdAsync(id);
+            if (role == null) return NotFound(ApiResponse<bool>.Fail("role not found"));
+
+            var permissions =await permissionRepository.GetPermissionsByIds(permissionIds);
+            role.AddPermissions(permissions);
+            return Ok(ApiResponse<string>.Ok("success"));
+          
         }
 
     }

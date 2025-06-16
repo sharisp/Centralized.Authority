@@ -13,6 +13,7 @@ namespace Identity.Domain.Events
     public record RoleChangeEvents(Role RoleInfo) : INotification;
 
     public record RoleDeleteEvents(Role RoleInfo) : INotification;
+    public record RoleAssignEvents(Role RoleInfo,List<Permission> Permissions) : INotification;
 
 }
 

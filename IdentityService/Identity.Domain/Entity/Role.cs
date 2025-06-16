@@ -31,17 +31,24 @@ namespace Identity.Domain.Entity
 
         public List<Permission> Permissions { get; set; }=new List<Permission>(); // 角色对应的权限列表)
 
+        public void AddPermissions(List<Permission> permissions)
+        {
+            
+            Permissions.AddRange(permissions);
+           // AddDomainEvent(new RoleAddEvents(this));
+           AddDomainEvent(new RoleAssignEvents(this,permissions));
+        }
         public void ChangeRoleName(string roleName)
         {
           
             RoleName = roleName;
-            AddDomainEvent(new RoleChangeEvents(this));
+          //  AddDomainEvent(new RoleChangeEvents(this));
         }
         public void ChangeDescription(string? description)
         {
 
             Description = description;
-            AddDomainEvent(new RoleChangeEvents(this));
+         //   AddDomainEvent(new RoleChangeEvents(this));
         }
     }
 }

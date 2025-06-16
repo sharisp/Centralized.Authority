@@ -22,7 +22,12 @@ namespace Identity.Domain.Entity
             {
                 Reset();
             }
-            AddDomainEvent(new LoginSuccessEvent(UserInfo));
+            //finnaly check if still locked,after checking the passwrod
+            if (isLocked==false)
+            {
+                AddDomainEvent(new LoginSuccessEvent(UserInfo));
+            }
+            //
             return isLocked;
         }
         public void Fail()

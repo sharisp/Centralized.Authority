@@ -40,8 +40,8 @@ namespace Identity.Infrastructure
 
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddScoped<IUserRepository,UserRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
-
+            services.AddScoped<RoleRepository>();
+            services.AddScoped<PermissionRepository>();
             services.AddSingleton(new AppHelper(configuration));
 
             services.AddScoped<UserDomainService>();

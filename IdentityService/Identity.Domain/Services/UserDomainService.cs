@@ -25,17 +25,18 @@ namespace Identity.Domain.Services
             {
                 return (null, LoginResult.UserNotFound);
             }
-            if (existUser.AccessFail.CheckIfLocked())
-            {
-                existUser.AccessFail.Fail();
-                return (null, LoginResult.UserLocked);
-            }
             if (!existUser.CheckPassword(passWord))
             {
                 existUser.AccessFail.Fail();
 
                 return (null, LoginResult.PasswordError);
             }
+            if (existUser.AccessFail.CheckIfLocked())
+            {
+                existUser.AccessFail.Fail();
+                return (null, LoginResult.UserLocked);
+            }
+           
             existUser.AccessFail.Reset();
 
             return (existUser, LoginResult.Success);

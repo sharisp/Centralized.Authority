@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.Repository
 {
-    public class RoleRepository : IRoleRepository
+    public class RoleRepository 
     {
         private readonly BaseDbContext dbContext;
 
@@ -49,6 +49,8 @@ namespace Identity.Infrastructure.Repository
             var res = await dbContext.Roles.FirstOrDefaultAsync(t => t.Id == id);
             return res;
         }
+
+     
 
     }
 }

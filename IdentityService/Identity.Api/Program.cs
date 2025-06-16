@@ -40,13 +40,13 @@ namespace Identity.Api
 
             builder.Services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+              //  cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 
 
-                /* cfg.RegisterServicesFromAssemblies(
+                 cfg.RegisterServicesFromAssemblies(
                      typeof(LoginFailEventHandler).Assembly,  // Application
                      typeof(WeatherForecastController).Assembly     // Èç¹ûÓÐ Domain Event
-                 );*/
+                 );
             });
 
             //  builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestDtoValidator>();

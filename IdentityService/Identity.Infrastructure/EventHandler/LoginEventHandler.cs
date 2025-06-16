@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Identity.Domain.Entity;
+using Identity.Domain.Interfaces;
+using Identity.Domain.ValueObject;
 
 namespace Identity.Infrastructure.EventHandler
 {
@@ -13,16 +16,16 @@ namespace Identity.Infrastructure.EventHandler
     {
         private readonly BaseDbContext dbContext;
 
-        public LoginSuccessEventHandler(BaseDbContext dbContext)
+        public LoginSuccessEventHandler(BaseDbContext dbContext, ICurrentUser currentUser)
         {
             this.dbContext = dbContext;
         }
 
 
-        public Task Handle(LoginSuccessEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(LoginSuccessEvent notification, CancellationToken cancellationToken)
         {
-            Console.WriteLine(notification.UserInfo.UserName + $"-login success uid={notification.UserInfo.Id}");
-            return Task.CompletedTask;
+            dbContext.LoginHistories.Add(new LoginHistory(notification.UserInfo.Id, notification.UserInfo.UserName, null, true, "login success", new PhoneNumber("61", "123456")));
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 
@@ -36,10 +39,10 @@ namespace Identity.Infrastructure.EventHandler
         }
 
 
-        public Task Handle(LoginFailEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(LoginFailEvent notification, CancellationToken cancellationToken)
         {
-            Console.WriteLine(notification.UserInfo.UserName + $"-login fail uid={notification.UserInfo.Id}");
-            return Task.CompletedTask;
+            dbContext.LoginHistories.Add(new LoginHistory(notification.UserInfo.Id, notification.UserInfo.UserName,null,false,"login fail",new PhoneNumber("61","123456")));
+           await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -106,6 +106,7 @@ public class CustomJwtAuthMiddleware(
                 //Serialize the problem details object to the Response as JSON (using System.Text.Json)
                 var stream = context.Response.Body;
                 await JsonSerializer.SerializeAsync(stream, res);
+                return;
             }
 
             await _next(context);

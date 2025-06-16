@@ -18,7 +18,7 @@ namespace Common.Jwt
             claims.Add(new Claim(ClaimTypes.NameIdentifier, userId.ToString()));
             claims.Add(new Claim(ClaimTypes.Name, userName));
             //I do not want to use roles as claims
-             var jwtExpire = DateTime.Now.AddSeconds(optionsSnapshot.Value.ExpiresMinutes);
+             var jwtExpire = DateTime.Now.AddMinutes(optionsSnapshot.Value.ExpiresMinutes);
 
             var secKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(optionsSnapshot.Value.SecKey));
 
