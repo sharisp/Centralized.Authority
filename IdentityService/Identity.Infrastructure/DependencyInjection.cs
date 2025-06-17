@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using CSRedis;
+using Identity.Domain;
 
 
 namespace Identity.Infrastructure
@@ -53,6 +54,9 @@ namespace Identity.Infrastructure
 
             services.AddScoped<LoginFailEventHandler>();
             services.AddScoped<LoginSuccessEventHandler>();
+
+            var workerId = configuration.GetValue<int>("Snowflake:WorkerId");
+            IdGeneratorFactory.Initialize(workerId);
             return services;
         }
     }

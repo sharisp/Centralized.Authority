@@ -5,12 +5,20 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using IdGen;
+using Microsoft.Extensions.Configuration;
 
 namespace Identity.Domain
 {
     public static class IdGeneratorFactory
     {
-        private static readonly IdGenerator _generator = new IdGenerator(0); // 0 是 generatorId（建议每台机器不一样）
+        private static IdGenerator _generator;
+
+        public static void Initialize(int workerId)
+        {
+            _generator = new IdGenerator(workerId);
+        }
+
+        // private static readonly IdGenerator _generator = new IdGenerator(0);
 
         public static long NewId() => _generator.CreateId();
     }

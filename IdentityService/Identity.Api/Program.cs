@@ -45,7 +45,7 @@ namespace Identity.Api
 
                  cfg.RegisterServicesFromAssemblies(
                      typeof(LoginFailEventHandler).Assembly,  // Application
-                     typeof(WeatherForecastController).Assembly     // 如果有 Domain Event
+                     typeof(UserController).Assembly     // 如果有 Domain Event
                  );
             });
 
