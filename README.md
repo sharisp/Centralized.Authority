@@ -16,10 +16,15 @@ This is an **Authority Management** project built with **.NET 8**, following **D
 
 #### 🔐 Authorization System
 
+feature list:
+
 * Supports permission-based **authorization across multiple systems**.
 * Uses **JWT authentication** and **custom authorization middleware**.
-* After permission validation, results are cached in **Redis** to improve performance and reduce DB queries.
-* To check permissions, clients call the **public API** using `SystemName`, `PermissionKey`, and `UserId`.
+* Caches permission validation results in **Redis** to boost performance and reduce database load.
+* Clients check permissions by calling a **public API** with `SystemName`, `PermissionKey`, and `UserId`.
+* Uses **Snowflake ID** generation for `User`, `Role`, and `Permission` entities.
+* Supports microservices deployment with distributed locking to prevent concurrent writes to Redis during permission updates.
+* Provides a **complete permission management API**, allowing you to manage users, roles, and permissions via RESTful endpoints.
 
 ---
 
