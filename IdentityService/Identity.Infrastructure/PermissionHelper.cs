@@ -18,6 +18,17 @@ namespace Identity.Infrastructure
             this.dbContext = dbContext;
         }
 
+        public async Task<string[]> GetPermissionsByUserId(long userId)
+        {
+            var permissions = await dbContext.Users.Where(u => u.Id == userId)
+                .SelectMany(u => u.Roles)
+                .SelectMany(r => r.Permissions)
+                .Distinct()
+                .Select(t => (t.SystemName + "." + t.PermissionKey))
+                .ToArrayAsync();
+            return permissions;
+        }
+
         public async Task<bool> CheckPermissionAsync(string systemName, long userId, string permissionKey)
         {
             var permissionArr = await RedisHelper.LRangeAsync($"{systemName}_user_permissions_{userId}", 0, -1);
@@ -29,25 +40,18 @@ namespace Identity.Infrastructure
                     // using var scope = _serviceScopeFactory.CreateScope();
                     // var dbContext = scope.ServiceProvider.GetRequiredService<BaseDbContext>();
 
-                    var userIDInt = Convert.ToInt64(userId);
-
-
-
-                    var permissions = await dbContext.Users.Where(u => u.Id == userIDInt)
-                        .SelectMany(u => u.Roles)
-                        .SelectMany(r => r.Permissions)
-                        .Distinct()
-                        .Select(t => (t.SystemName + "." + t.PermissionKey))
-                        .ToListAsync();
-
-                    ;
+                 var permissions = await GetPermissionsByUserId(userId); ;
                     //  foreach (var item in list)
                     foreach (var permission in permissions)
                     {
                         await RedisHelper.RPushAsync($"{systemName}_user_permissions_{userId}", permission);
                     }
 
-                    permissionArr = permissions.ToArray();
+                    permissionArr = permissions;
+                }, async () =>
+                {
+                    //did not get lock, directly query the database
+                    permissionArr = await GetPermissionsByUserId(userId);
                 });
 
             if (permissionArr.Any(x =>
