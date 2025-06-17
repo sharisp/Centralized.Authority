@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApiAuth.Entities.DTO
+namespace Identity.Api.Contracts.Dtos.Request
 {
     public class CreateUserRequestDto
     {
-      //  public long Id { get; set; }
+        //  public long Id { get; set; }
         public string UserName { get; set; }
         public string NickName { get; set; }
         public string Email { get; set; }

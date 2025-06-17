@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using ApiAuth.Entities.DTO;
+
 using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Response;
 using FluentValidation;
@@ -17,6 +17,7 @@ using Identity.Infrastructure.Repository;
 using MediatR;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Domain.Entity;
+using Identity.Infrastructure;
 
 namespace Identity.Api.Controllers
 {
@@ -33,7 +34,7 @@ namespace Identity.Api.Controllers
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
-            var user = await repository.GetByPermissionKeyAsync(dto.PermissionKey);
+            var user = await repository.GetByPermissionKeyAsync(dto.PermissionKey,dto.SystemName);
             if (user != null) return BadRequest(ApiResponse<CreatePermissionDto>.Fail("PermissionKey exists"));
 
             var info = mapper.ToEntity(dto);
@@ -52,9 +53,9 @@ namespace Identity.Api.Controllers
             var info = await repository.GetByIdAsync(id);
             if (info == null) return NotFound(ApiResponse<CreatePermissionDto>.Fail("not found"));
 
-            if (!string.IsNullOrEmpty(dto.PermissionKey) && dto.PermissionKey != info.PermissionKey)
+            if ((!string.IsNullOrEmpty(dto.PermissionKey) || !string.IsNullOrEmpty(dto.SystemName)) && (dto.PermissionKey != info.PermissionKey || dto.SystemName != info.SystemName))
             {
-                if ((await repository.GetByPermissionKeyAsync(dto.PermissionKey)) != null)
+                if ((await repository.GetByPermissionKeyAsync(dto.PermissionKey,dto.SystemName)) != null)
                 {
                     return BadRequest(ApiResponse<CreatePermissionDto>.Fail(" PermissionKey already exists"));
                 }
@@ -70,8 +71,8 @@ namespace Identity.Api.Controllers
         {
             var info = await repository.GetByIdAsync(id);
             if (info == null) return NotFound(ApiResponse<bool>.Fail(" not found"));
-            var users= await repository.GetRolesByPermissionId(id);
-            if (users.Count>0)
+            var users = await repository.GetRolesByPermissionId(id);
+            if (users.Count > 0)
             {
                 return BadRequest(ApiResponse<string>.Fail("exists assigned roles"));
             }
@@ -81,5 +82,9 @@ namespace Identity.Api.Controllers
             return Ok(ApiResponse<string>.Ok("delete error"));
         }
 
+
+
     }
+
+
 }

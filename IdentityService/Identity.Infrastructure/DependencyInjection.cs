@@ -45,7 +45,7 @@ namespace Identity.Infrastructure
             services.AddSingleton(new AppHelper(configuration));
 
             services.AddScoped<UserDomainService>();
-
+            services.AddScoped<PermissionHelper>();
             // Register repositories
 
             // Register event handlers

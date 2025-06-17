@@ -1,4 +1,4 @@
-﻿using ApiAuth.Entities.DTO;
+﻿using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Domain.Entity;
 using Riok.Mapperly.Abstractions;

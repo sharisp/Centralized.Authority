@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ApiAuth.Entities.DTO;
 using FluentValidation;
+using Identity.Api.Contracts.Dtos.Request;
 
 namespace Identity.Api.Contracts.Validator
 {

@@ -38,9 +38,9 @@ namespace Identity.Infrastructure.Repository
             return permission.Roles.ToList();
         }
 
-        public async Task<Permission?> GetByPermissionKeyAsync(string key)
+        public async Task<Permission?> GetByPermissionKeyAsync(string key,string systemName)
         {
-            var res = await dbContext.Permissions.FirstOrDefaultAsync(t => t.PermissionKey == key);
+            var res = await dbContext.Permissions.FirstOrDefaultAsync(t => t.PermissionKey.ToLower().Trim() == key.ToLower().Trim() && t.SystemName.ToLower().Trim() == systemName.ToLower().Trim());
             return res;
         }
         public async Task<List<Permission>> GetPermissionsByIds(List<long> ids)

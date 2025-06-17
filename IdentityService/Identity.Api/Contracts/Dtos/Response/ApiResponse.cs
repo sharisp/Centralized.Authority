@@ -20,7 +20,16 @@ namespace Identity.Api.Contracts.Dtos.Response
             response.Data = data;
             return response;
         }
+        public static ApiResponse<T> Excute(bool success,string errMsg,int statusCode = 200,T? data=default)
+        {
+            var response = new ApiResponse<T>();
 
+            response.Success = success;
+            response.ErrorMsg = errMsg;
+            response.StatusCode = statusCode;
+            response.Data = data;
+            return response;
+        }
         public static ApiResponse<T> Fail(string errMsg, int statusCode = 500, T? data = default)
         {
             var response = new ApiResponse<T>();

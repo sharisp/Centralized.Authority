@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using ApiAuth.Entities.DTO;
 using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Response;
 using FluentValidation;
@@ -14,6 +13,8 @@ using Identity.Domain.Interfaces;
 using Azure;
 using Identity.Domain.Events;
 using MediatR;
+using Identity.Api.Contracts.Dtos.Request;
+using Identity.Infrastructure;
 
 namespace Identity.Api.Controllers
 {
@@ -59,7 +60,7 @@ namespace Identity.Api.Controllers
             }
             mapper.UpdateDtoToEntity(userDto, user);
 
-           // userRepository.UpdateUserAsync(user);
+            // userRepository.UpdateUserAsync(user);
             var respDto = mapper.ToResponseDto(user);
             return Ok(ApiResponse<UserResponseDto>.Ok(respDto));
         }
@@ -77,6 +78,8 @@ namespace Identity.Api.Controllers
             await mediator.Publish(new UserDeleteEvents(user));
             return Ok(ApiResponse<string>.Ok("create error"));
         }
+
+      
 
     }
 }

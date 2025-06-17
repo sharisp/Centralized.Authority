@@ -1,4 +1,5 @@
-﻿namespace ApiAuth.Entities.DTO
+﻿
+namespace Identity.Api.Contracts.Dtos.Request
 {
     public class CreateRoleDto
     {

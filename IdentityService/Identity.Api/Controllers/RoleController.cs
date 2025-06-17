@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using ApiAuth.Entities.DTO;
+
 using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Response;
 using FluentValidation;
@@ -16,6 +16,7 @@ using Identity.Domain.Events;
 using Identity.Infrastructure.Repository;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Identity.Api.Contracts.Dtos.Request;
 
 namespace Identity.Api.Controllers
 {
