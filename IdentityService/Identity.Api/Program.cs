@@ -74,6 +74,13 @@ namespace Identity.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            else
+            {
+                var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+                app.Urls.Add($"http://*:{port}");
+
+                app.MapGet("/", () => "Hello from DotnetCore!");
+            }
 
             app.UseHttpsRedirection();
 
