@@ -20,7 +20,7 @@ out/
 ScaffoldingReadMe.txt
 
 # Configuration files
-#appsettings.*.json
+appsettings.*.json
 
 # Backup & logs
 *.bak

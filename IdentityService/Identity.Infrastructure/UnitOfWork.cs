@@ -19,7 +19,7 @@ namespace Identity.Infrastructure
         private readonly BaseDbContext dbContext;
         public UnitOfWork(DbContextOptions options, ICurrentUser currentUser, IMediator mediatR, BaseDbContext dbContext)
         {
-            currentUser = currentUser;
+            this.currentUser = currentUser;
             this.mediatR = mediatR;
             this.dbContext = dbContext;
         }

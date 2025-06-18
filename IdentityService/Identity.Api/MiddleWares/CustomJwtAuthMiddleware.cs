@@ -45,11 +45,11 @@ public class CustomJwtAuthMiddleware(
 
                 var res = ApiResponse<string>.Fail("no login");
 
-                await context.Response.WriteAsJsonAsync(res); //这个写法存在大小写问题
-                                                              //  return;
-                                                              //Serialize the problem details object to the Response as JSON (using System.Text.Json)
-                                                              //  var stream = context.Response.Body;
-                                                              //await JsonSerializer.SerializeAsync(stream, res);
+                await context.Response.WriteAsJsonAsync(res);
+                //  return;
+                //Serialize the problem details object to the Response as JSON (using System.Text.Json)
+                //  var stream = context.Response.Body;
+                //await JsonSerializer.SerializeAsync(stream, res);
                 return;
             }
 
@@ -91,7 +91,7 @@ public class CustomJwtAuthMiddleware(
             _logger.LogError("WebApi——异常", ex);
             var res = ApiResponse<string>.Fail(ex.Message);
 
-            await context.Response.WriteAsJsonAsync(res); //这个写法存在大小写问题
+            await context.Response.WriteAsJsonAsync(res);
 
         }
     }
