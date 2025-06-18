@@ -1,11 +1,6 @@
 ﻿
-using Identity.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Identity.Domain.Events;
+using Identity.Domain.Interfaces;
 
 namespace Identity.Domain.Entity
 {

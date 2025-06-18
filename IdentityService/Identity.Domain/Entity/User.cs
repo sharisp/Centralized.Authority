@@ -1,5 +1,4 @@
-﻿using Identity.Domain;
-using Identity.Domain.Events;
+﻿using Identity.Domain.Events;
 using Identity.Domain.Interfaces;
 using Identity.Domain.ValueObject;
 

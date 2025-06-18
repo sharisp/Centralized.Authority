@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Identity.Domain.Interfaces;
+﻿using Identity.Domain.Interfaces;
 
 namespace Identity.Domain.Entity
 {
-   public class WhiteUrl:BaseEntity,IAggregateRoot
+    public class WhiteUrl:BaseEntity,IAggregateRoot
     {
         private WhiteUrl()
         {

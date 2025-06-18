@@ -1,6 +1,5 @@
-﻿using System.Net;
-using System.Text.Json;
-using Identity.Api.Contracts.Dtos.Response;
+﻿using Identity.Api.Contracts.Dtos.Response;
+using System.Net;
 
 namespace Identity.Api.MiddleWares
 {
@@ -8,16 +7,11 @@ namespace Identity.Api.MiddleWares
 
     public class CustomerExceptionMiddleware(RequestDelegate next, ILogger<CustomerExceptionMiddleware> logger)
     {
-        private readonly ILogger<CustomerExceptionMiddleware> _logger = logger;
-
-        //主构造函数
-        private readonly RequestDelegate _next = next;
-
         public async Task Invoke(HttpContext httpContext)
         {
             try
             {
-                await _next(httpContext);
+                await next(httpContext);
             }
             catch (Exception ex)
             {
@@ -25,7 +19,7 @@ namespace Identity.Api.MiddleWares
 
                 httpContext.Response.ContentType = "application/json";
                 httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                _logger.LogError("WebApi——error", ex);
+              //  logger.LogError("WebApi——error", ex);
                 var res = ApiResponse<string>.Fail(ex.Message);
 
              await httpContext.Response.WriteAsJsonAsync(res); //这个写法存在大小写问题

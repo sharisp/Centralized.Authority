@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Identity.Api.Contracts.Dtos.Response
+﻿namespace Identity.Api.Contracts.Dtos.Response
 {
 
 

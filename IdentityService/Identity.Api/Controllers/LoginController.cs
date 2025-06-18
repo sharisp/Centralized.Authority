@@ -1,13 +1,11 @@
-﻿using FluentValidation;
+﻿using Common.Jwt;
+using FluentValidation;
+using Identity.Api.Contracts.Dtos.Request;
+using Identity.Api.Contracts.Dtos.Response;
 using Identity.Domain.Enums;
 using Identity.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using Common.Jwt;
-using Identity.Api.Contracts.Dtos.Request;
-using Identity.Api.Contracts.Dtos.Response;
 
 namespace Identity.Api.Controllers
 {

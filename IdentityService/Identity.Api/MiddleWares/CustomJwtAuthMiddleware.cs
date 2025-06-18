@@ -1,14 +1,10 @@
-﻿using System.Net;
-using System.Security.Claims;
-using System.Text.Json;
-using Identity.Api.Attributes;
+﻿using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.MiddleWares;
 using Identity.Domain.Constants;
-using Identity.Domain.Entity;
 using Identity.Infrastructure;
-using Identity.Infrastructure.Repository;
-using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Security.Claims;
 
 namespace ApiAuth.Api.Middles;
 //dbcontext 不能注入，否则报错
