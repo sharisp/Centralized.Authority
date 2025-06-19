@@ -1,31 +1,41 @@
-Welcome here:
+## 👋 Welcome to the Authority Service
 
 ---
 
 ### 🔐 Authority Service
 
-This is an **Authority Management** project built with **.NET 8**, following **Domain-Driven Design (DDD)** principles.
-
-#### ✅ Key Features
-
-* **(DDD)**: Clear separation between Domain, Infrastructure, and API layers.(no application layer)
-* **Mapperly**: Source generator-based object mapping for high performance.
-* **MediatR**: Handles domain events and decouples internal logic.
-* **Unit of Work**: Automatically commits changes to the database for `POST`, `PUT`, and `DELETE` HTTP requests.
-  (For `GET` requests, you need to call `IUnitOfWork.SaveChanges()` manually if needed.)
-
-#### 🔐 Authorization System
-
-feature list:
-
-* Supports permission-based **authorization across multiple systems**.
-* Uses **JWT authentication** and **custom authorization middleware**.
-* Caches permission validation results in **Redis** to boost performance and reduce database load.
-* Clients check permissions by calling a **public API** with `SystemName`, `PermissionKey`, and `UserId`.
-* Uses **Snowflake ID** generation for `User`, `Role`, and `Permission` entities.
-* Supports microservices deployment with distributed locking to prevent concurrent writes to Redis during permission updates.
-* Provides a **complete permission management API**, allowing you to manage users, roles, and permissions via RESTful endpoints.
+A powerful **Authority Management System** built with **.NET 8**, following **Domain-Driven Design (DDD)** principles (without an Application layer).
 
 ---
 
-Still updating...
+### 📦 Tech Stack
+
+* ASP.NET Core 8
+* Entity Framework Core
+* JWT Bearer Authentication + Refresh Token
+* SQL Server
+* Redis
+* Docker (optional)
+* MediatR 
+
+---
+
+### 🚀 Core Features & Highlights
+
+* 🧱 **DDD Structure**: Clear separation of Domain, Infrastructure, and API layers
+* 💾 **Unit of Work**: Automatic DB commits for `POST`, `PUT`, and `DELETE`
+  *(Manual commit needed for `GET` requests)*
+* 📬 **MediatR Integration**: Decoupled command and domain event handling for clean architecture
+* 🔐 **JWT Authentication with Refresh Token**
+  * Secure login returns both **Access Token** and **Refresh Token**
+  * Token refresh endpoint for seamless session continuation
+  * Logout invalidates refresh tokens
+* 🔍 **Permission-Based Authorization** across multiple systems with fine-grained control
+* 🚀 **Redis Caching**: High-performance caching of permission checks to reduce DB load
+* 🧾 **Public Permission Check API**: Query permissions by providing `SystemName`, `PermissionKey`, and `UserId`
+* ❄️ **Snowflake ID Generation** for users, roles, and permissions to ensure distributed uniqueness
+* 🛠️ **Full RESTful API** support for managing users, roles, and permissions
+* 📦 **Microservice Ready**: Distributed locking ensures safe Redis writes during permission updates
+
+---
+
