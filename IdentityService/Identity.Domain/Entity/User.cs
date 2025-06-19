@@ -22,7 +22,8 @@ namespace Identity.Domain.Entity
         public List<Role> Roles { get; set; } = new List<Role>();
 
         public UserAccessFail AccessFail { get;private set; }
-
+        public string? RefreshToken { get; private set; }
+        public DateTimeOffset? RefreshTokenExpireAt { get; private set; }
         public User(string userName, string passwordHash, PhoneNumber? phone=null, string? email=null, string? nickName=null, string? realName = null, string? description = null)
         {
 
@@ -43,6 +44,27 @@ namespace Identity.Domain.Entity
             return PasswordHash == HashHelper.ComputeMd5Hash(password);
         }
 
+        public void SetRefreshToken(string refreshToken, DateTimeOffset refreshTokenExpireAt)
+        {
+            RefreshToken = refreshToken;
+            RefreshTokenExpireAt = refreshTokenExpireAt; 
+            AddDomainEvent(new UserUpdateEvents(this));
+        }
+
+        public bool IsRefreshTokenValid(string refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(RefreshToken))
+            {
+                return false;
+            }
+            return RefreshToken == refreshToken && RefreshTokenExpireAt.HasValue && RefreshTokenExpireAt.Value > DateTimeOffset.UtcNow;
+        }
+        public void ClearRefreshToken()
+        {
+            RefreshToken = null;
+            RefreshTokenExpireAt=DateTimeOffset.MinValue;
+            AddDomainEvent(new UserUpdateEvents(this));
+        }
         public void ChangePassword(string passwordHash)
         {
             PasswordHash =HashHelper.ComputeMd5Hash(passwordHash) ;

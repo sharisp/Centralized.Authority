@@ -3,50 +3,89 @@ using FluentValidation;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Domain.Enums;
+using Identity.Domain.Interfaces;
 using Identity.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Identity.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class LoginController(UserDomainService userDomainService,
+        AuthenticationTokenResponse authenticationTokenResponse, IValidator<LoginRequestDto> validator, IValidator<RefreshTokenRequestDto> tokenValidator, IUserRepository userRepository) : ControllerBase
     {
-        private readonly UserDomainService userDomainService;
-        private readonly IValidator<LoginRequestDto> validator;
-        private readonly AuthenticationTokenResponse authenticationTokenResponse;
-        public LoginController(UserDomainService userDomainService, AuthenticationTokenResponse authenticationTokenResponse, IValidator<LoginRequestDto> validator)
-        {
-            this.userDomainService = userDomainService;
-            this.authenticationTokenResponse = authenticationTokenResponse;
-            this.validator = validator;
-        }
-
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<ApiResponse<object>>> Login(LoginRequestDto loginRequestDto)
+        public async Task<ActionResult<ApiResponse<LoginResponseDto>>> Login(LoginRequestDto loginRequestDto)
         {
             await ValidationHelper.ValidateModelAsync(loginRequestDto, validator);
 
-            var (user, res) = await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName, loginRequestDto.Password);
+            var (user, res) =
+                await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName, loginRequestDto.Password);
             if (res != LoginResult.Success)
             {
-                return BadRequest(ApiResponse<int>.Fail("login fail"));
+                return BadRequest(ApiResponse<LoginResponseDto>.Fail("login fail"));
             }
             else
             {
                 var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName);
-
-                return Ok(ApiResponse<object>.Ok(new LoginResponseDto(
+                user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
+                return Ok(ApiResponse<LoginResponseDto>.Ok(new LoginResponseDto(
                     user.UserName,
                     user.NickName,
-                  user.Id,
+                    user.Id,
                     token
                 )));
             }
 
         }
 
+
+        [AllowAnonymous]
+        [HttpPost("RefreshToken")]
+        public async Task<ActionResult<ApiResponse<LoginResponseDto>>> RefreshToken(RefreshTokenRequestDto dto)
+        {
+            await ValidationHelper.ValidateModelAsync(dto, tokenValidator);
+
+            var user = await userRepository.GetUserByIdAsync(dto.UserId);
+            if (user == null)
+            {
+                return BadRequest(ApiResponse<int>.Fail("user not found"));
+            }
+
+            if (user.IsRefreshTokenValid(dto.RefreshToken))
+            {
+                var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName);
+
+                user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
+                return Ok(ApiResponse<object>.Ok(new LoginResponseDto(
+                    user.UserName,
+                    user.NickName,
+                    user.Id,
+                    token
+                )));
+            }
+
+            return BadRequest(ApiResponse<LoginResponseDto>.Fail("RefreshToken not valid"));
+        }
+
+        [Authorize]
+        [HttpPost("LogOut")]
+        public async Task<ActionResult<ApiResponse<LoginResponseDto>>> LoginOut()
+        {
+            var userId = Convert.ToInt64(this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var user = await userRepository.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return BadRequest(ApiResponse<string>.Fail("user not found"));
+            }
+
+            user.ClearRefreshToken();
+
+            return BadRequest(ApiResponse<string>.Ok("login out successfully"));
+        }
     }
+
 }

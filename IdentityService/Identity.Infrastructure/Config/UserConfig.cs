@@ -23,7 +23,7 @@ namespace Identity.Infrastructure.Config
             builder.Property(e => e.NickName).HasMaxLength(50);
             builder.Property(e => e.RealName).HasMaxLength(50);
             builder.Property(e => e.Email).HasMaxLength(50).IsRequired().IsRequired();
-
+            builder.Property(e => e.RefreshToken).HasMaxLength(36).IsUnicode();
             builder.Property(e => e.PasswordHash).HasMaxLength(100).IsRequired();
 
             builder.HasMany(e => e.Roles).WithMany(t => t.Users).UsingEntity(j => j.ToTable("T_UserRole"));
