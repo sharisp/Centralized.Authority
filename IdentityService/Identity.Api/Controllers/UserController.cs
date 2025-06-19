@@ -1,20 +1,13 @@
-﻿using Identity.Domain;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
+﻿using FluentValidation;
 using Identity.Api.Attributes;
-using Identity.Api.Contracts.Dtos.Response;
-using FluentValidation;
-using Identity.Api.Contracts.Mapping;
-using Identity.Domain.Interfaces;
-using Azure;
-using Identity.Domain.Events;
-using MediatR;
 using Identity.Api.Contracts.Dtos.Request;
-using Identity.Infrastructure;
+using Identity.Api.Contracts.Dtos.Response;
+using Identity.Api.Contracts.Mapping;
+using Identity.Domain.Events;
+using Identity.Domain.Interfaces;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.Api.Controllers
 {

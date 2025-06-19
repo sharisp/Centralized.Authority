@@ -3,38 +3,49 @@ using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.MiddleWares;
 using Identity.Domain.Constants;
 using Identity.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using System.Net;
 using System.Security.Claims;
 
 namespace ApiAuth.Api.Middles;
-//dbcontext 不能注入，否则报错
-//你不能在中间件构造函数或任何单例生命周期中直接使用 DbContext。推荐使用 IServiceScopeFactory 创建作用域，并在作用域内解析 MyDbContext。
+
 
 public class CustomJwtAuthMiddleware(
     RequestDelegate next,
     ILogger<CustomerExceptionMiddleware> logger,
     IServiceScopeFactory serviceScopeFactory)
 {
-    private readonly ILogger<CustomerExceptionMiddleware> _logger = logger;
-    private readonly RequestDelegate _next = next;
-    private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
-
     public async Task Invoke(HttpContext context)
     {
         try
         {
-            //判断是不是白名单的
-            var questUrl = context?.Request.Path.Value.ToLower();
+            var endpoint = context.GetEndpoint();
+            if (endpoint == null)
+            {
+                // If no endpoint is found, just continue to the next middleware
+                await next(context);
+                return;
+            }
+            //check if the endpoint has AllowAnonymous attribute, if so, just return
+            var allowAnonymous = endpoint.Metadata.GetMetadata<AllowAnonymousAttribute>();
+            if (allowAnonymous != null)
+            {
+                await next(context);
+                return;
+            }
+            //check if it is a white list url, if so, just return
+            var questUrl = context.Request.Path.Value?.ToLower();
             if (string.IsNullOrEmpty(questUrl)) return;
-            //白名单验证
+
             if (CheckWhiteList(questUrl))
             {
-                await _next.Invoke(context);
+                await next.Invoke(context);
                 return;
             }
 
-            // 从 token 中解析用户 ID
-            var userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            // get userId from claims
+            var userId = context?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
@@ -49,12 +60,14 @@ public class CustomJwtAuthMiddleware(
                 return;
             }
 
-            var permissionKey = context.GetEndpoint()?.Metadata
+
+            //check permission key
+            var permissionKey = endpoint.Metadata
                 .GetMetadata<PermissionKeyAttribute>()?.Key;
-            //没有 permissionKey，直接放行
+
             if (permissionKey == null)
             {
-                await _next(context);
+                await next(context);
                 return;
             }
             //can not use DI here
@@ -76,7 +89,7 @@ public class CustomJwtAuthMiddleware(
                 return;
             }
 
-            await _next(context);
+            await next(context);
         }
         catch (Exception ex)
         {
@@ -84,7 +97,7 @@ public class CustomJwtAuthMiddleware(
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            _logger.LogError("WebApi——异常", ex);
+            logger.LogError("WebApi——异常", ex);
             var res = ApiResponse<string>.Fail(ex.Message);
 
             await context.Response.WriteAsJsonAsync(res);
