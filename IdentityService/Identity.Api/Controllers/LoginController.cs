@@ -84,7 +84,7 @@ namespace Identity.Api.Controllers
 
             user.ClearRefreshToken();
 
-            return BadRequest(ApiResponse<string>.Ok("login out successfully"));
+            return Ok(ApiResponse<string>.Ok("login out successfully"));
         }
     }
 

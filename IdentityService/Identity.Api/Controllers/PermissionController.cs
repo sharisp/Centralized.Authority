@@ -56,10 +56,10 @@ namespace Identity.Api.Controllers
 
         [HttpDelete("{id}")]
         [PermissionKey("Permission.Delete")]
-        public async Task<ActionResult<ApiResponse<bool>>> Delete(long id)
+        public async Task<ActionResult<ApiResponse<string>>> Delete(long id)
         {
             var info = await repository.GetByIdAsync(id);
-            if (info == null) return NotFound(ApiResponse<bool>.Fail(" not found"));
+            if (info == null) return NotFound(ApiResponse<string>.Fail(" not found"));
             var users = await repository.GetRolesByPermissionId(id);
             if (users.Count > 0)
             {
@@ -68,7 +68,7 @@ namespace Identity.Api.Controllers
             repository.Delete(info);
 
 
-            return Ok(ApiResponse<string>.Ok("delete error"));
+            return Ok(ApiResponse<string>.Ok("delete successfully"));
         }
 
 

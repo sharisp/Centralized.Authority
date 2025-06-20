@@ -20,12 +20,12 @@ namespace Identity.Api.Controllers
 
         [HttpPost]
         [PermissionKey("User.Create")]
-        public async Task<ActionResult<ApiResponse<CreateUserRequestDto>>> Create(CreateUserRequestDto userDto)
+        public async Task<ActionResult<ApiResponse<UserResponseDto>>> Create(CreateUserRequestDto userDto)
         {
             await ValidationHelper.ValidateModelAsync(userDto, validator);
 
             var user = await userRepository.GetUseByNameAsync(userDto.UserName);
-            if (user != null) return BadRequest(ApiResponse<CreateUserRequestDto>.Fail("username exists"));
+            if (user != null) return BadRequest(ApiResponse<UserResponseDto>.Fail("username exists"));
 
             var userinfo = mapper.ToEntity(userDto);
 
@@ -60,16 +60,16 @@ namespace Identity.Api.Controllers
 
         [HttpDelete("{id}")]
         [PermissionKey("User.Delete")]
-        public async Task<ActionResult<ApiResponse<bool>>> Delete(long id)
+        public async Task<ActionResult<ApiResponse<string>>> Delete(long id)
         {
             var user = await userRepository.GetUserByIdAsync(id);
-            if (user == null) return NotFound(ApiResponse<bool>.Fail("user not found"));
+            if (user == null) return NotFound(ApiResponse<string>.Fail("user not found"));
 
             userRepository.DeleteUser(user);
 
             //await RedisHelper.DelAsync($"user_permissions_{id}");
             await mediator.Publish(new UserDeleteEvents(user));
-            return Ok(ApiResponse<string>.Ok("create error"));
+            return Ok(ApiResponse<string>.Ok("create successfully"));
         }
 
       

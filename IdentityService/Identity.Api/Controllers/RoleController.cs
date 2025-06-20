@@ -56,10 +56,10 @@ namespace Identity.Api.Controllers
 
         [HttpDelete("{id}")]
         [PermissionKey("Role.Delete")]
-        public async Task<ActionResult<ApiResponse<bool>>> Delete(long id)
+        public async Task<ActionResult<ApiResponse<string>>> Delete(long id)
         {
             var info = await repository.GetByIdAsync(id);
-            if (info == null) return NotFound(ApiResponse<bool>.Fail(" not found"));
+            if (info == null) return NotFound(ApiResponse<string>.Fail(" not found"));
             var users= await repository.GetUsersByRoleId(id);
             if (users.Count>0)
             {
@@ -68,17 +68,17 @@ namespace Identity.Api.Controllers
             repository.DeleteRole(info);
 
 
-            return Ok(ApiResponse<string>.Ok("create error"));
+            return Ok(ApiResponse<string>.Ok("create successfully"));
         }
 
         [HttpPost("Assign/{id}")]
         [PermissionKey("Permission.Assign")]
-        public async Task<ActionResult<ApiResponse<bool>>> Assign(long id, List<long> permissionIds)
+        public async Task<ActionResult<ApiResponse<string>>> Assign(long id, List<long> permissionIds)
         {
             if (permissionIds.Count == 0)
-                return BadRequest(ApiResponse<bool>.Fail(" permissions should not be empty"));
+                return BadRequest(ApiResponse<string>.Fail(" permissions should not be empty"));
             var role = await repository.GetByIdAsync(id);
-            if (role == null) return NotFound(ApiResponse<bool>.Fail("role not found"));
+            if (role == null) return NotFound(ApiResponse<string>.Fail("role not found"));
 
             var permissions =await permissionRepository.GetPermissionsByIds(permissionIds);
             role.AddPermissions(permissions);
