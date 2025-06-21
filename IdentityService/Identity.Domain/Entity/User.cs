@@ -10,16 +10,16 @@ namespace Identity.Domain.Entity
         private User()
         {
         }
-        public string UserName { get;  set; } = default!;
-        public string? RealName { get;  set; } = default!;
+        public string UserName { get; private set; } = default!;
+        public string? RealName { get; private set; } = default!;
         public string PasswordHash { get; private set; } = default!;
-        public string? Email { get;  set; } = default!;
-        public PhoneNumber? Phone { get;  set; } = default!;
+        public string? Email { get; private set; } = default!;
+        public PhoneNumber? Phone { get; private set; } = default!;
 
-        public string? NickName { get;  set; } = default!;
+        public string? NickName { get; private set; } = default!;
 
-        public string? Description { get; set; }
-        public List<Role> Roles { get; set; } = new List<Role>();
+        public string? Description { get; private set; }
+        public List<Role> Roles { get;private set; } = new List<Role>();
 
         public UserAccessFail AccessFail { get;private set; }
         public string? RefreshToken { get; private set; }
@@ -65,9 +65,9 @@ namespace Identity.Domain.Entity
             RefreshTokenExpireAt=DateTimeOffset.MinValue;
             AddDomainEvent(new UserUpdateEvents(this));
         }
-        public void ChangePassword(string passwordHash)
+        public void ChangeUserName(string userName)
         {
-            PasswordHash =HashHelper.ComputeMd5Hash(passwordHash) ;
+            UserName = userName;
             AddDomainEvent(new UserUpdateEvents(this));
     }
         public void ChangeNickName(string nickName)
@@ -90,7 +90,12 @@ namespace Identity.Domain.Entity
 
             AddDomainEvent(new UserUpdateEvents(this));
         }
+        public void ChangePassword(string password)
+        {
+            PasswordHash = HashHelper.ComputeMd5Hash(password);
 
+            AddDomainEvent(new UserUpdateEvents(this));
+        }
         public void ChangePhone(PhoneNumber phone)
         {
             Phone = phone;

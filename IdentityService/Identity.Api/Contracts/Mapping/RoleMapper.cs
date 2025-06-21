@@ -9,7 +9,17 @@ namespace Identity.Api.Contracts.Mapping
     {
         public partial CreateRoleDto ToDto(Role role);
         public partial Role ToEntity(CreateRoleDto roleDto);
-        public partial void UpdateDtoToRole(CreateRoleDto inDto, Role outTarget);
+
+      
+
+        [UserMapping(Default = true)]
+        public  void UpdateDtoToRole(CreateRoleDto inDto, Role outTarget)
+        {
+            if (!string.IsNullOrEmpty(inDto.RoleName))
+            {
+                outTarget.ChangeRoleName(inDto.RoleName);
+            }
+        }
 
     }
 }

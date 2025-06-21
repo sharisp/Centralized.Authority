@@ -10,6 +10,28 @@ namespace Identity.Api.Contracts.Mapping
         public partial CreatePermissionDto ToDto(Permission info);
         public partial Permission ToEntity(CreatePermissionDto infoDto);
 
-        public partial void UpdateDtoToEntity(CreatePermissionDto inDto, Permission outTarget);
+        private void UpdateEntityFromDto(CreatePermissionDto inDto, Permission outTarget)
+        {
+            if (!string.IsNullOrEmpty(inDto.SystemName))
+            {
+                outTarget.ChangeSystemName(inDto.SystemName);
+            }
+            if (!string.IsNullOrEmpty(inDto.PermissionKey))
+            {
+                outTarget.ChangePermissionKey(inDto.PermissionKey);
+            }
+            if (!string.IsNullOrEmpty(inDto.Title))
+            {
+                outTarget.ChangeTitle(inDto.Title);
+            }
+         
+        }
+
+        [UserMapping(Default = true)]
+
+        public void UpdateDtoToEntity(CreatePermissionDto inDto, Permission outTarget)
+        {
+            UpdateEntityFromDto(inDto, outTarget);
+        }
     }
 }

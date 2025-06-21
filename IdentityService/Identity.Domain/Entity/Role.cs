@@ -19,12 +19,12 @@ namespace Identity.Domain.Entity
             AddDomainEvent(new RoleAddEvents(this));
         }
 
-        public string RoleName { get; set; }
-        public string? Description { get; set; }
-        public DateTime CreateTime { get; set; } 
-        public List<User> Users { get; set; } = new List<User>(); // 角色对应的用户列表
+        public string RoleName { get; private set; }
+        public string? Description { get; private set; }
+        public DateTime CreateTime { get;private set; } 
+        public List<User> Users { get; private set; } = new List<User>(); // 角色对应的用户列表
 
-        public List<Permission> Permissions { get; set; }=new List<Permission>(); // 角色对应的权限列表)
+        public List<Permission> Permissions { get; private set; }=new List<Permission>(); // 角色对应的权限列表)
 
         public void AddPermissions(List<Permission> permissions)
         {
@@ -37,13 +37,13 @@ namespace Identity.Domain.Entity
         {
           
             RoleName = roleName;
-          //  AddDomainEvent(new RoleChangeEvents(this));
+            AddDomainEvent(new RoleChangeEvents(this));
         }
         public void ChangeDescription(string? description)
         {
 
             Description = description;
-         //   AddDomainEvent(new RoleChangeEvents(this));
+            AddDomainEvent(new RoleChangeEvents(this));
         }
     }
 }
