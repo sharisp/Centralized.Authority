@@ -3,16 +3,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 
 namespace Common.Jwt
 {
     public static class DependencyInjection
     {
+
+    
         public static IServiceCollection AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
+            services.AddSwagger_AuthSetup();
 
             services.Configure<JwtOptions>(configuration.GetSection("JWT"));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

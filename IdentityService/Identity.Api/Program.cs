@@ -31,7 +31,6 @@ namespace Identity.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddSwagger_AuthSetup();
             builder.Services.AddJWTAuthentication(builder.Configuration);
 
             builder.Services.AddHttpContextAccessor();

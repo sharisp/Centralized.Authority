@@ -4,8 +4,12 @@ using Microsoft.OpenApi.Models;
 namespace Common.Jwt;
 public static class SwaggerGenOptionsExtensions
 {
-
-    public static void AddSwagger_AuthSetup(this IServiceCollection services)
+    /// <summary>
+    /// internal method to add Swagger authentication setup, calling by AddJWTAuthentication
+    /// </summary>
+    /// <param name="services"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    internal static void AddSwagger_AuthSetup(this IServiceCollection services)
     {
         if (services == null) throw new ArgumentNullException(nameof(services));
 
