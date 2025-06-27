@@ -55,11 +55,25 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_87CA1A508DFE49918C9E8A5A018F855A }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C67064D31BDA478CA8CD515D33B96FA2 }}
         
+      - name: Debug JSON Output
+        run: |
+          JSON_STRING='{
+            "RedisConnection": ${{ toJSON(secrets.AZURE_REDIS_CONNECTION) }},
+            "ConnectionStrings__SqlServer": ${{ toJSON(secrets.AZURE_SQLSERVER) }},
+            "JWT__SecKey": ${{ toJSON(secrets.AZURE_JWT_KEY) }},
+            "JWT__ExpiresMinutes": "60",
+            "JWT__RefreshTokenExpiresHours": "189",
+            "JWT__Issuer": "test",
+            "JWT__Audience": "test"
+          }'
+          echo "::debug::JSON String to be passed: $JSON_STRING" # This will print to debug logs
+          echo "$JSON_STRING" > output.json # Save to a file for easier viewing (might not work well with all chars)
+    
       - name: Set Azure App Settings
         uses: azure/appservice-settings@v1
-        with:         
+        with:
           app-name: identity
-          app-settings-json: >- # Use the folded block scalar to avoid newlines, and the '-' to strip trailing ones
+          app-settings-json: >-
             {
               "RedisConnection": ${{ toJSON(secrets.AZURE_REDIS_CONNECTION) }},
               "ConnectionStrings__SqlServer": ${{ toJSON(secrets.AZURE_SQLSERVER) }},
