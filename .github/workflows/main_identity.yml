@@ -55,19 +55,19 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_87CA1A508DFE49918C9E8A5A018F855A }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C67064D31BDA478CA8CD515D33B96FA2 }}
         
-      - name: Debug JSON Output # TEMPORARY DEBUG STEP - REMOVE AFTER FIXING!
+      - name: Debug JSON Output # 临时调试步骤 - 修复后请删除！
         run: |
-          read -r -d '' JSON_STRING << EOF # 将多行字符串读取到 JSON_STRING 变量中
+          read -r -d '' JSON_STRING << EOF
           {
-            "RedisConnection": ${{ toJSON(secrets.AZURE_REDIS_CONNECTION) }}, # <-- REMOVE THE EXTRA "" HERE
-            "ConnectionStrings__SqlServer": ${{ toJSON(secrets.AZURE_SQLSERVER) }}, # <-- REMOVE THE EXTRA "" HERE
-            "JWT__SecKey": ${{ toJSON(secrets.AZURE_JWT_KEY) }}, # <-- REMOVE THE EXTRA "" HERE
+            "RedisConnection": ${{ toJSON(secrets.AZURE_REDIS_CONNECTION) }},
+            "ConnectionStrings__SqlServer": ${{ toJSON(secrets.AZURE_SQLSERVER) }},
+            "JWT__SecKey": ${{ toJSON(secrets.AZURE_JWT_KEY) }},
             "JWT__ExpiresMinutes": "60",
             "JWT__RefreshTokenExpiresHours": "189",
             "JWT__Issuer": "test",
             "JWT__Audience": "test"
           }
-          EOF
+          EOF # 这个 EOF 必须顶格写，不能有任何前导空格！
           echo "::debug::JSON String to be passed: $JSON_STRING" # 这会将内容打印到调试日志中
           echo "$JSON_STRING" > output.json # 保存到文件以便查看
 
