@@ -55,8 +55,8 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_87CA1A508DFE49918C9E8A5A018F855A }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C67064D31BDA478CA8CD515D33B96FA2 }}
         
-      - name: Debug JSON Output # 临时调试步骤 - 修复后请删除！
-        run: |
+     - name: Debug JSON Output # 临时调试步骤 - 修复后请删除！
+        run: | # This '|' means everything indented under it is part of the script
           read -r -d '' JSON_STRING << EOF
           {
             "RedisConnection": ${{ toJSON(secrets.AZURE_REDIS_CONNECTION) }},
@@ -67,9 +67,9 @@ jobs:
             "JWT__Issuer": "test",
             "JWT__Audience": "test"
           }
-          EOF # 这个 EOF 必须顶格写，不能有任何前导空格！
-          echo "::debug::JSON String to be passed: $JSON_STRING" # 这会将内容打印到调试日志中
-          echo "$JSON_STRING" > output.json # 保存到文件以便查看
+EOF # <--- THIS LINE MUST BE *ONLY* "EOF" WITH NO OTHER CHARACTERS AND NO LEADING SPACES/TABS!
+          echo "::debug::JSON String to be passed: $JSON_STRING"
+          echo "$JSON_STRING" > output.json
 
       - name: Set Azure App Settings
         uses: azure/appservice-settings@v1
