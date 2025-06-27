@@ -56,8 +56,8 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C67064D31BDA478CA8CD515D33B96FA2 }}
         
       - name: Debug JSON Output # 临时调试步骤 - 修复后请删除！
-        run: | # <--- 这行定义了脚本块的起始缩进
-          read -r -d '' JSON_STRING << EOF
+        run: | # 这一行通常缩进 8 个空格
+          read -r -d '' JSON_STRING << EOF # 这一行通常缩进 10 个空格 (比 run: | 多 2 个空格)
           {
             "RedisConnection": ${{ toJSON(secrets.AZURE_REDIS_CONNECTION) }},
             "ConnectionStrings__SqlServer": ${{ toJSON(secrets.AZURE_SQLSERVER) }},
@@ -67,9 +67,9 @@ jobs:
             "JWT__Issuer": "test",
             "JWT__Audience": "test"
           }
-          EOF # <--- 这个 EOF 必须与 "read -r -d '' JSON_STRING << EOF" 这一行保持相同的缩进！
-          echo "::debug::JSON String to be passed: $JSON_STRING" # <--- 这两行也必须保持相同的缩进
-          echo "$JSON_STRING" > output.json
+          EOF # <-- 这一行必须与上面的 'read -r -d '' JSON_STRING << EOF' 行保持完全相同的缩进！
+          echo "::debug::JSON String to be passed: $JSON_STRING" # <-- 这行也必须与 'read' 命令和 'EOF' 保持相同的缩进
+          echo "$JSON_STRING" > output.json # <-- 这行也必须与 'read' 命令和 'EOF' 保持相同的缩进
 
       - name: Set Azure App Settings
         uses: azure/appservice-settings@v1
