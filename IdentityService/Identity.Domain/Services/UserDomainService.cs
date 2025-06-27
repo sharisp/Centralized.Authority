@@ -25,6 +25,10 @@ namespace Identity.Domain.Services
             {
                 return (null, LoginResult.UserNotFound);
             }
+            if (existUser.AccessFail==null)
+            {
+                existUser.InitializeAccessFailIfNeeded();
+            }
             if (!existUser.CheckPassword(passWord))
             {
                 existUser.AccessFail.Fail();

@@ -102,6 +102,13 @@ namespace Identity.Domain.Entity
 
             AddDomainEvent(new UserUpdateEvents(this));
         }
+        public void InitializeAccessFailIfNeeded()
+        {
+            if (AccessFail == null)
+            {
+                AccessFail = new UserAccessFail(this);
+            }
+        }
 
     }
 
