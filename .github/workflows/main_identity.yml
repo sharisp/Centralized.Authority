@@ -59,8 +59,8 @@ jobs:
         uses: azure/appservice-settings@v1
         with:
           app-name: identity
-          app-settings-json: '{"RedisConnection":"${{ secrets.AZURE_REDIS_CONNECTION }}","ConnectionStrings__SqlServer":"${{ secrets.AZURE_SQLSERVER }}","JWT__SecKey":"${{ secrets.AZURE_JWT_KEY }}","JWT__ExpiresMinutes":"60","JWT__RefreshTokenExpiresHours":"189","JWT__Issuer":"test","JWT__Audience":"test"}'
-  
+          app-settings-json: '{"RedisConnection":"test","ConnectionStrings__SqlServer":"test","JWT__SecKey":"test","JWT__ExpiresMinutes":"60","JWT__RefreshTokenExpiresHours":"189","JWT__Issuer":"test","JWT__Audience":"test"}'
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
