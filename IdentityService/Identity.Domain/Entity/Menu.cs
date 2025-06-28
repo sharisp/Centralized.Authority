@@ -1,26 +1,83 @@
-﻿using Identity.Domain.Interfaces;
+﻿using Identity.Domain.Enums;
+using Identity.Domain.Interfaces;
 
 namespace Identity.Domain.Entity
 {
 
-    public class Menu : BaseEntity, IAggregateRoot
+    public class Menu : BaseAuditableEntity, IAggregateRoot
     {
         private Menu()
         {
 
         }
-        public long Id { get; set; }
-        public string Title { get; set; }
-        public string Path { get; set; }
-        public long ParentID { get; set; }
-        public string Component { get; set; }
-        public string icon { get; set; }
-        public int Sort { get; set; }
+        public string Title { get; private set; }
+        public string Path { get; private set; }
+        public long ParentID { get; private set; }
+        public string? Component { get; private set; }
+        public string? Icon { get; private set; }
+        public int Sort { get; private set; }
+        public MenuType Type { get; private set; }
 
-        public DateTime CreateTime { get; set; }
 
-        public DateTime UpdateTime { get; set; }
-        public bool IsDeleted { get; set; }
-        public bool IsShow { get; set; }
+        public bool IsShow { get; private set; }
+        public Uri? ExternalLink { get; private set; }
+        public string SystemName { get; private set; }//for multi-system support, e.g., "Identity", "Order", etc.
+
+        public List<Role> Roles { get; private set; } = new List<Role>();
+
+        public Menu(string title, string path, long parentID, int sort, MenuType type,  string systemName, string? component = null, string? icon = null, Uri? externalLink = null)
+        {
+            Title = title;
+            Path = path;
+            ParentID = parentID;
+            Component = component;
+            this.Icon = icon;
+            Sort = sort;
+            Type = type;
+            IsShow = true;
+            this.ExternalLink = externalLink;
+            SystemName = systemName;
+      
+        }
+        public void ChangeTitle(string title)
+        {
+            Title = title;
+        }
+        public void ChangePath(string path)
+        {
+            Path = path;
+        }
+        public void ChangeParentID(long parentID)
+        {
+            ParentID = parentID;
+        }
+        public void ChangeComponent(string? component)
+        {
+            Component = component;
+        }
+        public void ChangeIcon(string? icon)
+        {
+            Icon = icon;
+        }
+        public void ChangeSort(int sort)
+        {
+            Sort = sort;
+        }
+        public void ChangeType(MenuType type)
+        {
+            Type = type;
+        }
+        public void ChangeIsShow(bool isShow)
+        {
+            IsShow = isShow;
+        }
+        public void ChangeExternalLink(Uri? externalLink)
+        {
+            ExternalLink = externalLink;
+        }
+        public void ChangeSystemName(string systemName)
+        {
+            SystemName = systemName;
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace Identity.Infrastructure.Repository
         public DbSet<Role> Roles { get; set; }
         public DbSet<WhiteUrl> WhiteUrls { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Menu> Menus { get; set; }
         public DbSet<LoginHistory> LoginHistories { get; set; }
 
       

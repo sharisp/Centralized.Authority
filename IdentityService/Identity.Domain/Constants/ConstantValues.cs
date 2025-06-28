@@ -1,6 +1,6 @@
 ﻿namespace Identity.Domain.Constants
 {
-    public static class Constant
+    public static class ConstantValues
     {
         public static string SystemName = "Identity";
     }

@@ -14,53 +14,53 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class PermissionController(IValidator<CreatePermissionDto> validator, PermissionMapper mapper, PermissionRepository repository, IMediator mediator) : ControllerBase
+    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository) : ControllerBase
     {
 
         [HttpPost]
-        [PermissionKey("Permission.Create")]
-        public async Task<ActionResult<ApiResponse<CreatePermissionDto>>> Create(CreatePermissionDto dto)
+        [PermissionKey("Menu.Create")]
+        public async Task<ActionResult<ApiResponse<CreateMenuDto>>> Create(CreateMenuDto dto)
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
-            var user = await repository.GetByPermissionKeyAsync(dto.PermissionKey,dto.SystemName);
-            if (user != null) return Ok(ApiResponse<CreatePermissionDto>.Fail("PermissionKey exists",400));
+            var user = await repository.GetByPathAsync(dto.Path,dto.SystemName);
+            if (user != null) return Ok(ApiResponse<CreateMenuDto>.Fail("Menu path exists", 400));
 
             var info = mapper.ToEntity(dto);
 
             await repository.AddAsync(info);
 
-            return Ok(ApiResponse<CreatePermissionDto>.Ok(dto));
+            return Ok(ApiResponse<CreateMenuDto>.Ok(dto));
         }
 
         [HttpPut("{id}")]
         [PermissionKey("Permission.Update")]
-        public async Task<ActionResult<ApiResponse<CreatePermissionDto>>> Update(long id, [FromBody] CreatePermissionDto dto)
+        public async Task<ActionResult<ApiResponse<CreateMenuDto>>> Update(long id, [FromBody] CreateMenuDto dto)
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
             var info = await repository.GetByIdAsync(id);
-            if (info == null) return Ok(ApiResponse<CreatePermissionDto>.Fail("not found"));
+            if (info == null) return Ok(ApiResponse<CreateMenuDto>.Fail("not found"));
 
-            if ((!string.IsNullOrEmpty(dto.PermissionKey) || !string.IsNullOrEmpty(dto.SystemName)) && (dto.PermissionKey != info.PermissionKey || dto.SystemName != info.SystemName))
+            if ((!string.IsNullOrEmpty(dto.Path) || !string.IsNullOrEmpty(dto.SystemName)) && (dto.Path != info.Path || dto.SystemName != info.SystemName))
             {
-                if ((await repository.GetByPermissionKeyAsync(dto.PermissionKey,dto.SystemName)) != null)
+                if ((await repository.GetByPathAsync(dto.Path, dto.SystemName)) != null)
                 {
-                    return Ok(ApiResponse<CreatePermissionDto>.Fail(" PermissionKey already exists",400));
+                    return Ok(ApiResponse<CreateMenuDto>.Fail(" Path already exists", 400));
                 }
             }
             mapper.UpdateDtoToEntity(dto, info);
 
-            return Ok(ApiResponse<CreatePermissionDto>.Ok(dto));
+            return Ok(ApiResponse<CreateMenuDto>.Ok(dto));
         }
 
         [HttpDelete("{id}")]
-        [PermissionKey("Permission.Delete")]
+        [PermissionKey("Menu.Delete")]
         public async Task<ActionResult<ApiResponse<string>>> Delete(long id)
         {
             var info = await repository.GetByIdAsync(id);
             if (info == null) return Ok(ApiResponse<string>.Fail(" not found"));
-            var users = await repository.GetRolesByPermissionId(id);
+            var users = await repository.GetRolesByMenuId(id);
             if (users.Count > 0)
             {
                 return Ok(ApiResponse<string>.Fail("exists assigned roles",400));
@@ -70,7 +70,6 @@ namespace Identity.Api.Controllers
 
             return Ok(ApiResponse<string>.Ok("delete successfully"));
         }
-
 
 
 

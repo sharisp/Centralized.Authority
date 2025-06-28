@@ -16,7 +16,10 @@ namespace Identity.Api.MiddleWares
             catch (Exception ex)
             {
                 //  httpContext.Response.ContentType = "application/problem+json";
-
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
                 httpContext.Response.ContentType = "application/json";
                 httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
               //  logger.LogError("WebApi——error", ex);

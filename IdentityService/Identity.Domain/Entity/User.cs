@@ -24,7 +24,7 @@ namespace Identity.Domain.Entity
         public UserAccessFail AccessFail { get;private set; }
         public string? RefreshToken { get; private set; }
         public DateTimeOffset? RefreshTokenExpireAt { get; private set; }
-        public User(string userName, string passwordHash, PhoneNumber? phone=null, string? email=null, string? nickName=null, string? realName = null, string? description = null)
+        public User(string userName, string passwordHash, string email , PhoneNumber? phone=null, string? nickName=null, string? realName = null, string? description = null)
         {
 
             PasswordHash = HashHelper.ComputeMd5Hash(passwordHash);
@@ -107,6 +107,18 @@ namespace Identity.Domain.Entity
             if (AccessFail == null)
             {
                 AccessFail = new UserAccessFail(this);
+            }
+        }
+
+        public void AddRole(Role role)
+        {
+            if (Roles == null)
+            {
+                Roles = new List<Role>();
+            }
+            if (!Roles.Contains(role))
+            {
+                Roles.Add(role);
             }
         }
 

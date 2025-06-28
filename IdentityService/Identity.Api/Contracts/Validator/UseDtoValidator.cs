@@ -18,7 +18,7 @@ namespace Identity.Api.Contracts.Validator
 
             RuleFor(x => x.Password)
                 .NotEmpty()
-                .MinimumLength(6).WithMessage("Password must be at least 6 characters.");
+                .MinimumLength(4).WithMessage("Password must be at least 4 characters.");
         }
     }
 }
