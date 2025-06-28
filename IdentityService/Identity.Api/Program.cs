@@ -63,7 +63,13 @@ namespace Identity.Api
                 options.InvalidModelStateResponseFactory = context =>
 
                      new BadRequestObjectResult(ApiResponse<string>.Fail("param error"));
-            });
+            }).AddJsonOptions(options =>
+            {
+                //configure json options,long type bug
+                options.JsonSerializerOptions.NumberHandling =
+                    System.Text.Json.Serialization.JsonNumberHandling.WriteAsString
+                    | System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
+            }); ;
             var app = builder.Build();
             app.UseMiddleware<CustomerExceptionMiddleware>();
             // Configure the HTTP request pipeline.
