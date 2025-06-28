@@ -16,10 +16,7 @@ namespace Identity.Api.Contracts.Validator
                 .Length(3, 50).WithMessage("SystemName must be between 3 and 50 characters.")
                 .Must(t=>t.Contains(".")==false).WithMessage("no . allowed");
 
-            RuleFor(x => x.Path)
-                .NotEmpty().WithMessage("Path is required.")
-                .Length(3,500).WithMessage("Path must be between 3 and 500 characters.");
-
+            
 
          
         }

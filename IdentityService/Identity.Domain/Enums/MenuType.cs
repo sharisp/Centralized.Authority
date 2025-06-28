@@ -9,7 +9,8 @@ namespace Identity.Domain.Enums
     public enum MenuType
     {
 
-        Catelogue = 0,
-        Menu = 1,
+        Group = 0,
+        Catelogue = 1,
+        Menu = 2,
     }
 }

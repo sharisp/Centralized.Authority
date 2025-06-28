@@ -42,7 +42,8 @@ namespace Identity.Infrastructure
             services.AddScoped<ICurrentUser, CurrentUser>();
             services.AddScoped<IUserRepository,UserRepository>();
             services.AddScoped<RoleRepository>();
-            services.AddScoped<PermissionRepository>();
+            services.AddScoped<PermissionRepository>(); 
+            services.AddScoped<MenuRepository>();
             services.AddSingleton(new AppHelper(configuration));
 
             services.AddScoped<UserDomainService>();

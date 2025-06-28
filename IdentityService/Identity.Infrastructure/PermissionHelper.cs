@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Identity.Domain.Entity;
 
 namespace Identity.Infrastructure
 {
@@ -29,6 +30,25 @@ namespace Identity.Infrastructure
             return permissions;
         }
 
+        public async Task<string[]> GetPermissionsBySystemNameAndUid(long userId, string systemName)
+        {
+            var permissions = await dbContext.Users.Where(u => u.Id == userId)
+                .SelectMany(u => u.Roles)
+                .SelectMany(r => r.Permissions).Where(t => t.SystemName == systemName)
+                .Distinct()
+                .Select(t => (t.SystemName + "." + t.PermissionKey))
+                .ToArrayAsync();
+            return permissions;
+        }
+        public async Task<Menu[]> GetMenusBySystemNameAndUid(long userId, string systemName)
+        {
+            var menus = await dbContext.Users.Where(u => u.Id == userId)
+                .SelectMany(u => u.Roles)
+                .SelectMany(r => r.Menus).Where(t => t.SystemName == systemName)
+                .Distinct()
+                .ToArrayAsync();
+            return menus;
+        }
         public async Task<bool> CheckPermissionAsync(string systemName, long userId, string permissionKey)
         {
             var permissionArr = await RedisHelper.LRangeAsync($"{systemName}_user_permissions_{userId}", 0, -1);
@@ -40,7 +60,7 @@ namespace Identity.Infrastructure
                     // using var scope = _serviceScopeFactory.CreateScope();
                     // var dbContext = scope.ServiceProvider.GetRequiredService<BaseDbContext>();
 
-                 var permissions = await GetPermissionsByUserId(userId); ;
+                    var permissions = await GetPermissionsByUserId(userId); ;
                     //  foreach (var item in list)
                     foreach (var permission in permissions)
                     {

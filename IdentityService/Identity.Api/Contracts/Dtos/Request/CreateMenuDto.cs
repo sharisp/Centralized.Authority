@@ -12,6 +12,6 @@ namespace Identity.Api.Contracts.Dtos.Request
         public int Sort { get; set; }
         public MenuType Type { get; set; }
         public Uri? ExternalLink { get; set; }
-        public string SystemName { get; private set; }
+        public string SystemName { get;  set; }
     }
 }
