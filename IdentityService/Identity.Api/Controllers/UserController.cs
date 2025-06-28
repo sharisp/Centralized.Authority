@@ -3,8 +3,10 @@ using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
+using Identity.Domain.Entity;
 using Identity.Domain.Events;
 using Identity.Domain.Interfaces;
+using Identity.Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +17,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator) : ControllerBase
+    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, PermissionHelper permissionHelper, ICurrentUser currentUser) : ControllerBase
     {
 
         [HttpPost]
@@ -72,7 +74,39 @@ namespace Identity.Api.Controllers
             return Ok(ApiResponse<string>.Ok("create successfully"));
         }
 
-      
+
+        [HttpGet("ListPermissionKeys/{systemName}")]
+        [PermissionKey("User.PermissionKeys")]
+        public async Task<ActionResult<ApiResponse<string[]>>> ListPermissionKeys(string systemName, long? id = null)
+        {
+            if (id == null)
+            {
+                id = Convert.ToInt64(currentUser.UserId);
+            }
+            var userId = id.Value;
+            var user = await userRepository.GetUserByIdAsync(userId);
+            if (user == null) return Ok(ApiResponse<string[]>.Fail("user not found"));
+
+            var list = await permissionHelper.GetPermissionsBySystemNameAndUidAsync(userId, systemName);
+            return Ok(ApiResponse<string[]>.Ok(list));
+        }
+
+
+        [HttpGet("ListMenus/{systemName}")]
+        [PermissionKey("User.Menus")]
+        public async Task<ActionResult<ApiResponse<Menu[]>>> ListMenus(string systemName, long? id = null)
+        {
+            if (id == null)
+            {
+                id = Convert.ToInt64(currentUser.UserId);
+            }
+            var userId = id.Value;
+            var user = await userRepository.GetUserByIdAsync(userId);
+            if (user == null) return Ok(ApiResponse<Menu[]>.Fail("user not found"));
+
+            var list = await permissionHelper.GetMenusBySystemNameAndUid(userId, systemName);
+            return Ok(ApiResponse<Menu[]>.Ok(list));
+        }
 
     }
 }

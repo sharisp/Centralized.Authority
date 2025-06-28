@@ -5,6 +5,7 @@ using Identity.Api.Contracts.Dtos.Response;
 using Identity.Domain.Enums;
 using Identity.Domain.Interfaces;
 using Identity.Domain.Services;
+using Identity.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -14,7 +15,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController(UserDomainService userDomainService,
-        AuthenticationTokenResponse authenticationTokenResponse, IValidator<LoginRequestDto> validator, IValidator<RefreshTokenRequestDto> tokenValidator, IUserRepository userRepository) : ControllerBase
+        AuthenticationTokenResponse authenticationTokenResponse, IValidator<LoginRequestDto> validator, IValidator<RefreshTokenRequestDto> tokenValidator, IUserRepository userRepository, PermissionHelper permissionHelper) : ControllerBase
     {
         [AllowAnonymous]
         [HttpPost]
@@ -26,7 +27,7 @@ namespace Identity.Api.Controllers
                 await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName, loginRequestDto.Password);
             if (res != LoginResult.Success)
             {
-                return Ok(ApiResponse<LoginResponseDto>.Fail("login fail",401));
+                return Ok(ApiResponse<LoginResponseDto>.Fail("login fail", 401));
             }
             else
             {
@@ -41,7 +42,42 @@ namespace Identity.Api.Controllers
             }
 
         }
+        /// <summary>
+        /// for web login, return permissions and menus
+        /// </summary>
+        /// <param name="loginRequestDto"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost("WebLogin")]
+        public async Task<ActionResult<ApiResponse<LoginWebResponseDto>>> LoginForWeb(LoginRequestWebDto loginRequestDto)
+        {
+            await ValidationHelper.ValidateModelAsync(loginRequestDto, validator);
 
+            var (user, res) =
+                await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName, loginRequestDto.Password);
+            if (res != LoginResult.Success)
+            {
+                return Ok(ApiResponse<LoginWebResponseDto>.Fail("login fail", 401));
+            }
+            else
+            {
+
+                var menus = await permissionHelper.GetMenusBySystemNameAndUid(user.Id, loginRequestDto.SystemName);
+                var permissions = await permissionHelper.GetPermissionsBySystemNameAndUidAsync(user.Id, loginRequestDto.SystemName);
+                var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName);
+                user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
+                return Ok(ApiResponse<LoginWebResponseDto>.Ok(new LoginWebResponseDto(
+                    user.UserName,
+                    user.NickName,
+                    user.Id,
+                    token,
+                    permissions,
+                    menus
+
+                )));
+            }
+
+        }
 
         [AllowAnonymous]
         [HttpPost("RefreshToken")]
@@ -52,7 +88,7 @@ namespace Identity.Api.Controllers
             var user = await userRepository.GetUserByIdAsync(dto.UserId);
             if (user == null)
             {
-                return Ok(ApiResponse<int>.Fail("user not found",400));
+                return Ok(ApiResponse<int>.Fail("user not found", 400));
             }
 
             if (user.IsRefreshTokenValid(dto.RefreshToken))
@@ -68,7 +104,7 @@ namespace Identity.Api.Controllers
                 )));
             }
 
-            return Ok(ApiResponse<LoginResponseDto>.Fail("RefreshToken not valid",400));
+            return Ok(ApiResponse<LoginResponseDto>.Fail("RefreshToken not valid", 400));
         }
 
         [Authorize]
@@ -79,7 +115,7 @@ namespace Identity.Api.Controllers
             var user = await userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                return Ok(ApiResponse<string>.Fail("user not found",400));
+                return Ok(ApiResponse<string>.Fail("user not found", 400));
             }
 
             user.ClearRefreshToken();

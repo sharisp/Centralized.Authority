@@ -30,7 +30,7 @@ namespace Identity.Infrastructure
             return permissions;
         }
 
-        public async Task<string[]> GetPermissionsBySystemNameAndUid(long userId, string systemName)
+        public async Task<string[]> GetPermissionsBySystemNameAndUidAsync(long userId, string systemName)
         {
             var permissions = await dbContext.Users.Where(u => u.Id == userId)
                 .SelectMany(u => u.Roles)
