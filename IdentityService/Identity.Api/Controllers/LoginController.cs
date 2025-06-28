@@ -26,7 +26,7 @@ namespace Identity.Api.Controllers
                 await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName, loginRequestDto.Password);
             if (res != LoginResult.Success)
             {
-                return BadRequest(ApiResponse<LoginResponseDto>.Fail("login fail"));
+                return Ok(ApiResponse<LoginResponseDto>.Fail("login fail",401));
             }
             else
             {
@@ -52,7 +52,7 @@ namespace Identity.Api.Controllers
             var user = await userRepository.GetUserByIdAsync(dto.UserId);
             if (user == null)
             {
-                return BadRequest(ApiResponse<int>.Fail("user not found"));
+                return Ok(ApiResponse<int>.Fail("user not found",400));
             }
 
             if (user.IsRefreshTokenValid(dto.RefreshToken))
@@ -68,7 +68,7 @@ namespace Identity.Api.Controllers
                 )));
             }
 
-            return BadRequest(ApiResponse<LoginResponseDto>.Fail("RefreshToken not valid"));
+            return Ok(ApiResponse<LoginResponseDto>.Fail("RefreshToken not valid",400));
         }
 
         [Authorize]
@@ -79,7 +79,7 @@ namespace Identity.Api.Controllers
             var user = await userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                return BadRequest(ApiResponse<string>.Fail("user not found"));
+                return Ok(ApiResponse<string>.Fail("user not found",400));
             }
 
             user.ClearRefreshToken();

@@ -24,7 +24,7 @@ namespace Identity.Api.Controllers
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
             var user = await repository.GetByNameAsync(dto.RoleName);
-            if (user != null) return BadRequest(ApiResponse<CreateRoleDto>.Fail("RoleName exists"));
+            if (user != null) return Ok(ApiResponse<CreateRoleDto>.Fail("RoleName exists",400));
 
             var info = mapper.ToEntity(dto);
 
@@ -40,13 +40,13 @@ namespace Identity.Api.Controllers
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
             var user = await repository.GetByIdAsync(id);
-            if (user == null) return NotFound(ApiResponse<CreateRoleDto>.Fail("not found"));
+            if (user == null) return Ok(ApiResponse<CreateRoleDto>.Fail("not found"));
 
             if (!string.IsNullOrEmpty(dto.RoleName) && dto.RoleName != user.RoleName)
             {
                 if ((await repository.GetByNameAsync(dto.RoleName)) != null)
                 {
-                    return BadRequest(ApiResponse<CreateRoleDto>.Fail(" name already exists"));
+                    return Ok(ApiResponse<CreateRoleDto>.Fail(" name already exists",400));
                 }
             }
             mapper.UpdateDtoToRole(dto, user);
@@ -59,11 +59,11 @@ namespace Identity.Api.Controllers
         public async Task<ActionResult<ApiResponse<string>>> Delete(long id)
         {
             var info = await repository.GetByIdAsync(id);
-            if (info == null) return NotFound(ApiResponse<string>.Fail(" not found"));
+            if (info == null) return Ok(ApiResponse<string>.Fail(" not found"));
             var users= await repository.GetUsersByRoleId(id);
             if (users.Count>0)
             {
-                return BadRequest(ApiResponse<string>.Fail("there are users in this role"));
+                return Ok(ApiResponse<string>.Fail("there are users in this role"));
             }
             repository.DeleteRole(info);
 
@@ -76,9 +76,9 @@ namespace Identity.Api.Controllers
         public async Task<ActionResult<ApiResponse<string>>> Assign(long id, List<long> permissionIds)
         {
             if (permissionIds.Count == 0)
-                return BadRequest(ApiResponse<string>.Fail(" permissions should not be empty"));
+                return Ok(ApiResponse<string>.Fail(" permissions should not be empty",400));
             var role = await repository.GetByIdAsync(id);
-            if (role == null) return NotFound(ApiResponse<string>.Fail("role not found"));
+            if (role == null) return Ok(ApiResponse<string>.Fail("role not found"));
 
             var permissions =await permissionRepository.GetPermissionsByIds(permissionIds);
             role.AddPermissions(permissions);

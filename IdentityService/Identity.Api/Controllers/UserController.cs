@@ -25,7 +25,7 @@ namespace Identity.Api.Controllers
             await ValidationHelper.ValidateModelAsync(userDto, validator);
 
             var user = await userRepository.GetUseByNameAsync(userDto.UserName);
-            if (user != null) return BadRequest(ApiResponse<UserResponseDto>.Fail("username exists"));
+            if (user != null) return Ok(ApiResponse<UserResponseDto>.Fail("username exists"));
 
             var userinfo = mapper.ToEntity(userDto);
 
@@ -42,13 +42,13 @@ namespace Identity.Api.Controllers
             await ValidationHelper.ValidateModelAsync(userDto, validator);
 
             var user = await userRepository.GetUserByIdAsync(id);
-            if (user == null) return NotFound(ApiResponse<UserResponseDto>.Fail("user not found"));
+            if (user == null) return Ok(ApiResponse<UserResponseDto>.Fail("user not found"));
 
             if (!string.IsNullOrEmpty(userDto.UserName) && userDto.UserName != user.UserName)
             {
                 if ((await userRepository.GetUseByNameAsync(userDto.UserName)) != null)
                 {
-                    return BadRequest(ApiResponse<UserResponseDto>.Fail("user name already exists"));
+                    return Ok(ApiResponse<UserResponseDto>.Fail("user name already exists"));
                 }
             }
             mapper.UpdateDtoToEntity(userDto, user);
@@ -63,7 +63,7 @@ namespace Identity.Api.Controllers
         public async Task<ActionResult<ApiResponse<string>>> Delete(long id)
         {
             var user = await userRepository.GetUserByIdAsync(id);
-            if (user == null) return NotFound(ApiResponse<string>.Fail("user not found"));
+            if (user == null) return Ok(ApiResponse<string>.Fail("user not found"));
 
             userRepository.DeleteUser(user);
 

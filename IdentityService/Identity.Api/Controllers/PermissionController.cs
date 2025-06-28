@@ -24,7 +24,7 @@ namespace Identity.Api.Controllers
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
             var user = await repository.GetByPermissionKeyAsync(dto.PermissionKey,dto.SystemName);
-            if (user != null) return BadRequest(ApiResponse<CreatePermissionDto>.Fail("PermissionKey exists"));
+            if (user != null) return Ok(ApiResponse<CreatePermissionDto>.Fail("PermissionKey exists",400));
 
             var info = mapper.ToEntity(dto);
 
@@ -40,13 +40,13 @@ namespace Identity.Api.Controllers
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
             var info = await repository.GetByIdAsync(id);
-            if (info == null) return NotFound(ApiResponse<CreatePermissionDto>.Fail("not found"));
+            if (info == null) return Ok(ApiResponse<CreatePermissionDto>.Fail("not found"));
 
             if ((!string.IsNullOrEmpty(dto.PermissionKey) || !string.IsNullOrEmpty(dto.SystemName)) && (dto.PermissionKey != info.PermissionKey || dto.SystemName != info.SystemName))
             {
                 if ((await repository.GetByPermissionKeyAsync(dto.PermissionKey,dto.SystemName)) != null)
                 {
-                    return BadRequest(ApiResponse<CreatePermissionDto>.Fail(" PermissionKey already exists"));
+                    return Ok(ApiResponse<CreatePermissionDto>.Fail(" PermissionKey already exists",400));
                 }
             }
             mapper.UpdateDtoToEntity(dto, info);
@@ -59,11 +59,11 @@ namespace Identity.Api.Controllers
         public async Task<ActionResult<ApiResponse<string>>> Delete(long id)
         {
             var info = await repository.GetByIdAsync(id);
-            if (info == null) return NotFound(ApiResponse<string>.Fail(" not found"));
+            if (info == null) return Ok(ApiResponse<string>.Fail(" not found"));
             var users = await repository.GetRolesByPermissionId(id);
             if (users.Count > 0)
             {
-                return BadRequest(ApiResponse<string>.Fail("exists assigned roles"));
+                return Ok(ApiResponse<string>.Fail("exists assigned roles",400));
             }
             repository.Delete(info);
 

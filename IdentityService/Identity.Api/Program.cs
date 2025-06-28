@@ -63,7 +63,6 @@ namespace Identity.Api
                 options.InvalidModelStateResponseFactory = context =>
 
                      new BadRequestObjectResult(ApiResponse<string>.Fail("param error"));
-
             });
             var app = builder.Build();
             app.UseMiddleware<CustomerExceptionMiddleware>();
