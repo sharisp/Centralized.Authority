@@ -26,7 +26,15 @@ namespace Identity.Api.Controllers
             var roles = await baseDbContext.Roles.ToListAsync();
             return this.OkResponse(roles);
         }
-
+        [AllowAnonymous]
+        [HttpGet("Detail/{id}")]
+        [PermissionKey("Role.GetRoleDetail")]
+        public async Task<ActionResult<ApiResponse<Role?>>> GetByRoleId(long id)
+        {
+            var role = await baseDbContext.Roles.Include(t => t.Menus).Include(t=>t.Permissions).Where(t => t.Id == id).FirstOrDefaultAsync();
+            return this.OkResponse(role);
+        }
+     
         [HttpPost]
         [PermissionKey("Role.Create")]
         public async Task<ActionResult<ApiResponse<BaseResponse>>> Create(CreateRoleDto dto)

@@ -18,7 +18,7 @@ namespace Identity.Domain.Entity
 
         public string? NickName { get; private set; } = default!;
 
-        public string? Description { get; private set; }
+      //  public string? Description { get; private set; }
         public List<Role> Roles { get;private set; } = new List<Role>();
 
         public UserAccessFail AccessFail { get;private set; }

@@ -12,6 +12,7 @@ using Identity.Infrastructure;
 using Identity.Infrastructure.EventHandler;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 namespace Identity.Api
 {
@@ -69,6 +70,8 @@ namespace Identity.Api
                 options.JsonSerializerOptions.NumberHandling =
                     System.Text.Json.Serialization.JsonNumberHandling.WriteAsString
                     | System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
+                // 忽略循环引用（防止对象环导致异常）
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             }); ;
             var app = builder.Build();
             app.UseMiddleware<CustomerExceptionMiddleware>();

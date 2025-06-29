@@ -12,16 +12,15 @@ namespace Identity.Domain.Entity
 
         }
 
-        public Role(string roleName,string? description = null)
+        public Role(string roleName,string? descriptions = null)
         {
             RoleName = roleName;
             this.CreateTime = DateTime.Now;
-            this.Description = description;
+            this.Description = descriptions;
             AddDomainEvent(new RoleAddEvents(this));
         }
 
         public string RoleName { get; private set; }
-        public string? Description { get; private set; }
         public DateTime CreateTime { get;private set; } 
         public List<User> Users { get; private set; } = new List<User>(); // 角色对应的用户列表
 
