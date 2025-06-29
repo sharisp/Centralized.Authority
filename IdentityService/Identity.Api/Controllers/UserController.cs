@@ -7,9 +7,11 @@ using Identity.Domain.Entity;
 using Identity.Domain.Events;
 using Identity.Domain.Interfaces;
 using Identity.Infrastructure;
+using Identity.Infrastructure.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Api.Controllers
 {
@@ -17,9 +19,16 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, PermissionHelper permissionHelper, ICurrentUser currentUser) : ControllerBase
+    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator,BaseDbContext baseDbContext, PermissionHelper permissionHelper, ICurrentUser currentUser) : ControllerBase
     {
 
+        [HttpGet]
+        [PermissionKey("User.List")]
+        public async Task<ActionResult<ApiResponse<List<User>>>> List()
+        {
+            var users =await baseDbContext.Users.ToListAsync();
+            return this.OkResponse(users);
+        }
         [HttpPost]
         [PermissionKey("User.Create")]
         public async Task<ActionResult<ApiResponse<BaseResponse>>> Create(CreateUserRequestDto userDto)

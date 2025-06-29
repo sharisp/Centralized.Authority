@@ -3,10 +3,13 @@ using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
+using Identity.Domain.Entity;
 using Identity.Infrastructure.Repository;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Api.Controllers
 {
@@ -14,8 +17,15 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, IMediator mediator) : ControllerBase
+    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, BaseDbContext baseDbContext, IMediator mediator) : ControllerBase
     {
+        [HttpGet]
+        [PermissionKey("Role.List")]
+        public async Task<ActionResult<ApiResponse<List<Role>>>> List()
+        {
+            var roles = await baseDbContext.Roles.ToListAsync();
+            return this.OkResponse(roles);
+        }
 
         [HttpPost]
         [PermissionKey("Role.Create")]
@@ -24,7 +34,7 @@ namespace Identity.Api.Controllers
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
             var role = await repository.GetByNameAsync(dto.RoleName);
-            if (role != null) return  this.FailResponse("RoleName exists");
+            if (role != null) return this.FailResponse("RoleName exists");
 
             var info = mapper.ToEntity(dto);
 

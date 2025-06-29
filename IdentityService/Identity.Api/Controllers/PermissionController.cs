@@ -3,10 +3,13 @@ using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
+using Identity.Domain.Entity;
 using Identity.Infrastructure.Repository;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Api.Controllers
 {
@@ -14,9 +17,19 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class PermissionController(IValidator<CreatePermissionDto> validator, PermissionMapper mapper, PermissionRepository repository, IMediator mediator) : ControllerBase
+    public class PermissionController(IValidator<CreatePermissionDto> validator, PermissionMapper mapper, PermissionRepository repository,BaseDbContext baseDbContext, IMediator mediator) : ControllerBase
     {
-
+        [HttpGet]
+        [PermissionKey("Permission.List")]
+        public async Task<ActionResult<ApiResponse<List<Permission>>>> List(string systemName="")
+        {
+            var permissions = baseDbContext.Permissions;
+            if (!string.IsNullOrEmpty(systemName))
+            {
+                permissions.Where(t => t.SystemName == systemName);
+            }
+            return this.OkResponse(await permissions.ToListAsync());
+        }
         [HttpPost]
         [PermissionKey("Permission.Create")]
         public async Task<ActionResult<ApiResponse<BaseResponse>>> Create(CreatePermissionDto dto)

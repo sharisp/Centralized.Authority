@@ -3,10 +3,13 @@ using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
+using Identity.Infrastructure.Migrations;
 using Identity.Infrastructure.Repository;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Api.Controllers
 {
@@ -14,9 +17,20 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository) : ControllerBase
+    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository,BaseDbContext baseDbContext) : ControllerBase
     {
 
+        [HttpGet]
+        [PermissionKey("Menu.List")]
+        public async Task<ActionResult<ApiResponse<List<menu>>>> List(string systemName = "")
+        {
+            var menus = baseDbContext.Menus;
+            if (!string.IsNullOrEmpty(systemName))
+            {
+                menus.Where(t => t.SystemName == systemName);
+            }
+            return this.OkResponse(await menus.ToListAsync());
+        }
         [HttpPost]
         [PermissionKey("Menu.Create")]
         public async Task<ActionResult<ApiResponse<BaseResponse>>> Create(CreateMenuDto dto)
