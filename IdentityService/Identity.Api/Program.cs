@@ -62,7 +62,7 @@ namespace Identity.Api
             {
                 options.InvalidModelStateResponseFactory = context =>
 
-                     new BadRequestObjectResult(ApiResponse<string>.Fail("param error"));
+                     new BadRequestObjectResult(ApiResponse<BaseResponse>.Fail("param error"));
             }).AddJsonOptions(options =>
             {
                 //configure json options,long type bug

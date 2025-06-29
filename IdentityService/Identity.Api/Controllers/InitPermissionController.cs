@@ -66,7 +66,7 @@ namespace Identity.Api.Controllers
 
             await unitOfWork.SaveChangesAsync();
 
-            return Ok(ApiResponse<string>.Ok("init successfully"));
+            return this.OkResponse("init successfully");
         }
     }
 }

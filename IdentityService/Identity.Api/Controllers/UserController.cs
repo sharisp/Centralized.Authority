@@ -22,56 +22,57 @@ namespace Identity.Api.Controllers
 
         [HttpPost]
         [PermissionKey("User.Create")]
-        public async Task<ActionResult<ApiResponse<UserResponseDto>>> Create(CreateUserRequestDto userDto)
+        public async Task<ActionResult<ApiResponse<BaseResponse>>> Create(CreateUserRequestDto userDto)
         {
             await ValidationHelper.ValidateModelAsync(userDto, validator);
 
             var user = await userRepository.GetUseByNameAsync(userDto.UserName);
-            if (user != null) return Ok(ApiResponse<UserResponseDto>.Fail("username exists"));
-
+            if (user != null) return  this.FailResponse("username exists");
+        
             var userinfo = mapper.ToEntity(userDto);
 
             await userRepository.AddUserAsync(userinfo);
 
-            var respDto = mapper.ToResponseDto(userinfo);
-            return Ok(ApiResponse<UserResponseDto>.Ok(respDto));
+           // var respDto = mapper.ToResponseDto(userinfo);
+            return this.OkResponse(userinfo.Id);
         }
 
         [HttpPut("{id}")]
         [PermissionKey("User.Update")]
-        public async Task<ActionResult<ApiResponse<UserResponseDto>>> Update(long id, [FromBody] CreateUserRequestDto userDto)
+        public async Task<ActionResult<ApiResponse<BaseResponse>>> Update(long id, [FromBody] CreateUserRequestDto userDto)
         {
+            
             await ValidationHelper.ValidateModelAsync(userDto, validator);
 
             var user = await userRepository.GetUserByIdAsync(id);
-            if (user == null) return Ok(ApiResponse<UserResponseDto>.Fail("user not found"));
+            if (user == null) return this.FailResponse("user not found");
 
             if (!string.IsNullOrEmpty(userDto.UserName) && userDto.UserName != user.UserName)
             {
                 if ((await userRepository.GetUseByNameAsync(userDto.UserName)) != null)
                 {
-                    return Ok(ApiResponse<UserResponseDto>.Fail("user name already exists"));
+                    return this.FailResponse("user name already exists");
                 }
             }
             mapper.UpdateDtoToEntity(userDto, user);
 
             // userRepository.UpdateUserAsync(user);
             var respDto = mapper.ToResponseDto(user);
-            return Ok(ApiResponse<UserResponseDto>.Ok(respDto));
+            return this.OkResponse(id);
         }
 
         [HttpDelete("{id}")]
         [PermissionKey("User.Delete")]
-        public async Task<ActionResult<ApiResponse<string>>> Delete(long id)
+        public async Task<ActionResult<ApiResponse<BaseResponse>>> Delete(long id)
         {
             var user = await userRepository.GetUserByIdAsync(id);
-            if (user == null) return Ok(ApiResponse<string>.Fail("user not found"));
+            if (user == null) return this.FailResponse("user not found");
 
             userRepository.DeleteUser(user);
 
             //await RedisHelper.DelAsync($"user_permissions_{id}");
             await mediator.Publish(new UserDeleteEvents(user));
-            return Ok(ApiResponse<string>.Ok("create successfully"));
+            return this.OkResponse(id);
         }
 
 
@@ -85,10 +86,10 @@ namespace Identity.Api.Controllers
             }
             var userId = id.Value;
             var user = await userRepository.GetUserByIdAsync(userId);
-            if (user == null) return Ok(ApiResponse<string[]>.Fail("user not found"));
+            if (user == null) return this.FailResponse("user not found");
 
             var list = await permissionHelper.GetPermissionsBySystemNameAndUidAsync(userId, systemName);
-            return Ok(ApiResponse<string[]>.Ok(list));
+            return this.OkResponse(list);
         }
 
 
@@ -102,10 +103,10 @@ namespace Identity.Api.Controllers
             }
             var userId = id.Value;
             var user = await userRepository.GetUserByIdAsync(userId);
-            if (user == null) return Ok(ApiResponse<Menu[]>.Fail("user not found"));
+            if (user == null) return this.FailResponse("user not found");
 
             var list = await permissionHelper.GetMenusBySystemNameAndUid(userId, systemName);
-            return Ok(ApiResponse<Menu[]>.Ok(list));
+            return this.OkResponse(list);
         }
 
     }

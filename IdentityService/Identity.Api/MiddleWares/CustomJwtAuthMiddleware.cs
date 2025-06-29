@@ -50,7 +50,7 @@ public class CustomJwtAuthMiddleware(
         {
             context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
 
-            var res = ApiResponse<string>.Fail("no login");
+            var res = ApiResponse<BaseResponse>.Fail("no login");
 
             await context.Response.WriteAsJsonAsync(res);
             //  return;
@@ -82,7 +82,7 @@ public class CustomJwtAuthMiddleware(
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
-            var response = ApiResponse<string>.Fail("no auth to this action");
+            var response = ApiResponse<BaseResponse>.Fail("no auth to this action");
 
             await context.Response.WriteAsJsonAsync(response);
 
@@ -98,7 +98,7 @@ public class CustomJwtAuthMiddleware(
              context.Response.ContentType = "application/json";
              context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
              logger.LogError("WebApi——异常", ex);
-             var res = ApiResponse<string>.Fail(ex.Message);
+             var res = ApiResponse<BaseResponse>.Fail(ex.Message);
 
              await context.Response.WriteAsJsonAsync(res);
 

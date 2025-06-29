@@ -6,7 +6,7 @@ namespace Identity.Api.Contracts.Dtos.Request
     {
         public string Title { get; set; }
         public string Path { get; set; }
-        public long ParentID { get; set; }
+        public long ParentId { get; set; }
         public string? Component { get; set; }
         public string? Icon { get; set; }
         public int Sort { get; set; }

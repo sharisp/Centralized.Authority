@@ -19,56 +19,56 @@ namespace Identity.Api.Controllers
 
         [HttpPost]
         [PermissionKey("Permission.Create")]
-        public async Task<ActionResult<ApiResponse<CreatePermissionDto>>> Create(CreatePermissionDto dto)
+        public async Task<ActionResult<ApiResponse<BaseResponse>>> Create(CreatePermissionDto dto)
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
             var user = await repository.GetByPermissionKeyAsync(dto.PermissionKey,dto.SystemName);
-            if (user != null) return Ok(ApiResponse<CreatePermissionDto>.Fail("PermissionKey exists",400));
+            if (user != null) this.FailResponse("PermissionKey exists");
 
             var info = mapper.ToEntity(dto);
 
             await repository.AddAsync(info);
 
-            return Ok(ApiResponse<CreatePermissionDto>.Ok(dto));
+            return this.OkResponse(info.Id);
         }
 
         [HttpPut("{id}")]
         [PermissionKey("Permission.Update")]
-        public async Task<ActionResult<ApiResponse<CreatePermissionDto>>> Update(long id, [FromBody] CreatePermissionDto dto)
+        public async Task<ActionResult<ApiResponse<BaseResponse>>> Update(long id, [FromBody] CreatePermissionDto dto)
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
             var info = await repository.GetByIdAsync(id);
-            if (info == null) return Ok(ApiResponse<CreatePermissionDto>.Fail("not found"));
+            if (info == null) this.FailResponse("not found");
 
             if ((!string.IsNullOrEmpty(dto.PermissionKey) || !string.IsNullOrEmpty(dto.SystemName)) && (dto.PermissionKey != info.PermissionKey || dto.SystemName != info.SystemName))
             {
                 if ((await repository.GetByPermissionKeyAsync(dto.PermissionKey,dto.SystemName)) != null)
                 {
-                    return Ok(ApiResponse<CreatePermissionDto>.Fail(" PermissionKey already exists",400));
+                    return this.FailResponse(" PermissionKey already exists");
                 }
             }
             mapper.UpdateDtoToEntity(dto, info);
 
-            return Ok(ApiResponse<CreatePermissionDto>.Ok(dto));
+            return this.OkResponse(id);
         }
 
         [HttpDelete("{id}")]
         [PermissionKey("Permission.Delete")]
-        public async Task<ActionResult<ApiResponse<string>>> Delete(long id)
+        public async Task<ActionResult<ApiResponse<BaseResponse>>> Delete(long id)
         {
             var info = await repository.GetByIdAsync(id);
-            if (info == null) return Ok(ApiResponse<string>.Fail(" not found"));
+            if (info == null) return this.FailResponse(" not found");
             var users = await repository.GetRolesByPermissionId(id);
             if (users.Count > 0)
             {
-                return Ok(ApiResponse<string>.Fail("exists assigned roles",400));
+                return this.FailResponse("exists assigned roles");
             }
             repository.Delete(info);
 
 
-            return Ok(ApiResponse<string>.Ok("delete successfully"));
+            return this.OkResponse(id);
         }
 
 

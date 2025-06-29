@@ -14,61 +14,60 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository,PermissionRepository permissionRepository, IMediator mediator) : ControllerBase
+    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, IMediator mediator) : ControllerBase
     {
 
         [HttpPost]
         [PermissionKey("Role.Create")]
-        public async Task<ActionResult<ApiResponse<CreateRoleDto>>> Create(CreateRoleDto dto)
+        public async Task<ActionResult<ApiResponse<BaseResponse>>> Create(CreateRoleDto dto)
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
-            var user = await repository.GetByNameAsync(dto.RoleName);
-            if (user != null) return Ok(ApiResponse<CreateRoleDto>.Fail("RoleName exists",400));
+            var role = await repository.GetByNameAsync(dto.RoleName);
+            if (role != null) return  this.FailResponse("RoleName exists");
 
             var info = mapper.ToEntity(dto);
 
             await repository.AddAsync(info);
-
-            return Ok(ApiResponse<CreateRoleDto>.Ok(dto));
+            return this.OkResponse(info.Id);
         }
 
         [HttpPut("{id}")]
         [PermissionKey("Role.Update")]
-        public async Task<ActionResult<ApiResponse<CreateRoleDto>>> Update(long id, [FromBody] CreateRoleDto dto)
+        public async Task<ActionResult<ApiResponse<BaseResponse>>> Update(long id, [FromBody] CreateRoleDto dto)
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
             var user = await repository.GetByIdAsync(id);
-            if (user == null) return Ok(ApiResponse<CreateRoleDto>.Fail("not found"));
+            if (user == null) return this.FailResponse("not found");
 
             if (!string.IsNullOrEmpty(dto.RoleName) && dto.RoleName != user.RoleName)
             {
                 if ((await repository.GetByNameAsync(dto.RoleName)) != null)
                 {
-                    return Ok(ApiResponse<CreateRoleDto>.Fail(" name already exists",400));
+                    return this.FailResponse(" name already exists");
                 }
             }
             mapper.UpdateDtoToRole(dto, user);
 
-            return Ok(ApiResponse<CreateRoleDto>.Ok(dto));
+            return this.OkResponse(id);
         }
 
         [HttpDelete("{id}")]
         [PermissionKey("Role.Delete")]
-        public async Task<ActionResult<ApiResponse<string>>> Delete(long id)
+        public async Task<ActionResult<ApiResponse<BaseResponse>>> Delete(long id)
         {
             var info = await repository.GetByIdAsync(id);
-            if (info == null) return Ok(ApiResponse<string>.Fail(" not found"));
-            var users= await repository.GetUsersByRoleId(id);
-            if (users.Count>0)
+            if (info == null) return this.FailResponse(" not found");
+            var users = await repository.GetUsersByRoleId(id);
+            if (users.Count > 0)
             {
-                return Ok(ApiResponse<string>.Fail("there are users in this role"));
+                return this.FailResponse("there are users in this role");
             }
             repository.DeleteRole(info);
 
 
-            return Ok(ApiResponse<string>.Ok("create successfully"));
+            return this.OkResponse(id);
         }
 
         [HttpPost("Assign/{id}")]
@@ -76,14 +75,14 @@ namespace Identity.Api.Controllers
         public async Task<ActionResult<ApiResponse<string>>> Assign(long id, List<long> permissionIds)
         {
             if (permissionIds.Count == 0)
-                return Ok(ApiResponse<string>.Fail(" permissions should not be empty",400));
+                return this.FailResponse(" permissions should not be empty");
             var role = await repository.GetByIdAsync(id);
-            if (role == null) return Ok(ApiResponse<string>.Fail("role not found"));
+            if (role == null) return this.FailResponse("role not found");
 
-            var permissions =await permissionRepository.GetPermissionsByIds(permissionIds);
+            var permissions = await permissionRepository.GetPermissionsByIds(permissionIds);
             role.AddPermissions(permissions);
-            return Ok(ApiResponse<string>.Ok("success"));
-          
+            return this.OkResponse("successful");
+
         }
 
     }

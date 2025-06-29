@@ -12,7 +12,7 @@ namespace Identity.Domain.Entity
         }
         public string Title { get; private set; }
         public string Path { get; private set; }
-        public long ParentID { get; private set; }
+        public long ParentId { get; private set; }
         public string? Component { get; private set; }
         public string? Icon { get; private set; }
         public int Sort { get; private set; }
@@ -29,7 +29,7 @@ namespace Identity.Domain.Entity
         {
             Title = title;
             Path = path;
-            ParentID = parentID;
+            ParentId = parentID;
             Component = component;
             this.Icon = icon;
             Sort = sort;
@@ -49,7 +49,7 @@ namespace Identity.Domain.Entity
         }
         public void ChangeParentID(long parentID)
         {
-            ParentID = parentID;
+            ParentId = parentID;
         }
         public void ChangeComponent(string? component)
         {

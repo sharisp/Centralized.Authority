@@ -24,11 +24,11 @@ namespace Identity.Api.Controllers
             if (res)
             {
 
-                return Ok(ApiResponse<string>.Ok("success"));
+                return this.OkResponse("success");
             }
             //Here, I think it is better to return a 200 OK status with a failure message rather than a 403 Forbidden,
             //because the user had the permission to access this endpoint, but not the specific permission they requested.
-            return Ok(ApiResponse<string>.Fail("no permission",403));
+            return this.FailResponse("no permission",403);
         }
     }
 }

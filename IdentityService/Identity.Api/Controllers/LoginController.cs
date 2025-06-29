@@ -27,18 +27,18 @@ namespace Identity.Api.Controllers
                 await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName, loginRequestDto.Password);
             if (res != LoginResult.Success)
             {
-                return Ok(ApiResponse<LoginResponseDto>.Fail("login fail", 401));
+                return this.FailResponse("login fail", 401);
             }
             else
             {
                 var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName);
                 user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
-                return Ok(ApiResponse<LoginResponseDto>.Ok(new LoginResponseDto(
+                return this.OkResponse(new LoginResponseDto(
                     user.UserName,
                     user.NickName,
                     user.Id,
                     token
-                )));
+                ));
             }
 
         }
@@ -57,7 +57,7 @@ namespace Identity.Api.Controllers
                 await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName, loginRequestDto.Password);
             if (res != LoginResult.Success)
             {
-                return Ok(ApiResponse<LoginWebResponseDto>.Fail("login fail", 401));
+                return this.FailResponse("login fail", 401);
             }
             else
             {
@@ -66,7 +66,7 @@ namespace Identity.Api.Controllers
                 var permissions = await permissionHelper.GetPermissionsBySystemNameAndUidAsync(user.Id, loginRequestDto.SystemName);
                 var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName);
                 user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
-                return Ok(ApiResponse<LoginWebResponseDto>.Ok(new LoginWebResponseDto(
+                return this.OkResponse(new LoginWebResponseDto(
                     user.UserName,
                     user.NickName,
                     user.Id,
@@ -74,7 +74,7 @@ namespace Identity.Api.Controllers
                     permissions,
                     menus
 
-                )));
+                ));
             }
 
         }
@@ -88,7 +88,7 @@ namespace Identity.Api.Controllers
             var user = await userRepository.GetUserByIdAsync(dto.UserId);
             if (user == null)
             {
-                return Ok(ApiResponse<int>.Fail("user not found", 400));
+                return this.FailResponse("user not found");
             }
 
             if (user.IsRefreshTokenValid(dto.RefreshToken))
@@ -96,31 +96,31 @@ namespace Identity.Api.Controllers
                 var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName);
 
                 user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
-                return Ok(ApiResponse<object>.Ok(new LoginResponseDto(
+                return this.OkResponse(new LoginResponseDto(
                     user.UserName,
                     user.NickName,
                     user.Id,
                     token
-                )));
+                ));
             }
 
-            return Ok(ApiResponse<LoginResponseDto>.Fail("RefreshToken not valid", 400));
+            return this.FailResponse("RefreshToken not valid");
         }
 
         [Authorize]
         [HttpPost("LogOut")]
-        public async Task<ActionResult<ApiResponse<LoginResponseDto>>> LoginOut()
+        public async Task<ActionResult<ApiResponse<string>>> LoginOut()
         {
             var userId = Convert.ToInt64(this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var user = await userRepository.GetUserByIdAsync(userId);
             if (user == null)
             {
-                return Ok(ApiResponse<string>.Fail("user not found", 400));
+                return this.FailResponse("user not found");
             }
 
             user.ClearRefreshToken();
 
-            return Ok(ApiResponse<string>.Ok("login out successfully"));
+            return this.OkResponse("login out successfully");
         }
     }
 
