@@ -35,6 +35,7 @@ namespace Identity.Api.Controllers
                 user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
                 return this.OkResponse(new LoginResponseDto(
                     user.UserName,
+                    user.Email,
                     user.NickName,
                     user.Id,
                     token
@@ -68,8 +69,10 @@ namespace Identity.Api.Controllers
                 user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
                 return this.OkResponse(new LoginWebResponseDto(
                     user.UserName,
+                    user.Email,
                     user.NickName,
                     user.Id,
+                    
                     token,
                     permissions,
                     menus
@@ -98,6 +101,7 @@ namespace Identity.Api.Controllers
                 user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
                 return this.OkResponse(new LoginResponseDto(
                     user.UserName,
+                    user.Email,
                     user.NickName,
                     user.Id,
                     token
