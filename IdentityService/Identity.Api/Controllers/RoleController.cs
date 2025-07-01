@@ -34,7 +34,15 @@ namespace Identity.Api.Controllers
             var role = await baseDbContext.Roles.Include(t => t.Menus).Include(t=>t.Permissions).Where(t => t.Id == id).FirstOrDefaultAsync();
             return this.OkResponse(role);
         }
-     
+        [AllowAnonymous]
+        [HttpGet("RoleMenuPermission/{id}")]
+        [PermissionKey("Role.GetRoleMenuPermission")]
+        public async Task<ActionResult<ApiResponse<Role?>>> GetRoleMenuPermission(long id)
+        {
+            var role = await baseDbContext.Roles.Include(t => t.Menus).ThenInclude(t => t.Permissions).
+                Where(t => t.Id == id).FirstOrDefaultAsync();
+            return this.OkResponse(role);
+        }
         [HttpPost]
         [PermissionKey("Role.Create")]
         public async Task<ActionResult<ApiResponse<BaseResponse>>> Create(CreateRoleDto dto)
