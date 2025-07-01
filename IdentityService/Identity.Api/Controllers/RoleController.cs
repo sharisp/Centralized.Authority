@@ -48,6 +48,7 @@ namespace Identity.Api.Controllers
             var meuns = await menuRepository.GetByIdsAsync(dto.MenuIds);
             info.AddPermissions(permissions);
             info.AddMenus(meuns);
+
             await repository.AddAsync(info);
             return this.OkResponse(info.Id);
         }
@@ -58,17 +59,25 @@ namespace Identity.Api.Controllers
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
-            var user = await repository.GetByIdAsync(id);
-            if (user == null) return this.FailResponse("not found");
+            // var role = await repository.GetByIdAsync(id);
+            var role =baseDbContext.Roles.Include(t => t.Permissions).Include(t => t.Menus).FirstOrDefault(t => t.Id == id);
+            if (role == null) return this.FailResponse("not found");
 
-            if (!string.IsNullOrEmpty(dto.RoleName) && dto.RoleName != user.RoleName)
+            if (!string.IsNullOrEmpty(dto.RoleName) && dto.RoleName != role.RoleName)
             {
                 if ((await repository.GetByNameAsync(dto.RoleName)) != null)
                 {
                     return this.FailResponse(" name already exists");
                 }
             }
-            mapper.UpdateDtoToRole(dto, user);
+            mapper.UpdateDtoToRole(dto, role);
+            role.Permissions.Clear();
+            role.Menus.Clear();
+            var permissions = await permissionRepository.GetPermissionsByIds(dto.PermissionIds);
+            role.AddPermissions(permissions);
+            var meuns = await menuRepository.GetByIdsAsync(dto.MenuIds);
+        
+            role.AddMenus(meuns);
 
             return this.OkResponse(id);
         }

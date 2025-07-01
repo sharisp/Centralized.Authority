@@ -19,6 +19,10 @@ namespace Identity.Api.Contracts.Mapping
             {
                 outTarget.ChangeRoleName(inDto.RoleName);
             }
+            if (!string.IsNullOrEmpty(inDto.Description))
+            {
+                outTarget.ChangeDescription(inDto.Description);
+            }
         }
 
     }

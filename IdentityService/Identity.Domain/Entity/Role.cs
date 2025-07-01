@@ -37,7 +37,7 @@ namespace Identity.Domain.Entity
         public void AddMenus(List<Menu> menus)
         {
 
-            menus.AddRange(menus);
+            Menus.AddRange(menus);
             // AddDomainEvent(new RoleAddEvents(this));
            // AddDomainEvent(new RoleAssignEvents(this, menus));
         }
