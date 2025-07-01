@@ -19,6 +19,9 @@ namespace Identity.Domain.Entity
 
         public List<Role> Roles { get; private set; }= new List<Role>(); // 权限对应的角色列表
 
+
+        public List<Menu> Menus { get; private set; } = new List<Menu>();
+
         public Permission(string title, string systemName, string permissionKey, string? apiPath = null, string? httpMethod = null, string? controller = null, string? action = null)
         {
             Title = title;

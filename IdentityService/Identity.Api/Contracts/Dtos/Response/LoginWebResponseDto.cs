@@ -10,16 +10,15 @@ namespace Identity.Api.Contracts.Dtos.Response
         public long UserId { get; set; }
         public string? Email { get; set; }
         public TokenWithExpireResponse Token { get; set; }
-        public string[] Permissions { get; set; } = Array.Empty<string>();
+      //  public string[] Permissions { get; set; } = Array.Empty<string>();
         public Menu[] Menus { get; set; }
-        public LoginWebResponseDto(string userName,string? email, string? nickName, long userId, TokenWithExpireResponse token, string[] permissions, Menu[] menus)
+        public LoginWebResponseDto(string userName,string? email, string? nickName, long userId, TokenWithExpireResponse token,  Menu[] menus)
         {
             this.NickName = nickName;
             this.Email = email;
             this.UserName = userName;
             this.UserId = userId;
             this.Token = token;
-            this.Permissions = permissions;
             this.Menus = menus;
         }
 

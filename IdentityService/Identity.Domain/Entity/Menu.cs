@@ -25,6 +25,8 @@ namespace Identity.Domain.Entity
 
         public List<Role> Roles { get; private set; } = new List<Role>();
 
+        public List<Permission> Permissions { get; private set; } = new List<Permission>();//only for menu type
+
         public Menu(string title, string path, long parentID, int sort, MenuType type,  string systemName, string? component = null, string? icon = null, Uri? externalLink = null)
         {
             Title = title;

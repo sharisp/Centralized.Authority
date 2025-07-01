@@ -49,6 +49,15 @@ namespace Identity.Infrastructure
                 .ToArrayAsync();
             return menus;
         }
+        public async Task<Menu[]> GetMenusWithPermissionBySystemNameAndUid(long userId, string systemName)
+        {
+            var menus = await dbContext.Users.Where(u => u.Id == userId)
+                .SelectMany(u => u.Roles)
+                .SelectMany(r => r.Menus).Include(t=>t.Permissions).Where(t => t.SystemName == systemName)
+                .Distinct()
+                .ToArrayAsync();
+            return menus;
+        }
         public async Task<bool> CheckPermissionAsync(string systemName, long userId, string permissionKey)
         {
             var permissionArr = await RedisHelper.LRangeAsync($"{systemName}_user_permissions_{userId}", 0, -1);

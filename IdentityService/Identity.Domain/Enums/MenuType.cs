@@ -12,5 +12,6 @@ namespace Identity.Domain.Enums
         Group = 0,
         Catelogue = 1,
         Menu = 2,
+        Button = 3,
     }
 }
