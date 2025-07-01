@@ -31,6 +31,18 @@ namespace Identity.Api.Controllers
             }
             return this.OkResponse(await menus.ToListAsync());
         }
+
+        [HttpGet("ListWithPermission")]
+        [PermissionKey("Menu.ListWithPermission")]
+        public async Task<ActionResult<ApiResponse<List<menu>>>> ListWithPermission(string systemName = "")
+        {
+            var menus = baseDbContext.Menus.Include(t=>t.Permissions);
+            if (!string.IsNullOrEmpty(systemName))
+            {
+                menus.Where(t => t.SystemName == systemName);
+            }
+            return this.OkResponse(await menus.ToListAsync());
+        }
         [HttpPost]
         [PermissionKey("Menu.Create")]
         public async Task<ActionResult<ApiResponse<BaseResponse>>> Create(CreateMenuDto dto)
