@@ -27,7 +27,7 @@ namespace Identity.Api.Controllers
         {
             var role = await baseDbContext.Roles.FirstOrDefaultAsync(t => t.RoleName == "adminRole");
             if (role == null)
-            {                
+            {
                 role = new Domain.Entity.Role("adminRole");
                 await baseDbContext.Roles.AddAsync(role);
             }
@@ -36,10 +36,10 @@ namespace Identity.Api.Controllers
             if (user == null)
             {
                 user = new Domain.Entity.User("admin", "admin", "aa@aa.com");
-                user.AddRole(role);                
+                user.AddRole(role);
                 await baseDbContext.Users.AddAsync(user);
             }
-            
+
             var permissionKeys = PermissionScanner.GetAllPermissionKeys(Assembly.GetExecutingAssembly());
             var realrolePermission = baseDbContext.Roles.Include(t => t.Permissions).FirstOrDefault(t => t.RoleName == "adminRole")?.Permissions.ToList() ?? new List<Permission>();
             foreach (var permissionKey in permissionKeys)

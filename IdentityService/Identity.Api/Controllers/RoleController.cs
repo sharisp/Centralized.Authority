@@ -17,7 +17,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, BaseDbContext baseDbContext, IMediator mediator) : ControllerBase
+    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, MenuRepository menuRepository, BaseDbContext baseDbContext, IMediator mediator) : ControllerBase
     {
         [HttpGet]
         [PermissionKey("Role.List")]
@@ -30,15 +30,7 @@ namespace Identity.Api.Controllers
         [PermissionKey("Role.GetRoleDetail")]
         public async Task<ActionResult<ApiResponse<Role?>>> GetByRoleId(long id)
         {
-            var role = await baseDbContext.Roles.Include(t => t.Menus).Include(t=>t.Permissions).Where(t => t.Id == id).FirstOrDefaultAsync();
-            return this.OkResponse(role);
-        }
-        [HttpGet("RoleMenuPermission/{id}")]
-        [PermissionKey("Role.GetRoleMenuPermission")]
-        public async Task<ActionResult<ApiResponse<Role?>>> GetRoleMenuPermission(long id)
-        {
-            var role = await baseDbContext.Roles.Include(t => t.Menus).ThenInclude(t => t.Permissions).
-                Where(t => t.Id == id).FirstOrDefaultAsync();
+            var role = await baseDbContext.Roles.Include(t => t.Menus).Include(t => t.Permissions).Where(t => t.Id == id).FirstOrDefaultAsync();
             return this.OkResponse(role);
         }
         [HttpPost]
@@ -51,7 +43,11 @@ namespace Identity.Api.Controllers
             if (role != null) return this.FailResponse("RoleName exists");
 
             var info = mapper.ToEntity(dto);
+            var permissions = await permissionRepository.GetPermissionsByIds(dto.PermissionIds);
 
+            var meuns = await menuRepository.GetByIdsAsync(dto.MenuIds);
+            info.AddPermissions(permissions);
+            info.AddMenus(meuns);
             await repository.AddAsync(info);
             return this.OkResponse(info.Id);
         }
