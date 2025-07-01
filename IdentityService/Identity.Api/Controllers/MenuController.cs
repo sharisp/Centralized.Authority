@@ -3,6 +3,7 @@ using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
+using Identity.Domain.Entity;
 using Identity.Infrastructure.Migrations;
 using Identity.Infrastructure.Repository;
 using MediatR;
@@ -22,7 +23,7 @@ namespace Identity.Api.Controllers
 
         [HttpGet]
         [PermissionKey("Menu.List")]
-        public async Task<ActionResult<ApiResponse<List<menu>>>> List(string systemName = "")
+        public async Task<ActionResult<ApiResponse<List<Menu>>>> List(string systemName = "")
         {
             var menus = baseDbContext.Menus;
             if (!string.IsNullOrEmpty(systemName))
@@ -34,7 +35,7 @@ namespace Identity.Api.Controllers
 
         [HttpGet("ListWithPermission")]
         [PermissionKey("Menu.ListWithPermission")]
-        public async Task<ActionResult<ApiResponse<List<menu>>>> ListWithPermission(string systemName = "")
+        public async Task<ActionResult<ApiResponse<List<Menu>>>> ListWithPermission(string systemName = "")
         {
             var menus = baseDbContext.Menus.Include(t=>t.Permissions);
             if (!string.IsNullOrEmpty(systemName))
