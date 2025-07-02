@@ -4,7 +4,9 @@ using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
 using Identity.Domain.Entity;
+using Identity.Infrastructure.Extensions;
 using Identity.Infrastructure.Migrations;
+using Identity.Infrastructure.Options;
 using Identity.Infrastructure.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -32,7 +34,25 @@ namespace Identity.Api.Controllers
             }
             return this.OkResponse(await menus.ToListAsync());
         }
+        [HttpGet("Pagination")]
+        [PermissionKey("Menu.List")]
+        public async Task<ActionResult<ApiResponse<PaginationResponse<Menu>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string title = "", string permissionkey = "", string systemName = "")
+        {
+            var menus = baseDbContext.Menus.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                menus = menus.Where(t => t.Title.Contains(title));
+            }
+           
+            if (!string.IsNullOrWhiteSpace(systemName))
+            {
+                menus = menus.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName.Contains(systemName));
 
+            }
+            var res = await menus.ToPaginationResponseAsync(pageIndex, pageSize);
+
+            return this.OkResponse(res);
+        }
         [HttpGet("ListWithPermission")]
         [PermissionKey("Menu.ListWithPermission")]
         public async Task<ActionResult<ApiResponse<List<Menu>>>> ListWithPermission(string systemName = "")

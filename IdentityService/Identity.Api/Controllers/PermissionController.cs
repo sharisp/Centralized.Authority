@@ -37,24 +37,24 @@ namespace Identity.Api.Controllers
         [PermissionKey("Permission.List")]
         public async Task<ActionResult<ApiResponse<PaginationResponse<Permission>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string title = "", string permissionkey = "",string systemName="")
         {
-            var roles = baseDbContext.Permissions.AsQueryable();
+            var permissions = baseDbContext.Permissions.AsQueryable();
             if (!string.IsNullOrWhiteSpace(title))
             {
-                roles = roles.Where(t => t.Title.Contains(title));
+                permissions = permissions.Where(t => t.Title.Contains(title));
             }
             if (!string.IsNullOrWhiteSpace(permissionkey))
             {
-                roles = roles.Where(t => !string.IsNullOrEmpty(t.Description) && t.PermissionKey.Contains(permissionkey));
+                permissions = permissions.Where(t => !string.IsNullOrEmpty(t.Description) && t.PermissionKey.Contains(permissionkey));
 
                 //  roles = roles.Where(t => t.Description?.Contains(description) == true);
             }
             if (!string.IsNullOrWhiteSpace(systemName))
             {
-                roles = roles.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName.Contains(systemName));
+                permissions = permissions.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName.Contains(systemName));
 
                 //  roles = roles.Where(t => t.Description?.Contains(description) == true);
             }
-            var res = await roles.ToPaginationResponseAsync(pageIndex, pageSize);
+            var res = await permissions.ToPaginationResponseAsync(pageIndex, pageSize);
 
             return this.OkResponse(res);
         }
