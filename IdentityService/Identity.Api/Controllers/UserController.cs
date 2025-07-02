@@ -32,6 +32,13 @@ namespace Identity.Api.Controllers
             return this.OkResponse(users);
         }
 
+        [HttpGet("{id}")]
+        [PermissionKey("User.Detail")]
+        public async Task<ActionResult<ApiResponse<List<User>>>> ListById(long id)
+        {
+            var users = await baseDbContext.Users.Include(t=>t.Roles).FirstOrDefaultAsync(t=>t.Id==id);
+            return this.OkResponse(users);
+        }
         [HttpGet("Pagination")]
         [PermissionKey("User.List")]
         public async Task<ActionResult<ApiResponse<PaginationResponse<User>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string userName = "", string phoneNumber = "")

@@ -19,9 +19,9 @@ namespace Identity.Api.Controllers
     {
 
         //be careful, this is only for init permissions, should not be used in production environment
-        //you need to create a user,then login to get the token,then use the token to access this API
-        [Authorize]
-        // [AllowAnonymous]
+       
+       // [Authorize]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ApiResponse<string>>> InitPermissions()
         {
