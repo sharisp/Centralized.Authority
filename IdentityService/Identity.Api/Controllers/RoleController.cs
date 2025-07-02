@@ -5,6 +5,7 @@ using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
 using Identity.Domain.Entity;
 using Identity.Infrastructure.Extensions;
+using Identity.Infrastructure.Options;
 using Identity.Infrastructure.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -31,7 +32,7 @@ namespace Identity.Api.Controllers
 
         [HttpGet("Pagination")]
         [PermissionKey("Role.List")]
-        public async Task<ActionResult<ApiResponse<List<Role>>>> ListByPagination(int pageIndex=1, int pageSize=10,string roleName="",string description = "")
+        public async Task<ActionResult<ApiResponse<PaginationResponse<Role>>>> ListByPagination(int pageIndex=1, int pageSize=10,string roleName="",string description = "")
         {
             var roles =  baseDbContext.Roles.AsQueryable();
             if (!string.IsNullOrWhiteSpace(roleName))

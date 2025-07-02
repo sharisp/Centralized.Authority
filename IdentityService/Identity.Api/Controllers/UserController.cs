@@ -8,6 +8,7 @@ using Identity.Domain.Events;
 using Identity.Domain.Interfaces;
 using Identity.Infrastructure;
 using Identity.Infrastructure.Extensions;
+using Identity.Infrastructure.Options;
 using Identity.Infrastructure.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -33,19 +34,19 @@ namespace Identity.Api.Controllers
 
         [HttpGet("Pagination")]
         [PermissionKey("User.List")]
-        public async Task<ActionResult<ApiResponse<List<Role>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string userName = "", string phoneNumber = "")
+        public async Task<ActionResult<ApiResponse<PaginationResponse<User>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string userName = "", string phoneNumber = "")
         {
-            var roles = baseDbContext.Users.AsQueryable();
+            var users = baseDbContext.Users.AsQueryable();
             if (!string.IsNullOrWhiteSpace(userName))
             {
-                roles = roles.Where(t => t.UserName.Contains(userName));
+                users = users.Where(t => t.UserName.Contains(userName));
             }
             if (!string.IsNullOrWhiteSpace(phoneNumber))
             {
-                roles = roles.Where(t => t.Phone!=null && t.Phone.Number.Contains(phoneNumber));
+                users = users.Where(t => t.Phone!=null && t.Phone.Number.Contains(phoneNumber));
 
             }
-            var res = await roles.ToPaginationResponseAsync(pageIndex, pageSize);
+            var res = await users.ToPaginationResponseAsync(pageIndex, pageSize);
 
             return this.OkResponse(res);
         }

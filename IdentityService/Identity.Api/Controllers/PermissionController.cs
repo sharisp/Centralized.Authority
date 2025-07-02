@@ -4,6 +4,8 @@ using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
 using Identity.Domain.Entity;
+using Identity.Infrastructure.Extensions;
+using Identity.Infrastructure.Options;
 using Identity.Infrastructure.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -30,6 +32,33 @@ namespace Identity.Api.Controllers
             }
             return this.OkResponse(await permissions.ToListAsync());
         }
+
+        [HttpGet("Pagination")]
+        [PermissionKey("Permission.List")]
+        public async Task<ActionResult<ApiResponse<PaginationResponse<Permission>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string title = "", string permissionkey = "",string systemName="")
+        {
+            var roles = baseDbContext.Permissions.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(title))
+            {
+                roles = roles.Where(t => t.Title.Contains(title));
+            }
+            if (!string.IsNullOrWhiteSpace(permissionkey))
+            {
+                roles = roles.Where(t => !string.IsNullOrEmpty(t.Description) && t.PermissionKey.Contains(permissionkey));
+
+                //  roles = roles.Where(t => t.Description?.Contains(description) == true);
+            }
+            if (!string.IsNullOrWhiteSpace(systemName))
+            {
+                roles = roles.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName.Contains(systemName));
+
+                //  roles = roles.Where(t => t.Description?.Contains(description) == true);
+            }
+            var res = await roles.ToPaginationResponseAsync(pageIndex, pageSize);
+
+            return this.OkResponse(res);
+        }
+
         [HttpPost]
         [PermissionKey("Permission.Create")]
         public async Task<ActionResult<ApiResponse<BaseResponse>>> Create(CreatePermissionDto dto)
