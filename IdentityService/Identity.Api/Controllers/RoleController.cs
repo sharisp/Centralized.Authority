@@ -4,12 +4,14 @@ using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
 using Identity.Domain.Entity;
+using Identity.Infrastructure.Extensions;
 using Identity.Infrastructure.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Identity.Api.Controllers
 {
@@ -17,7 +19,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, MenuRepository menuRepository, BaseDbContext baseDbContext, IMediator mediator) : ControllerBase
+    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, MenuRepository menuRepository, BaseDbContext baseDbContext) : ControllerBase
     {
         [HttpGet]
         [PermissionKey("Role.List")]
@@ -26,6 +28,27 @@ namespace Identity.Api.Controllers
             var roles = await baseDbContext.Roles.ToListAsync();
             return this.OkResponse(roles);
         }
+
+        [HttpGet("Pagination")]
+        [PermissionKey("Role.List")]
+        public async Task<ActionResult<ApiResponse<List<Role>>>> ListByPagination(int pageIndex=1, int pageSize=10,string roleName="",string description = "")
+        {
+            var roles =  baseDbContext.Roles.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(roleName))
+            {
+                roles= roles.Where(t => t.RoleName.Contains(roleName));
+            }
+            if (!string.IsNullOrWhiteSpace(description))
+            {
+                roles = roles.Where(t => !string.IsNullOrEmpty(t.Description) && t.Description.Contains(description));
+
+              //  roles = roles.Where(t => t.Description?.Contains(description) == true);
+            }
+            var res=await roles.ToPaginationResponseAsync(pageIndex, pageSize);
+            
+            return this.OkResponse(res);
+        }
+
         [HttpGet("Detail/{id}")]
         [PermissionKey("Role.GetRoleDetail")]
         public async Task<ActionResult<ApiResponse<Role?>>> GetByRoleId(long id)
@@ -60,7 +83,7 @@ namespace Identity.Api.Controllers
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
             // var role = await repository.GetByIdAsync(id);
-            var role =baseDbContext.Roles.Include(t => t.Permissions).Include(t => t.Menus).FirstOrDefault(t => t.Id == id);
+            var role = baseDbContext.Roles.Include(t => t.Permissions).Include(t => t.Menus).FirstOrDefault(t => t.Id == id);
             if (role == null) return this.FailResponse("not found");
 
             if (!string.IsNullOrEmpty(dto.RoleName) && dto.RoleName != role.RoleName)
@@ -76,7 +99,7 @@ namespace Identity.Api.Controllers
             var permissions = await permissionRepository.GetPermissionsByIds(dto.PermissionIds);
             role.AddPermissions(permissions);
             var meuns = await menuRepository.GetByIdsAsync(dto.MenuIds);
-        
+
             role.AddMenus(meuns);
 
             return this.OkResponse(id);
