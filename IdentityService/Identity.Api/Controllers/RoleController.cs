@@ -32,21 +32,21 @@ namespace Identity.Api.Controllers
 
         [HttpGet("Pagination")]
         [PermissionKey("Role.List")]
-        public async Task<ActionResult<ApiResponse<PaginationResponse<Role>>>> ListByPagination(int pageIndex=1, int pageSize=10,string roleName="",string description = "")
+        public async Task<ActionResult<ApiResponse<PaginationResponse<Role>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string roleName = "", string description = "")
         {
-            var roles =  baseDbContext.Roles.AsQueryable();
+            var roles = baseDbContext.Roles.AsQueryable();
             if (!string.IsNullOrWhiteSpace(roleName))
             {
-                roles= roles.Where(t => t.RoleName.Contains(roleName));
+                roles = roles.Where(t => t.RoleName.Contains(roleName));
             }
             if (!string.IsNullOrWhiteSpace(description))
             {
                 roles = roles.Where(t => !string.IsNullOrEmpty(t.Description) && t.Description.Contains(description));
 
-              //  roles = roles.Where(t => t.Description?.Contains(description) == true);
+                //  roles = roles.Where(t => t.Description?.Contains(description) == true);
             }
-            var res=await roles.ToPaginationResponseAsync(pageIndex, pageSize);
-            
+            var res = await roles.ToPaginationResponseAsync(pageIndex, pageSize);
+
             return this.OkResponse(res);
         }
 
@@ -67,12 +67,17 @@ namespace Identity.Api.Controllers
             if (role != null) return this.FailResponse("RoleName exists");
 
             var info = mapper.ToEntity(dto);
-            var permissions = await permissionRepository.GetPermissionsByIds(dto.PermissionIds);
+            if (dto.PermissionIds != null && dto.PermissionIds.Count > 0)
+            {
+                var permissions = await permissionRepository.GetPermissionsByIds(dto.PermissionIds);
+                info.AddPermissions(permissions);
+            }
+            if (dto.MenuIds != null && dto.MenuIds.Count > 0)
+            {
+                var meuns = await menuRepository.GetByIdsAsync(dto.MenuIds);
 
-            var meuns = await menuRepository.GetByIdsAsync(dto.MenuIds);
-            info.AddPermissions(permissions);
-            info.AddMenus(meuns);
-
+                info.AddMenus(meuns);
+            }
             await repository.AddAsync(info);
             return this.OkResponse(info.Id);
         }
@@ -97,11 +102,19 @@ namespace Identity.Api.Controllers
             mapper.UpdateDtoToRole(dto, role);
             role.Permissions.Clear();
             role.Menus.Clear();
-            var permissions = await permissionRepository.GetPermissionsByIds(dto.PermissionIds);
-            role.AddPermissions(permissions);
-            var meuns = await menuRepository.GetByIdsAsync(dto.MenuIds);
+            if (dto.PermissionIds != null && dto.PermissionIds.Count > 0)
+            {
+                var permissions = await permissionRepository.GetPermissionsByIds(dto.PermissionIds);
+                role.AddPermissions(permissions);
+            }
+            if (dto.MenuIds != null && dto.MenuIds.Count > 0)
+            {
+                var meuns = await menuRepository.GetByIdsAsync(dto.MenuIds);
 
-            role.AddMenus(meuns);
+                role.AddMenus(meuns);
+            }
+
+
 
             return this.OkResponse(id);
         }

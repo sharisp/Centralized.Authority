@@ -21,14 +21,14 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator,BaseDbContext baseDbContext, PermissionHelper permissionHelper, ICurrentUser currentUser) : ControllerBase
+    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, BaseDbContext baseDbContext, PermissionHelper permissionHelper, ICurrentUser currentUser,RoleRepository roleRepository) : ControllerBase
     {
 
         [HttpGet]
         [PermissionKey("User.List")]
         public async Task<ActionResult<ApiResponse<List<User>>>> List()
         {
-            var users =await baseDbContext.Users.ToListAsync();
+            var users = await baseDbContext.Users.ToListAsync();
             return this.OkResponse(users);
         }
 
@@ -36,7 +36,7 @@ namespace Identity.Api.Controllers
         [PermissionKey("User.Detail")]
         public async Task<ActionResult<ApiResponse<List<User>>>> ListById(long id)
         {
-            var users = await baseDbContext.Users.Include(t=>t.Roles).FirstOrDefaultAsync(t=>t.Id==id);
+            var users = await baseDbContext.Users.Include(t => t.Roles).FirstOrDefaultAsync(t => t.Id == id);
             return this.OkResponse(users);
         }
         [HttpGet("Pagination")]
@@ -50,7 +50,7 @@ namespace Identity.Api.Controllers
             }
             if (!string.IsNullOrWhiteSpace(phoneNumber))
             {
-                users = users.Where(t => t.Phone!=null && t.Phone.Number.Contains(phoneNumber));
+                users = users.Where(t => t.Phone != null && t.Phone.Number.Contains(phoneNumber));
 
             }
             var res = await users.ToPaginationResponseAsync(pageIndex, pageSize);
@@ -66,13 +66,17 @@ namespace Identity.Api.Controllers
             await ValidationHelper.ValidateModelAsync(userDto, validator);
 
             var user = await userRepository.GetUseByNameAsync(userDto.UserName);
-            if (user != null) return  this.FailResponse("username exists");
-        
+            if (user != null) return this.FailResponse("username exists");
+
             var userinfo = mapper.ToEntity(userDto);
+            if (userDto.RoleIds != null && userDto.RoleIds.Count > 0)
+            {
+                var roles = await roleRepository.GetRolesByIds(userDto.RoleIds);
+                userinfo.AddRoles(roles);
+            }
+
 
             await userRepository.AddUserAsync(userinfo);
-
-           // var respDto = mapper.ToResponseDto(userinfo);
             return this.OkResponse(userinfo.Id);
         }
 
@@ -80,10 +84,10 @@ namespace Identity.Api.Controllers
         [PermissionKey("User.Update")]
         public async Task<ActionResult<ApiResponse<BaseResponse>>> Update(long id, [FromBody] CreateUserRequestDto userDto)
         {
-            
+
             await ValidationHelper.ValidateModelAsync(userDto, validator);
 
-            var user = await userRepository.GetUserByIdAsync(id);
+            var user = await userRepository.GetUserWithRolesByIdAsync(id);
             if (user == null) return this.FailResponse("user not found");
 
             if (!string.IsNullOrEmpty(userDto.UserName) && userDto.UserName != user.UserName)
@@ -94,9 +98,13 @@ namespace Identity.Api.Controllers
                 }
             }
             mapper.UpdateDtoToEntity(userDto, user);
+            user.Roles.Clear();
+            if (userDto.RoleIds != null && userDto.RoleIds.Count > 0)
+            {
+                var roles = await roleRepository.GetRolesByIds(userDto.RoleIds);
+                user.AddRoles(roles);
+            }
 
-            // userRepository.UpdateUserAsync(user);
-            var respDto = mapper.ToResponseDto(user);
             return this.OkResponse(id);
         }
 

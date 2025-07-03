@@ -4,7 +4,7 @@ using Identity.Domain.ValueObject;
 
 namespace Identity.Domain.Entity
 {
-    public class User: BaseAuditableEntity, IAggregateRoot
+    public class User : BaseAuditableEntity, IAggregateRoot
     {
         //For EF Core Use
         private User()
@@ -18,13 +18,13 @@ namespace Identity.Domain.Entity
 
         public string? NickName { get; private set; } = default!;
 
-      //  public string? Description { get; private set; }
-        public List<Role> Roles { get;private set; } = new List<Role>();
+        //  public string? Description { get; private set; }
+        public List<Role> Roles { get; private set; } = new List<Role>();
 
-        public UserAccessFail AccessFail { get;private set; }
+        public UserAccessFail AccessFail { get; private set; }
         public string? RefreshToken { get; private set; }
         public DateTimeOffset? RefreshTokenExpireAt { get; private set; }
-        public User(string userName, string passwordHash, string email , PhoneNumber? phone=null, string? nickName=null, string? realName = null, string? description = null)
+        public User(string userName, string passwordHash, string email, PhoneNumber? phone = null, string? nickName = null, string? realName = null, string? description = null)
         {
 
             PasswordHash = HashHelper.ComputeMd5Hash(passwordHash);
@@ -36,7 +36,7 @@ namespace Identity.Domain.Entity
             Description = description;
             AccessFail = new UserAccessFail(this);
             AddDomainEvent(new UserAddEvents(this));
-       
+
         }
 
         public bool CheckPassword(string password)
@@ -47,7 +47,7 @@ namespace Identity.Domain.Entity
         public void SetRefreshToken(string refreshToken, DateTimeOffset refreshTokenExpireAt)
         {
             RefreshToken = refreshToken;
-            RefreshTokenExpireAt = refreshTokenExpireAt; 
+            RefreshTokenExpireAt = refreshTokenExpireAt;
             AddDomainEvent(new UserUpdateEvents(this));
         }
 
@@ -62,14 +62,14 @@ namespace Identity.Domain.Entity
         public void ClearRefreshToken()
         {
             RefreshToken = null;
-            RefreshTokenExpireAt=DateTimeOffset.MinValue;
+            RefreshTokenExpireAt = DateTimeOffset.MinValue;
             AddDomainEvent(new UserUpdateEvents(this));
         }
         public void ChangeUserName(string userName)
         {
             UserName = userName;
             AddDomainEvent(new UserUpdateEvents(this));
-    }
+        }
         public void ChangeNickName(string nickName)
         {
             NickName = nickName;
@@ -109,7 +109,16 @@ namespace Identity.Domain.Entity
                 AccessFail = new UserAccessFail(this);
             }
         }
+        public void AddRoles(List<Role> roles)
+        {
+            if (Roles == null)
+            {
+                Roles = new List<Role>();
+            }
 
+            Roles.AddRange(roles);
+
+        }
         public void AddRole(Role role)
         {
             if (Roles == null)

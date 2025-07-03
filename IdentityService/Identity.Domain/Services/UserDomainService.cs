@@ -65,9 +65,10 @@ namespace Identity.Domain.Services
         }
 
         public void DeleteUser(User user)
-        {
-            
+        {            
             userRepository.DeleteUser(user);
         }
+
+     
     }
 }

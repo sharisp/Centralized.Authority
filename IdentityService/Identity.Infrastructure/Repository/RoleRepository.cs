@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Identity.Domain.Entity;
 using Identity.Domain.Interfaces;
+using IdGen;
 using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.Repository
@@ -43,7 +44,11 @@ namespace Identity.Infrastructure.Repository
             var res = await dbContext.Roles.FirstOrDefaultAsync(t => t.RoleName == name);
             return res;
         }
-
+        public async Task<List<Role>> GetRolesByIds(List<long> ids)
+        {
+            var res = await dbContext.Roles.Where(t => ids.Contains(t.Id)).ToListAsync();
+            return res;
+        }
         public async Task<Role?> GetByIdAsync(long id)
         {
             var res = await dbContext.Roles.FirstOrDefaultAsync(t => t.Id == id);

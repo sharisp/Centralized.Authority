@@ -41,7 +41,11 @@ namespace Identity.Infrastructure.DbContext
             var res = await dbContext.Users.FirstOrDefaultAsync(t => t.Id == userId);
             return res;
         }
-
+        public async Task<User?> GetUserWithRolesByIdAsync(long userId)
+        {
+            var res = await dbContext.Users.Include(t=>t.Roles).FirstOrDefaultAsync(t => t.Id == userId);
+            return res;
+        }
         public async Task<List<User>> GetUsersAsync()
         {
             var res = await dbContext.Users.ToListAsync();
