@@ -51,7 +51,7 @@ namespace Identity.Api.Controllers
             }
             if (!string.IsNullOrWhiteSpace(permissionkey))
             {
-                permissions = permissions.Where(t => !string.IsNullOrEmpty(t.Description) && t.PermissionKey.Contains(permissionkey));
+                permissions = permissions.Where(t => !string.IsNullOrEmpty(t.PermissionKey) && t.PermissionKey.Contains(permissionkey));
 
                 //  roles = roles.Where(t => t.Description?.Contains(description) == true);
             }
