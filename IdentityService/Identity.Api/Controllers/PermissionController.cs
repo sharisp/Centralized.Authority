@@ -25,12 +25,19 @@ namespace Identity.Api.Controllers
         [PermissionKey("Permission.List")]
         public async Task<ActionResult<ApiResponse<List<Permission>>>> List(string systemName="")
         {
-            var permissions = baseDbContext.Permissions;
+            var permissions = baseDbContext.Permissions.AsQueryable();
             if (!string.IsNullOrEmpty(systemName))
             {
-                permissions.Where(t => t.SystemName == systemName);
+                permissions= permissions.Where(t => t.SystemName == systemName);
             }
             return this.OkResponse(await permissions.ToListAsync());
+        }
+        [HttpGet("Detail/{id}")]
+        [PermissionKey("Permission.Detail")]
+        public async Task<ActionResult<ApiResponse<Permission>>> Detail(long id)
+        {
+        var permission=   await repository.GetByIdAsync(id);
+            return this.OkResponse(permission);
         }
 
         [HttpGet("Pagination")]

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Identity.Api.Controllers
 {
@@ -20,19 +21,26 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository,BaseDbContext baseDbContext) : ControllerBase
+    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository, BaseDbContext baseDbContext) : ControllerBase
     {
 
         [HttpGet]
         [PermissionKey("Menu.List")]
         public async Task<ActionResult<ApiResponse<List<Menu>>>> List(string systemName = "")
         {
-            var menus = baseDbContext.Menus;
+            var menus = baseDbContext.Menus.AsQueryable();
             if (!string.IsNullOrEmpty(systemName))
             {
-                menus.Where(t => t.SystemName == systemName);
+                menus = menus.Where(t => t.SystemName == systemName);
             }
             return this.OkResponse(await menus.ToListAsync());
+        }
+        [HttpGet("Detail/{id}")]
+        [PermissionKey("Menu.Detail")]
+        public async Task<ActionResult<ApiResponse<Menu>>> Detail(long id)
+        {
+            var menu =await baseDbContext.Menus.Include(t => t.Permissions).FirstOrDefaultAsync(t => t.Id == id);
+            return this.OkResponse(menu);
         }
         [HttpGet("Pagination")]
         [PermissionKey("Menu.List")]
@@ -43,7 +51,7 @@ namespace Identity.Api.Controllers
             {
                 menus = menus.Where(t => t.Title.Contains(title));
             }
-           
+
             if (!string.IsNullOrWhiteSpace(systemName))
             {
                 menus = menus.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName.Contains(systemName));
@@ -57,7 +65,7 @@ namespace Identity.Api.Controllers
         [PermissionKey("Menu.ListWithPermission")]
         public async Task<ActionResult<ApiResponse<List<Menu>>>> ListWithPermission(string systemName = "")
         {
-            var menus = baseDbContext.Menus.Include(t=>t.Permissions);
+            var menus = baseDbContext.Menus.Include(t => t.Permissions);
             if (!string.IsNullOrEmpty(systemName))
             {
                 menus.Where(t => t.SystemName == systemName);
@@ -70,7 +78,7 @@ namespace Identity.Api.Controllers
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
-            var user = await repository.GetByPathAsync(dto.Path,dto.SystemName);
+            var user = await repository.GetByPathAsync(dto.Path, dto.SystemName);
             if (user != null) return this.FailResponse("Menu path exists");
 
             var info = mapper.ToEntity(dto);
@@ -88,7 +96,7 @@ namespace Identity.Api.Controllers
 
             var info = await repository.GetByIdAsync(id);
             if (info == null) return this.FailResponse("not found");
-            
+
 
             if ((!string.IsNullOrEmpty(dto.Path) || !string.IsNullOrEmpty(dto.SystemName)) && (dto.Path != info.Path || dto.SystemName != info.SystemName))
             {
