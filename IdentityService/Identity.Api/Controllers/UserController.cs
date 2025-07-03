@@ -21,7 +21,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, BaseDbContext baseDbContext, PermissionHelper permissionHelper, ICurrentUser currentUser,RoleRepository roleRepository) : ControllerBase
+    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, BaseDbContext baseDbContext, PermissionHelper permissionHelper, ICurrentUser currentUser, RoleRepository roleRepository) : ControllerBase
     {
 
         [HttpGet]
@@ -98,6 +98,9 @@ namespace Identity.Api.Controllers
                 }
             }
             mapper.UpdateDtoToEntity(userDto, user);
+            var password = AppHelper.ReadAppSetting("DefaultPassword");
+            user.ChangePassword(password, true);
+
             user.Roles.Clear();
             if (userDto.RoleIds != null && userDto.RoleIds.Count > 0)
             {

@@ -24,10 +24,12 @@ namespace Identity.Domain.Entity
         public UserAccessFail AccessFail { get; private set; }
         public string? RefreshToken { get; private set; }
         public DateTimeOffset? RefreshTokenExpireAt { get; private set; }
-        public User(string userName, string passwordHash, string email, PhoneNumber? phone = null, string? nickName = null, string? realName = null, string? description = null)
+        public User(string userName, string email, string passwordHash = "", PhoneNumber? phone = null, string? nickName = null, string? realName = null, string? description = null)
         {
-
-            PasswordHash = HashHelper.ComputeMd5Hash(passwordHash);
+            if (!string.IsNullOrEmpty(passwordHash))
+            {
+                PasswordHash = HashHelper.ComputeMd5Hash(passwordHash);
+            }
             NickName = nickName;
             UserName = userName;
             RealName = realName;
@@ -90,12 +92,16 @@ namespace Identity.Domain.Entity
 
             AddDomainEvent(new UserUpdateEvents(this));
         }
-        public void ChangePassword(string password)
+        public void ChangePassword(string password,bool isFirst=false)
         {
             PasswordHash = HashHelper.ComputeMd5Hash(password);
+            if (isFirst==false)
+            {
 
-            AddDomainEvent(new UserUpdateEvents(this));
+                AddDomainEvent(new UserUpdateEvents(this));
+            }
         }
+    
         public void ChangePhone(PhoneNumber phone)
         {
             Phone = phone;

@@ -11,12 +11,12 @@ namespace Identity.Api.Contracts.Mapping
     {
 
         // HAVE ORDER, input was the first parameter, output was the second parameter
-        [MapProperty( nameof(User.PasswordHash), nameof(CreateUserRequestDto.Password))]
+        //[MapProperty( nameof(User.PasswordHash), nameof(CreateUserRequestDto.Password))]
         public partial CreateUserRequestDto ToDto(User user);
 
         public partial UserResponseDto ToResponseDto(User user);
 
-        [MapProperty(nameof(CreateUserRequestDto.Password), nameof(User.PasswordHash))]
+       // [MapProperty(nameof(CreateUserRequestDto.Password), nameof(User.PasswordHash))]
         public partial User ToEntity(CreateUserRequestDto userDto);
 
 
@@ -27,18 +27,18 @@ namespace Identity.Api.Contracts.Mapping
             {
                 outTarget.ChangeEmail(inDto.Email);
             }
-            if (!string.IsNullOrEmpty(inDto.NickName))
+            if (!string.IsNullOrEmpty(inDto.RealName))
             {
-                outTarget.ChangeNickName(inDto.NickName);
+                outTarget.ChangeRealName(inDto.RealName);
             }
             if (!string.IsNullOrEmpty(inDto.UserName))
             {
                 outTarget.ChangeUserName(inDto.UserName);
             }
-            if (!string.IsNullOrEmpty(inDto.Password))
+          /*  if (!string.IsNullOrEmpty(inDto.Password))
             {
                 outTarget.ChangePassword(inDto.Password);
-            }
+            }*/
         }
 
         [UserMapping(Default = true)]
