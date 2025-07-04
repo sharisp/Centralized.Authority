@@ -53,7 +53,7 @@ namespace Identity.Infrastructure
         {
             var menus = await dbContext.Users.Where(u => u.Id == userId)
                 .SelectMany(u => u.Roles)
-                .SelectMany(r => r.Menus).Include(t=>t.Permissions).Where(t => t.SystemName == systemName)
+                .SelectMany(r => r.Menus).Include(t => t.Permissions).Where(t => t.SystemName == systemName)
                 .Distinct()
                 .ToArrayAsync();
             return menus;
@@ -71,11 +71,9 @@ namespace Identity.Infrastructure
 
                     var permissions = await GetPermissionsByUserId(userId); ;
                     //  foreach (var item in list)
-                    foreach (var permission in permissions)
-                    {
-                        await RedisHelper.RPushAsync($"{systemName}_user_permissions_{userId}", permission);
-                    }
 
+                    await RedisHelper.RPushAsync($"{systemName}_user_permissions_{userId}", permissions);
+                    await RedisHelper.ExpireAsync($"{systemName}_user_permissions_{userId}", 30 * 60);
                     permissionArr = permissions;
                 }, async () =>
                 {

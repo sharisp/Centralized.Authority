@@ -24,7 +24,7 @@ namespace Identity.Infrastructure.EventHandler
             do
             {
                 // 扫描匹配的 Key
-                var scanResult =await RedisHelper.ScanAsync(cursor, "user_permissions_*", 1000);
+                var scanResult =await RedisHelper.ScanAsync(cursor, "*_user_permissions_*", 1000);
                 cursor = scanResult.Cursor;
                 var keys = scanResult.Items;
 

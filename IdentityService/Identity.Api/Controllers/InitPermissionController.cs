@@ -40,6 +40,7 @@ namespace Identity.Api.Controllers
                 await baseDbContext.Users.AddAsync(user);
             }
 
+            var listPermissions = new List<Permission>();
             var permissionKeys = PermissionScanner.GetAllPermissionKeys(Assembly.GetExecutingAssembly());
             var realrolePermission = baseDbContext.Roles.Include(t => t.Permissions).FirstOrDefault(t => t.RoleName == "adminRole")?.Permissions.ToList() ?? new List<Permission>();
             foreach (var permissionKey in permissionKeys)
@@ -54,14 +55,17 @@ namespace Identity.Api.Controllers
                 }
                 // can not use role.Permissions,not include
                 // ensure the permission is loaded
-
                 if (!realrolePermission.Any(p => p.PermissionKey == permission.PermissionKey && p.SystemName == permission.SystemName))
                 {
+                    listPermissions.Add(permission);
 
-                    role.AddPermissions([permission]);
                 }
+               
             }
-
+            if (listPermissions.Any())
+            {
+                role.AddPermissions(listPermissions);
+            }
 
 
             await unitOfWork.SaveChangesAsync();
