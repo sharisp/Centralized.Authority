@@ -13,5 +13,7 @@ namespace Identity.Api.Contracts.Dtos.Request
         public MenuType Type { get; set; }
         public Uri? ExternalLink { get; set; }
         public string SystemName { get;  set; }
+
+        public List<long> PermissionIds { get; set; } = new();
     }
 }

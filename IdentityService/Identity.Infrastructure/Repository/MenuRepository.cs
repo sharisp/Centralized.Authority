@@ -49,6 +49,11 @@ namespace Identity.Infrastructure.Repository
             var res = await dbContext.Menus.FirstOrDefaultAsync(t => t.Id == id);
             return res;
         }
+        public async Task<Menu?> GetByIdWithPermissionAsync(long id)
+        {
+            var res = await dbContext.Menus.Include(t=>t.Permissions).FirstOrDefaultAsync(t => t.Id == id);
+            return res;
+        }
         public async Task<Menu?> GetByPathAsync(string path, string systemName)
         {
             var res = await dbContext.Menus.FirstOrDefaultAsync(t => t.Path.ToLower().Trim() == path.ToLower().Trim() && t.SystemName.ToLower().Trim() == systemName.ToLower().Trim());

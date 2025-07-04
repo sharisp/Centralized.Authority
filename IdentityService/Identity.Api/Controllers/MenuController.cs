@@ -21,7 +21,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository, BaseDbContext baseDbContext) : ControllerBase
+    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository, BaseDbContext baseDbContext, PermissionRepository permissionRepository) : ControllerBase
     {
 
         [HttpGet]
@@ -39,7 +39,7 @@ namespace Identity.Api.Controllers
         [PermissionKey("Menu.Detail")]
         public async Task<ActionResult<ApiResponse<Menu>>> Detail(long id)
         {
-            var menu =await baseDbContext.Menus.Include(t => t.Permissions).FirstOrDefaultAsync(t => t.Id == id);
+            var menu = await baseDbContext.Menus.Include(t => t.Permissions).FirstOrDefaultAsync(t => t.Id == id);
             return this.OkResponse(menu);
         }
         [HttpGet("Pagination")]
@@ -82,7 +82,11 @@ namespace Identity.Api.Controllers
             if (user != null) return this.FailResponse("Menu path exists");
 
             var info = mapper.ToEntity(dto);
-
+            if (dto.PermissionIds != null && dto.PermissionIds.Count > 0)
+            {
+                var permissions = await permissionRepository.GetPermissionsByIds(dto.PermissionIds);
+                info.AddPermissions(permissions);
+            }
             await repository.AddAsync(info);
 
             return this.OkResponse(info.Id);
@@ -94,7 +98,7 @@ namespace Identity.Api.Controllers
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
-            var info = await repository.GetByIdAsync(id);
+            var info = await repository.GetByIdWithPermissionAsync(id);
             if (info == null) return this.FailResponse("not found");
 
 
@@ -107,6 +111,12 @@ namespace Identity.Api.Controllers
             }
             mapper.UpdateDtoToEntity(dto, info);
 
+            info.Permissions.Clear();
+            if (dto.PermissionIds != null && dto.PermissionIds.Count > 0)
+            {
+                var permissions = await permissionRepository.GetPermissionsByIds(dto.PermissionIds);
+                info.AddPermissions(permissions);
+            }
             return this.OkResponse(id);
         }
 

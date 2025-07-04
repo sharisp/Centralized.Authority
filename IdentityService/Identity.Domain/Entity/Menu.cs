@@ -81,5 +81,10 @@ namespace Identity.Domain.Entity
         {
             SystemName = systemName;
         }
+        public void AddPermissions(List<Permission> permissions)
+        {
+            Permissions.AddRange(permissions);
+            
+        }
     }
 }
