@@ -69,6 +69,8 @@ namespace Identity.Api.Controllers
             if (user != null) return this.FailResponse("username exists");
 
             var userinfo = mapper.ToEntity(userDto);
+            var password = AppHelper.ReadAppSetting("DefaultPassword");
+            userinfo.ChangePassword(password, true);
             if (userDto.RoleIds != null && userDto.RoleIds.Count > 0)
             {
                 var roles = await roleRepository.GetRolesByIds(userDto.RoleIds);
@@ -98,8 +100,7 @@ namespace Identity.Api.Controllers
                 }
             }
             mapper.UpdateDtoToEntity(userDto, user);
-            var password = AppHelper.ReadAppSetting("DefaultPassword");
-            user.ChangePassword(password, true);
+
 
             user.Roles.Clear();
             if (userDto.RoleIds != null && userDto.RoleIds.Count > 0)
