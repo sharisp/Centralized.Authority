@@ -20,8 +20,8 @@ namespace Identity.Infrastructure.Repository
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<LoginHistory> LoginHistories { get; set; }
+        public DbSet<Sys> Sys { get; set; }
 
-      
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
