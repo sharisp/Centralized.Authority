@@ -1,12 +1,4 @@
-﻿using Identity.Domain.Entity;
-using Identity.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Identity.Domain.Services
+﻿namespace Identity.Domain.Services
 {
     public class RoleDomainService()
     {

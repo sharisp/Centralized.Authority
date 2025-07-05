@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Identity.Domain.Entity;
-using Identity.Domain.Interfaces;
-using Identity.Infrastructure.Repository;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using Identity.Infrastructure.Repository;
 
 namespace Identity.Infrastructure.DbContext
 {
@@ -24,11 +15,7 @@ namespace Identity.Infrastructure.DbContext
         
         }
 
-        public  void DeleteUser(User user)
-        {
-            dbContext.Users.Remove(user);
-
-        }
+        
 
         public async Task<User?> GetUseByNameAsync(string userName)
         {

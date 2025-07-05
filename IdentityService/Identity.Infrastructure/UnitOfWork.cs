@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.SharedKernel.Interfaces;
 using Identity.Domain;
 using Identity.Domain.Interfaces;
 using Identity.Infrastructure.Extensions;
@@ -65,14 +66,13 @@ namespace Identity.Infrastructure
                                 entry.Entity.UpdateDateTime = now;
                             }
                             break;
-
-                        case EntityState.Deleted:
-                            // 软删除：标记删除，不直接从数据库删除
-                            entry.State = EntityState.Modified;
-                            entry.Entity.IsDel = true;
-                            entry.Entity.DeleterUserId = currentUser?.UserId;
-                            entry.Entity.DeleteDateTime = now;
-                            break;
+                            //using soft delete function instead 
+                            /*  case EntityState.Deleted:
+                                  entry.State = EntityState.Modified;
+                                  entry.Entity.IsDel = true;
+                                  entry.Entity.DeleterUserId = currentUser?.UserId;
+                                  entry.Entity.DeleteDateTime = now;
+                                  break;*/
                     }
                 }
             }

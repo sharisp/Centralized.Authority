@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Identity.Domain.Entity;
+﻿using Identity.Domain.Entity;
 
 namespace Identity.Domain.Interfaces
 {
@@ -14,7 +9,7 @@ namespace Identity.Domain.Interfaces
          Task<List<User>> GetUsersAsync();
           Task AddUserAsync(User user);
          void UpdateUserAsync(User user);
-         void DeleteUser(User user);
+     
         Task<User?> GetUserWithRolesByIdAsync(long userId);
 
 

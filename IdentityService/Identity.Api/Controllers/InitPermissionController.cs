@@ -1,15 +1,12 @@
-﻿using Identity.Api.Contracts.Dtos.Response;
+﻿using Domain.SharedKernel.Interfaces;
+using Identity.Api.Contracts.Dtos.Response;
 using Identity.Domain.Constants;
 using Identity.Domain.Entity;
-using Identity.Domain.Interfaces;
 using Identity.Infrastructure.Repository;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using System.Reflection.Metadata;
 
 namespace Identity.Api.Controllers
 {

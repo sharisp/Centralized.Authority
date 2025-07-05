@@ -1,6 +1,4 @@
-﻿using Identity.Domain.Interfaces;
-
-namespace Identity.Domain.Entity
+﻿namespace Identity.Domain.Entity
 {
     public class UserRefreshToken: BaseAuditableEntity, IAggregateRoot
     {

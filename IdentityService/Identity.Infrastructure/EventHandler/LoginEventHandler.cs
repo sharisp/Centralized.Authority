@@ -1,14 +1,7 @@
 ﻿using Identity.Domain.Events;
+using Identity.Domain.ValueObject;
 using Identity.Infrastructure.Repository;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Identity.Domain.Entity;
-using Identity.Domain.Interfaces;
-using Identity.Domain.ValueObject;
 
 namespace Identity.Infrastructure.EventHandler
 {

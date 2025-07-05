@@ -1,5 +1,4 @@
 ﻿using Identity.Domain.Enums;
-using Identity.Domain.Interfaces;
 
 namespace Identity.Domain.Entity
 {

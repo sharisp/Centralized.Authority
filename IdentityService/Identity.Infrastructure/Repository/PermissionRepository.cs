@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Identity.Domain.Entity;
-using Identity.Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
-
-namespace Identity.Infrastructure.Repository
+﻿namespace Identity.Infrastructure.Repository
 {
     public class PermissionRepository 
     {
@@ -18,11 +9,7 @@ namespace Identity.Infrastructure.Repository
             this.dbContext = dbContext;
         }
 
-        public void Delete(Permission info)
-        {
-            dbContext.Permissions.Remove(info);
-        }
-
+      
         public async Task AddAsync(Permission info)
         {
             await dbContext.Permissions.AddAsync(info);

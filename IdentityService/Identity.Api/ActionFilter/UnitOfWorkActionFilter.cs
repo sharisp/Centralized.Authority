@@ -1,4 +1,5 @@
-﻿using Identity.Domain.Interfaces; // IUnitOfWork 所在命名空间
+﻿using Domain.SharedKernel.Interfaces;
+using Identity.Domain.Interfaces; // IUnitOfWork 所在命名空间
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Identity.Api.ActionFilter;

@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Identity.Domain.Entity;
-using Identity.Domain.Interfaces;
-using IdGen;
-using Microsoft.EntityFrameworkCore;
-
-namespace Identity.Infrastructure.Repository
+﻿namespace Identity.Infrastructure.Repository
 {
     public class RoleRepository 
     {
@@ -19,10 +9,7 @@ namespace Identity.Infrastructure.Repository
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public void DeleteRole(Role role)
-        {
-            dbContext.Roles.Remove(role);
-        }
+       
 
         public async Task AddAsync(Role role)
         {

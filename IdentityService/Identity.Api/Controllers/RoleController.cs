@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Domain.SharedKernel.Interfaces;
+using FluentValidation;
 using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
@@ -20,7 +21,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, MenuRepository menuRepository, BaseDbContext baseDbContext) : ControllerBase
+    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, MenuRepository menuRepository, BaseDbContext baseDbContext,ICurrentUser currentUser) : ControllerBase
     {
         [HttpGet]
         [PermissionKey("Role.List")]
@@ -130,7 +131,7 @@ namespace Identity.Api.Controllers
             {
                 return this.FailResponse("there are users in this role");
             }
-            repository.DeleteRole(info);
+           info.SoftDelete(currentUser);
 
 
             return this.OkResponse(id);

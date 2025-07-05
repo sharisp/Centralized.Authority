@@ -1,4 +1,5 @@
-﻿using Identity.Domain.Events;
+﻿using Domain.SharedKernel.HelperFunctions;
+using Identity.Domain.Events;
 using Identity.Domain.Interfaces;
 using Identity.Domain.ValueObject;
 

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Identity.Domain.Interfaces;
-using Microsoft.AspNetCore.Http;
 
 namespace Identity.Infrastructure
 {

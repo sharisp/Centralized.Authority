@@ -1,9 +1,11 @@
-﻿using FluentValidation;
+﻿using Domain.SharedKernel.Interfaces;
+using FluentValidation;
 using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
 using Identity.Domain.Entity;
+using Identity.Infrastructure;
 using Identity.Infrastructure.Extensions;
 using Identity.Infrastructure.Options;
 using Identity.Infrastructure.Repository;
@@ -19,7 +21,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class PermissionController(IValidator<CreatePermissionDto> validator, PermissionMapper mapper, PermissionRepository repository,BaseDbContext baseDbContext, IMediator mediator) : ControllerBase
+    public class PermissionController(IValidator<CreatePermissionDto> validator, PermissionMapper mapper, PermissionRepository repository,BaseDbContext baseDbContext,ICurrentUser currentUser) : ControllerBase
     {
         [HttpGet]
         [PermissionKey("Permission.List")]
@@ -109,12 +111,12 @@ namespace Identity.Api.Controllers
         {
             var info = await repository.GetByIdAsync(id);
             if (info == null) return this.FailResponse(" not found");
-            var users = await repository.GetRolesByPermissionId(id);
-            if (users.Count > 0)
+            var roles = await repository.GetRolesByPermissionId(id);
+            if (roles.Count > 0)
             {
                 return this.FailResponse("exists assigned roles");
             }
-            repository.Delete(info);
+            info.SoftDelete(currentUser);
 
 
             return this.OkResponse(id);

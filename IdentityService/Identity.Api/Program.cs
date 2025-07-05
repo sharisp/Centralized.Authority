@@ -1,6 +1,7 @@
 
 using ApiAuth.Api.Middles;
 using Common.Jwt;
+using Domain.SharedKernel.Interfaces;
 using FluentValidation;
 using Identity.Api.ActionFilter;
 using Identity.Api.Contracts.Dtos.Response;

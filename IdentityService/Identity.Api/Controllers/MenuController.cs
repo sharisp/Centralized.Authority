@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Domain.SharedKernel.Interfaces;
+using FluentValidation;
 using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
@@ -21,7 +22,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository, BaseDbContext baseDbContext, PermissionRepository permissionRepository) : ControllerBase
+    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository, BaseDbContext baseDbContext, PermissionRepository permissionRepository, ICurrentUser user) : ControllerBase
     {
 
         [HttpGet]
@@ -124,14 +125,14 @@ namespace Identity.Api.Controllers
         [PermissionKey("Menu.Delete")]
         public async Task<ActionResult<ApiResponse<BaseResponse>>> Delete(long id)
         {
-            var info = await repository.GetByIdAsync(id);
-            if (info == null) return this.FailResponse(" not found");
-            var users = await repository.GetRolesByMenuId(id);
-            if (users.Count > 0)
+            var menu = await repository.GetByIdAsync(id);
+            if (menu == null) return this.FailResponse(" not found");
+            var roles = await repository.GetRolesByMenuId(id);
+            if (roles.Count > 0)
             {
                 return this.FailResponse("exists assigned roles");
             }
-            repository.Delete(info);
+            menu.SoftDelete(user);
 
 
             return this.OkResponse(id);

@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="BaseAuditableEntity.cs" />
+    <Compile Remove="BaseEntity.cs" />
+    <Compile Remove="HashHelper.cs" />
+    <Compile Remove="IdGeneratorFactory.cs" />
+    <Compile Remove="Interfaces\IAggregateRoot.cs" />
+    <Compile Remove="Interfaces\ICurrentUser.cs" />
+    <Compile Remove="Interfaces\IUnitOfWork.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Andrew.Domain.SharedKernel" Version="1.1.4" />
     <PackageReference Include="IdGen" Version="3.0.7" />
     <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.6" />

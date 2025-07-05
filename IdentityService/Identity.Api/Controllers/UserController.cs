@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Domain.SharedKernel.Interfaces;
+using FluentValidation;
 using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
@@ -119,8 +120,7 @@ namespace Identity.Api.Controllers
             var user = await userRepository.GetUserByIdAsync(id);
             if (user == null) return this.FailResponse("user not found");
 
-            userRepository.DeleteUser(user);
-
+            user.SoftDelete(currentUser);
             //await RedisHelper.DelAsync($"user_permissions_{id}");
             await mediator.Publish(new UserDeleteEvents(user));
             return this.OkResponse(id);

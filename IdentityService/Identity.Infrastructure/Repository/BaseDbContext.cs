@@ -1,11 +1,4 @@
-﻿using MediatR;
-using Identity.Domain;
-using Identity.Domain.Entity;
-using Identity.Domain.Interfaces;
-using Identity.Infrastructure.Extensions;
-using Microsoft.EntityFrameworkCore;
-
-namespace Identity.Infrastructure.Repository
+﻿namespace Identity.Infrastructure.Repository
 {
     public class BaseDbContext : Microsoft.EntityFrameworkCore.DbContext
     {

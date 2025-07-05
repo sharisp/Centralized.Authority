@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Identity.Domain.Entity;
+﻿using Identity.Domain.Entity;
 using Identity.Domain.Enums;
-using Identity.Domain.Interfaces;
 
 namespace Identity.Domain.Services
 {
@@ -64,10 +58,7 @@ namespace Identity.Domain.Services
 
         }
 
-        public void DeleteUser(User user)
-        {            
-            userRepository.DeleteUser(user);
-        }
+      
 
      
     }

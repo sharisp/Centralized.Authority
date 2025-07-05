@@ -1,4 +1,4 @@
-﻿using Identity.Domain.Interfaces;
+﻿
 
 namespace Identity.Domain.Entity
 {

@@ -1,9 +1,4 @@
-﻿using Identity.Domain.Entity;
-using Identity.Domain.ValueObject;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace Identity.Infrastructure.Config
+﻿namespace Identity.Infrastructure.Config
 {
     public class UserConfig : IEntityTypeConfiguration<User>
     {

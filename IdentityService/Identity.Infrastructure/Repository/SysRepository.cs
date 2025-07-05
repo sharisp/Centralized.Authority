@@ -1,12 +1,4 @@
-﻿using Identity.Domain.Entity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Identity.Infrastructure.Repository
+﻿namespace Identity.Infrastructure.Repository
 {
     public class SysRepository
     {

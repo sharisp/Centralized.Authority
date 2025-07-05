@@ -1,22 +1,11 @@
-﻿using Identity.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Identity.Domain.Events;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
+﻿using CSRedis;
+using Domain.SharedKernel;
 using Identity.Domain.Services;
 using Identity.Infrastructure.DbContext;
 using Identity.Infrastructure.EventHandler;
 using Identity.Infrastructure.Repository;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using CSRedis;
-using Identity.Domain;
+using Microsoft.Extensions.DependencyInjection;
 
 
 namespace Identity.Infrastructure
@@ -56,9 +45,7 @@ namespace Identity.Infrastructure
 
             services.AddScoped<LoginFailEventHandler>();
             services.AddScoped<LoginSuccessEventHandler>();
-
-            var workerId = configuration.GetValue<int>("Snowflake:WorkerId");
-            IdGeneratorFactory.Initialize(workerId);
+            services.AddDomainShardKernelCollection(configuration);
             return services;
         }
     }
