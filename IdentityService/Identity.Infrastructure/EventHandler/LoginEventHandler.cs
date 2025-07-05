@@ -17,7 +17,15 @@ namespace Identity.Infrastructure.EventHandler
 
         public async Task Handle(LoginSuccessEvent notification, CancellationToken cancellationToken)
         {
-            dbContext.LoginHistories.Add(new LoginHistory(notification.UserInfo.Id, notification.UserInfo.UserName, null, true, "login success", new PhoneNumber("61", "123456")));
+            var newLoginHistory = new LoginHistory(
+                notification.UserInfo.Id,
+                notification.UserInfo.UserName,
+                null,
+                true,
+                "login success",
+                new PhoneNumber("61", "123456")
+            );
+            dbContext.LoginHistories.Add(newLoginHistory);
             await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
