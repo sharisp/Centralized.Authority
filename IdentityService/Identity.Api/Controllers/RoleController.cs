@@ -21,13 +21,14 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, MenuRepository menuRepository, BaseDbContext baseDbContext,ICurrentUser currentUser) : ControllerBase
+    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, MenuRepository menuRepository, ICurrentUser currentUser) : ControllerBase
     {
         [HttpGet]
         [PermissionKey("Role.List")]
         public async Task<ActionResult<ApiResponse<List<Role>>>> List()
         {
-            var roles = await baseDbContext.Roles.ToListAsync();
+            var query = repository.Query();
+            var roles =await query.ToListAsync();
             return this.OkResponse(roles);
         }
 
@@ -35,18 +36,18 @@ namespace Identity.Api.Controllers
         [PermissionKey("Role.List")]
         public async Task<ActionResult<ApiResponse<PaginationResponse<Role>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string roleName = "", string description = "")
         {
-            var roles = baseDbContext.Roles.AsQueryable();
+
+            var query = repository.Query();
             if (!string.IsNullOrWhiteSpace(roleName))
             {
-                roles = roles.Where(t => t.RoleName.Contains(roleName));
+                query = query.Where(t => t.RoleName.Contains(roleName));
             }
             if (!string.IsNullOrWhiteSpace(description))
             {
-                roles = roles.Where(t => !string.IsNullOrEmpty(t.Description) && t.Description.Contains(description));
+                query = query.Where(t => !string.IsNullOrEmpty(t.Description) && t.Description.Contains(description));
 
-                //  roles = roles.Where(t => t.Description?.Contains(description) == true);
             }
-            var res = await roles.ToPaginationResponseAsync(pageIndex, pageSize);
+            var res = await query.ToPaginationResponseAsync(pageIndex, pageSize);
 
             return this.OkResponse(res);
         }
@@ -55,7 +56,9 @@ namespace Identity.Api.Controllers
         [PermissionKey("Role.GetRoleDetail")]
         public async Task<ActionResult<ApiResponse<Role?>>> GetByRoleId(long id)
         {
-            var role = await baseDbContext.Roles.Include(t => t.Menus).Include(t => t.Permissions).Where(t => t.Id == id).FirstOrDefaultAsync();
+
+            var query = repository.Query(true,true);
+            var role = await query.Where(t => t.Id == id).FirstOrDefaultAsync();
             return this.OkResponse(role);
         }
         [HttpPost]
@@ -89,8 +92,9 @@ namespace Identity.Api.Controllers
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
-            // var role = await repository.GetByIdAsync(id);
-            var role = baseDbContext.Roles.Include(t => t.Permissions).Include(t => t.Menus).FirstOrDefault(t => t.Id == id);
+
+            var query = repository.Query(true, true);
+            var role =  await query.FirstOrDefaultAsync(t => t.Id == id);
             if (role == null) return this.FailResponse("not found");
 
             if (!string.IsNullOrEmpty(dto.RoleName) && dto.RoleName != role.RoleName)

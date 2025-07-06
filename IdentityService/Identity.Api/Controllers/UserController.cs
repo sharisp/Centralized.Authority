@@ -15,6 +15,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Identity.Api.Controllers
 {
@@ -22,14 +23,16 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, BaseDbContext baseDbContext, PermissionHelper permissionHelper, ICurrentUser currentUser, RoleRepository roleRepository) : ControllerBase
+    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator,  PermissionHelper permissionHelper, ICurrentUser currentUser, RoleRepository roleRepository) : ControllerBase
     {
 
         [HttpGet]
         [PermissionKey("User.List")]
         public async Task<ActionResult<ApiResponse<List<User>>>> List()
         {
-            var users = await baseDbContext.Users.ToListAsync();
+
+            var query = userRepository.Query();
+            var users = await query.ToListAsync();
             return this.OkResponse(users);
         }
 
@@ -37,24 +40,27 @@ namespace Identity.Api.Controllers
         [PermissionKey("User.Detail")]
         public async Task<ActionResult<ApiResponse<List<User>>>> ListById(long id)
         {
-            var users = await baseDbContext.Users.Include(t => t.Roles).FirstOrDefaultAsync(t => t.Id == id);
+
+            var query = userRepository.Query(true);
+            var users =await query.FirstOrDefaultAsync(t => t.Id == id);
             return this.OkResponse(users);
         }
         [HttpGet("Pagination")]
         [PermissionKey("User.List")]
         public async Task<ActionResult<ApiResponse<PaginationResponse<User>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string userName = "", string phoneNumber = "")
         {
-            var users = baseDbContext.Users.AsQueryable();
+
+            var query = userRepository.Query();
             if (!string.IsNullOrWhiteSpace(userName))
             {
-                users = users.Where(t => t.UserName.Contains(userName));
+                query = query.Where(t => t.UserName.Contains(userName));
             }
             if (!string.IsNullOrWhiteSpace(phoneNumber))
             {
-                users = users.Where(t => t.Phone != null && t.Phone.Number.Contains(phoneNumber));
+                query = query.Where(t => t.Phone != null && t.Phone.Number.Contains(phoneNumber));
 
             }
-            var res = await users.ToPaginationResponseAsync(pageIndex, pageSize);
+            var res = await query.ToPaginationResponseAsync(pageIndex, pageSize);
 
             return this.OkResponse(res);
         }

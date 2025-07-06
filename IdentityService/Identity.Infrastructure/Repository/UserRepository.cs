@@ -9,6 +9,17 @@ namespace Identity.Infrastructure.DbContext
         {
             this.dbContext = dbContext;
         }
+
+        public IQueryable<User> Query(bool isIncludeRole = false)
+        {
+            var query = dbContext.Users.AsQueryable();
+            if (isIncludeRole)
+            {
+                query = query.Include(t => t.Roles);
+            }
+           
+            return query;
+        }
         public async Task AddUserAsync(User user)
         {
          await  dbContext.Users.AddAsync(user);

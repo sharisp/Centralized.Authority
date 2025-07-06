@@ -22,43 +22,47 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository, BaseDbContext baseDbContext, PermissionRepository permissionRepository, ICurrentUser user) : ControllerBase
+    public class MenuController(IValidator<CreateMenuDto> validator, MenuMapper mapper, MenuRepository repository,  PermissionRepository permissionRepository, ICurrentUser user) : ControllerBase
     {
 
         [HttpGet]
         [PermissionKey("Menu.List")]
         public async Task<ActionResult<ApiResponse<List<Menu>>>> List(string systemName = "")
         {
-            var menus = baseDbContext.Menus.AsQueryable();
+
+            var query = repository.Query();
             if (!string.IsNullOrEmpty(systemName))
             {
-                menus = menus.Where(t => t.SystemName == systemName);
+                query = query.Where(t => t.SystemName == systemName);
             }
-            return this.OkResponse(await menus.ToListAsync());
+            return this.OkResponse(await query.ToListAsync());
         }
         [HttpGet("Detail/{id}")]
         [PermissionKey("Menu.Detail")]
         public async Task<ActionResult<ApiResponse<Menu>>> Detail(long id)
         {
-            var menu = await baseDbContext.Menus.Include(t => t.Permissions).FirstOrDefaultAsync(t => t.Id == id);
+            var query = repository.Query();
+            var menu = await query.FirstOrDefaultAsync(t => t.Id == id);
             return this.OkResponse(menu);
         }
         [HttpGet("Pagination")]
         [PermissionKey("Menu.List")]
         public async Task<ActionResult<ApiResponse<PaginationResponse<Menu>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string title = "", string permissionkey = "", string systemName = "")
         {
-            var menus = baseDbContext.Menus.AsQueryable();
+
+            var query = repository.Query();
+         
             if (!string.IsNullOrWhiteSpace(title))
             {
-                menus = menus.Where(t => t.Title.Contains(title));
+                query = query.Where(t => t.Title.Contains(title));
             }
 
             if (!string.IsNullOrWhiteSpace(systemName))
             {
-                menus = menus.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName.Contains(systemName));
+                query = query.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName == systemName);
 
             }
-            var res = await menus.ToPaginationResponseAsync(pageIndex, pageSize);
+            var res = await query.ToPaginationResponseAsync(pageIndex, pageSize);
 
             return this.OkResponse(res);
         }
@@ -66,12 +70,12 @@ namespace Identity.Api.Controllers
         [PermissionKey("Menu.ListWithPermission")]
         public async Task<ActionResult<ApiResponse<List<Menu>>>> ListWithPermission(string systemName = "")
         {
-            var menus = baseDbContext.Menus.Include(t => t.Permissions);
+            var query = repository.Query(true);          
             if (!string.IsNullOrEmpty(systemName))
             {
-                menus.Where(t => t.SystemName == systemName);
+                query= query.Where(t => t.SystemName == systemName);
             }
-            return this.OkResponse(await menus.ToListAsync());
+            return this.OkResponse(await query.ToListAsync());
         }
         [HttpPost]
         [PermissionKey("Menu.Create")]

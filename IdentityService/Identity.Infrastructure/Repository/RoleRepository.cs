@@ -8,8 +8,20 @@
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
+        public IQueryable<Role> Query(bool isIncludePermisson = false,bool isIncludeMenu=false)
+        {
+            var query = dbContext.Roles.AsQueryable();
+            if (isIncludePermisson)
+            {
+                query = query.Include(t => t.Permissions);
+            }
+            if (isIncludeMenu)
+            {
+                query = query.Include(t => t.Menus);
+            }
+            return query;
+        }
 
-       
 
         public async Task AddAsync(Role role)
         {

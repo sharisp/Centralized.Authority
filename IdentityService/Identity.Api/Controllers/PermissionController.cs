@@ -21,18 +21,19 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class PermissionController(IValidator<CreatePermissionDto> validator, PermissionMapper mapper, PermissionRepository repository,BaseDbContext baseDbContext,ICurrentUser currentUser) : ControllerBase
+    public class PermissionController(IValidator<CreatePermissionDto> validator, PermissionMapper mapper, PermissionRepository repository,ICurrentUser currentUser) : ControllerBase
     {
         [HttpGet]
         [PermissionKey("Permission.List")]
         public async Task<ActionResult<ApiResponse<List<Permission>>>> List(string systemName="")
         {
-            var permissions = baseDbContext.Permissions.AsQueryable();
+
+            var query = repository.Query();
             if (!string.IsNullOrEmpty(systemName))
             {
-                permissions= permissions.Where(t => t.SystemName == systemName);
+                query = query.Where(t => t.SystemName == systemName.Trim());
             }
-            return this.OkResponse(await permissions.ToListAsync());
+            return this.OkResponse(await query.ToListAsync());
         }
         [HttpGet("Detail/{id}")]
         [PermissionKey("Permission.Detail")]
@@ -46,24 +47,22 @@ namespace Identity.Api.Controllers
         [PermissionKey("Permission.List")]
         public async Task<ActionResult<ApiResponse<PaginationResponse<Permission>>>> ListByPagination(int pageIndex = 1, int pageSize = 10, string title = "", string permissionkey = "",string systemName="")
         {
-            var permissions = baseDbContext.Permissions.AsQueryable();
+
+            var query = repository.Query();
             if (!string.IsNullOrWhiteSpace(title))
             {
-                permissions = permissions.Where(t => t.Title.Contains(title));
+                query = query.Where(t => t.Title.Contains(title));
             }
             if (!string.IsNullOrWhiteSpace(permissionkey))
             {
-                permissions = permissions.Where(t => !string.IsNullOrEmpty(t.PermissionKey) && t.PermissionKey.Contains(permissionkey));
+                query = query.Where(t => !string.IsNullOrEmpty(t.PermissionKey) && t.PermissionKey.Contains(permissionkey));
 
-                //  roles = roles.Where(t => t.Description?.Contains(description) == true);
             }
             if (!string.IsNullOrWhiteSpace(systemName))
             {
-                permissions = permissions.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName.Contains(systemName));
-
-                //  roles = roles.Where(t => t.Description?.Contains(description) == true);
+                query = query.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName.Contains(systemName));
             }
-            var res = await permissions.ToPaginationResponseAsync(pageIndex, pageSize);
+            var res = await query.ToPaginationResponseAsync(pageIndex, pageSize);
 
             return this.OkResponse(res);
         }

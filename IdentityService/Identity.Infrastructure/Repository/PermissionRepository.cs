@@ -8,8 +8,16 @@
         {
             this.dbContext = dbContext;
         }
+        public IQueryable<Permission> Query(bool isIncludeRole = false)
+        {
+            var query = dbContext.Permissions.AsQueryable();
+            if (isIncludeRole)
+            {
+                query = query.Include(t => t.Roles);
+            }
+            return query;
+        }
 
-      
         public async Task AddAsync(Permission info)
         {
             await dbContext.Permissions.AddAsync(info);

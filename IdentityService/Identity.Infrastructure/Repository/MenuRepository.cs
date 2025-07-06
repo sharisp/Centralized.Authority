@@ -9,7 +9,15 @@
             this.dbContext = dbContext;
         }
 
-     
+        public IQueryable<Menu> Query( bool isIncludePermission = false)
+        {
+            var query = dbContext.Menus.AsQueryable();
+            if (isIncludePermission)
+            {
+                query = query.Include(t => t.Permissions);
+            }        
+            return query;
+        }
 
         public async Task AddAsync(Menu info)
         {
