@@ -41,7 +41,7 @@ namespace Identity.Api.Controllers
         [PermissionKey("Menu.Detail")]
         public async Task<ActionResult<ApiResponse<Menu>>> Detail(long id)
         {
-            var query = repository.Query();
+            var query = repository.Query(true);
             var menu = await query.FirstOrDefaultAsync(t => t.Id == id);
             return this.OkResponse(menu);
         }
