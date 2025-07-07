@@ -31,6 +31,9 @@ A powerful **Authority Management System** built with **.NET 8**, following **Do
   * Token refresh endpoint for seamless session continuation
   * Logout invalidates refresh tokens
 * 🔍 **Permission-Based Authorization** across multiple systems with fine-grained control
+   * Role-Based Access Control (RBAC):
+   Menus are associated with permissions, enabling fine-grained UI control (e.g., button visibility).
+   For pure API protection, permissions can be used independently of menus.
 * 🚀 **Redis Caching**: High-performance caching of permission checks to reduce DB load
 * 🧾 **Public Permission Check API**: Query permissions by providing `SystemName`, `PermissionKey`, and `UserId`
 * ❄️ **Snowflake ID Generation** for users, roles, and permissions to ensure distributed uniqueness
