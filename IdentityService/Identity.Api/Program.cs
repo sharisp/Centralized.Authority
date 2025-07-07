@@ -76,7 +76,7 @@ namespace Identity.Api
                     | System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
                 // 忽略循环引用（防止对象环导致异常）
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-            }); ;
+            }); 
             var app = builder.Build();
 
             app.UseCors("AllowAll");

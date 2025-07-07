@@ -55,7 +55,7 @@ namespace Identity.Api.Controllers
             await ValidationHelper.ValidateModelAsync(loginRequestDto, validator);
 
             var (user, res) =
-                await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName, loginRequestDto.Password);
+                await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName.Trim(), loginRequestDto.Password.Trim());
             if (res != LoginResult.Success)
             {
                 return this.FailResponse("login fail", 401);

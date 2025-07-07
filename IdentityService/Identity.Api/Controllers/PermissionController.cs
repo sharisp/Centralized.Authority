@@ -51,16 +51,16 @@ namespace Identity.Api.Controllers
             var query = repository.Query();
             if (!string.IsNullOrWhiteSpace(title))
             {
-                query = query.Where(t => t.Title.Contains(title));
+                query = query.Where(t => t.Title.Contains(title.Trim()));
             }
             if (!string.IsNullOrWhiteSpace(permissionkey))
             {
-                query = query.Where(t => !string.IsNullOrEmpty(t.PermissionKey) && t.PermissionKey.Contains(permissionkey));
+                query = query.Where(t => !string.IsNullOrEmpty(t.PermissionKey) && t.PermissionKey.Contains(permissionkey.Trim()));
 
             }
             if (!string.IsNullOrWhiteSpace(systemName))
             {
-                query = query.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName.Contains(systemName));
+                query = query.Where(t => !string.IsNullOrEmpty(t.SystemName) && t.SystemName==systemName);
             }
             var res = await query.ToPaginationResponseAsync(pageIndex, pageSize);
 

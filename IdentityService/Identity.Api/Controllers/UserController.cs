@@ -53,11 +53,11 @@ namespace Identity.Api.Controllers
             var query = userRepository.Query();
             if (!string.IsNullOrWhiteSpace(userName))
             {
-                query = query.Where(t => t.UserName.Contains(userName));
+                query = query.Where(t => t.UserName.Contains(userName.Trim()));
             }
             if (!string.IsNullOrWhiteSpace(phoneNumber))
             {
-                query = query.Where(t => t.Phone != null && t.Phone.Number.Contains(phoneNumber));
+                query = query.Where(t => t.Phone != null && t.Phone.Number.Contains(phoneNumber.Trim()));
 
             }
             var res = await query.ToPaginationResponseAsync(pageIndex, pageSize);

@@ -132,7 +132,7 @@ namespace Identity.Domain.Entity
             {
                 Roles = new List<Role>();
             }
-            if (!Roles.Contains(role))
+            if (!Roles.Any(r => r.Id == role.Id))               
             {
                 Roles.Add(role);
             }

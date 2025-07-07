@@ -54,7 +54,7 @@ namespace Identity.Api.Controllers
          
             if (!string.IsNullOrWhiteSpace(title))
             {
-                query = query.Where(t => t.Title.Contains(title));
+                query = query.Where(t => t.Title.Contains(title.Trim()));
             }
 
             if (!string.IsNullOrWhiteSpace(systemName))

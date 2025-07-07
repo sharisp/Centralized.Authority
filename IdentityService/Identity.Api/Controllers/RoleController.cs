@@ -40,11 +40,11 @@ namespace Identity.Api.Controllers
             var query = repository.Query();
             if (!string.IsNullOrWhiteSpace(roleName))
             {
-                query = query.Where(t => t.RoleName.Contains(roleName));
+                query = query.Where(t => t.RoleName.Contains(roleName.Trim()));
             }
             if (!string.IsNullOrWhiteSpace(description))
             {
-                query = query.Where(t => !string.IsNullOrEmpty(t.Description) && t.Description.Contains(description));
+                query = query.Where(t => !string.IsNullOrEmpty(t.Description) && t.Description.Contains(description.Trim()));
 
             }
             var res = await query.ToPaginationResponseAsync(pageIndex, pageSize);
