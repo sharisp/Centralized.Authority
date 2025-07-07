@@ -42,17 +42,24 @@ A powerful **Authority Management System** built with **.NET 8**, following **Do
 
 ---
 
+
 ### 📦 Special Dependencies
+
 This service uses the following two NuGet packages:
 
-Domain.SharedKernel
+* [**Domain.SharedKernel**](https://github.com/sharisp/Domain.SharedKernel)
+* [**Common.Jwt**](https://github.com/sharisp/Common.Jwt)
 
-Common.Jwt
+---
 
-### 💻 Frontend Web (React+Typescript)
+### 💻 Frontend Web (React + TypeScript)
+
 The frontend project is available on GitHub:
 
-Centralized.Authority.React.Web
+* [**Centralized.Authority.React.Web**](https://github.com/sharisp/Centralized.Authority.React.Web)
+
+
+
 
 
 
