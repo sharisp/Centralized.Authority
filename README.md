@@ -42,3 +42,17 @@ A powerful **Authority Management System** built with **.NET 8**, following **Do
 
 ---
 
+### 📦 Special Dependencies
+This service uses the following two NuGet packages:
+
+Domain.SharedKernel
+
+Common.Jwt
+
+### 💻 Frontend Web (React+Typescript)
+The frontend project is available on GitHub:
+
+Centralized.Authority.React.Web
+
+
+
