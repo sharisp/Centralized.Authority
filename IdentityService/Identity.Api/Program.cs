@@ -23,7 +23,17 @@ namespace Identity.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-         
+           
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddJWTAuthentication(builder.Configuration);
@@ -68,7 +78,10 @@ namespace Identity.Api
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             }); ;
             var app = builder.Build();
+
+            app.UseCors("AllowAll");
             app.UseMiddleware<CustomerExceptionMiddleware>();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
