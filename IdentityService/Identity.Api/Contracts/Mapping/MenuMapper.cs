@@ -16,7 +16,7 @@ namespace Identity.Api.Contracts.Mapping
             {
                 outTarget.ChangeSystemName(inDto.SystemName);
             }
-            if (inDto.ParentId>0&& inDto.ParentId!=outTarget.ParentId)
+            if (inDto.ParentId>=0&& inDto.ParentId!=outTarget.ParentId)
             {
                 outTarget.ChangeParentID(inDto.ParentId);
             }
