@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 namespace Identity.Domain.Enums
 {
     public enum MenuType
-    {
-
-        Group = 0,
+    {     
         Catelogue = 1,
-        Menu = 2,
-        Button = 3,
+        Menu = 2,       
     }
 }
