@@ -83,8 +83,8 @@ namespace Identity.Api.Controllers
         {
             await ValidationHelper.ValidateModelAsync(dto, validator);
 
-            var user = await repository.GetByPathAsync(dto.Path, dto.SystemName);
-            if (user != null) return this.FailResponse("Menu path exists");
+            var menu = await repository.GetByPathAsync(dto.Path, dto.SystemName);
+            if (menu != null) return this.FailResponse("Menu path exists");
 
             var info = mapper.ToEntity(dto);
             if (dto.PermissionIds != null && dto.PermissionIds.Count > 0)

@@ -23,7 +23,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator,  PermissionHelper permissionHelper, ICurrentUser currentUser, RoleRepository roleRepository) : ControllerBase
+    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, PermissionHelper permissionHelper, ICurrentUser currentUser, RoleRepository roleRepository) : ControllerBase
     {
 
         [HttpGet]
@@ -42,7 +42,7 @@ namespace Identity.Api.Controllers
         {
 
             var query = userRepository.Query(true);
-            var users =await query.FirstOrDefaultAsync(t => t.Id == id);
+            var users = await query.FirstOrDefaultAsync(t => t.Id == id);
             return this.OkResponse(users);
         }
         [HttpGet("Pagination")]

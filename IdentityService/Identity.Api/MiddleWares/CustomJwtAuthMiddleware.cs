@@ -82,7 +82,7 @@ public class CustomJwtAuthMiddleware(
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
 
-            var response = ApiResponse<BaseResponse>.Fail("no auth to this action");
+            var response = ApiResponse<string>.Fail("no auth to this action");
 
             await context.Response.WriteAsJsonAsync(response);
 
@@ -90,19 +90,6 @@ public class CustomJwtAuthMiddleware(
         }
 
         await next(context);
-        /* }
-         catch (Exception ex)
-         {
-             //  httpContext.Response.ContentType = "application/problem+json";
-
-             context.Response.ContentType = "application/json";
-             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-             logger.LogError("WebApi——异常", ex);
-             var res = ApiResponse<BaseResponse>.Fail(ex.Message);
-
-             await context.Response.WriteAsJsonAsync(res);
-
-         }*/
     }
 
     private bool CheckWhiteList(string url)

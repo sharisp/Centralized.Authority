@@ -23,7 +23,6 @@ namespace Identity.Api.Controllers
             var res = await permissionHelper.CheckPermissionAsync(dto.SystemName, dto.UserId, dto.PermissionKey);
             if (res)
             {
-
                 return this.OkResponse("success");
             }
             //Here, I think it is better to return a 200 OK status with a failure message rather than a 403 Forbidden,

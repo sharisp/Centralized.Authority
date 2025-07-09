@@ -8,7 +8,6 @@ using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
 using Identity.Api.Controllers;
 using Identity.Api.MiddleWares;
-using Identity.Domain.Interfaces;
 using Identity.Infrastructure;
 using Identity.Infrastructure.EventHandler;
 using Microsoft.AspNetCore.Mvc;

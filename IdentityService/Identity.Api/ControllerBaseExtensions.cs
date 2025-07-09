@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.Api
 {
-    public static class ResponseHelper
+    public static class ControllerBaseExtensions
     {
         public static OkObjectResult OkResponse(this ControllerBase controllerBase, long id, int statusCode = 200)
         {
@@ -16,7 +16,7 @@ namespace Identity.Api
         
         public static OkObjectResult FailResponse(this ControllerBase controllerBase,string errMsg,int statusCode = 500)
         {
-            return controllerBase.Ok((ApiResponse<BaseResponse>.Fail(errMsg,statusCode)));
+            return controllerBase.Ok((ApiResponse<string>.Fail(errMsg,statusCode)));
         }
         public static OkObjectResult FailResponse<T>(this ControllerBase controllerBase, string errMsg, T? data, int statusCode = 500)
         {
