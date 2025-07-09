@@ -12,7 +12,7 @@ namespace Identity.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddIdentityInfrastructure(this IServiceCollection services,IConfiguration configuration)
+        public static IServiceCollection AddIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
@@ -31,13 +31,12 @@ namespace Identity.Infrastructure
             #endregion
 
             services.AddScoped<ICurrentUser, CurrentUser>();
-            services.AddScoped<IUserRepository,UserRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<RoleRepository>();
-            services.AddScoped<PermissionRepository>(); 
+            services.AddScoped<PermissionRepository>();
             services.AddScoped<MenuRepository>();
             services.AddScoped<SysRepository>();
-            services.AddSingleton(new AppHelper(configuration));
-
+            AppHelper.Init(configuration);
             services.AddScoped<UserDomainService>();
             services.AddScoped<PermissionHelper>();
             // Register repositories

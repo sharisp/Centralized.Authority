@@ -7,7 +7,8 @@ namespace Identity.Infrastructure
     {
         private static IConfiguration _config;
 
-        public AppHelper(IConfiguration configuration)
+    
+        public static void Init(IConfiguration configuration)
         {
             _config = configuration;
         }
