@@ -43,11 +43,16 @@ namespace Identity.Infrastructure
         }
         public async Task<Menu[]> GetMenusWithPermissionBySystemNameAndUid(long userId, string systemName)
         {
-            var menus = await dbContext.Users.Where(u => u.Id == userId)
+            var menuQuery = dbContext.Users.Where(u => u.Id == userId)
                 .SelectMany(u => u.Roles)
-                .SelectMany(r => r.Menus).Include(t => t.Permissions).Where(t => t.SystemName == systemName)
-                .Distinct()
-                .ToArrayAsync();
+                .SelectMany(r => r.Menus);
+            if (!string.IsNullOrWhiteSpace(systemName))
+            {
+                menuQuery = menuQuery.Where(t => t.SystemName == systemName);
+            }
+
+            var menus = await menuQuery.Include(t => t.Permissions).Distinct()
+                   .ToArrayAsync();
             return menus;
         }
         public async Task<bool> CheckPermissionAsync(string systemName, long userId, string permissionKey)
