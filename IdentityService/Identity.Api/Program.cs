@@ -10,6 +10,7 @@ using Identity.Api.Controllers;
 using Identity.Api.MiddleWares;
 using Identity.Infrastructure;
 using Identity.Infrastructure.EventHandler;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -91,10 +92,10 @@ namespace Identity.Api
             {
                 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
                 app.Urls.Add($"http://*:{port}");
-
-                app.MapGet("/", () => "Hello from DotnetCore!");
+                
             }
 
+            app.MapGet("/", [AllowAnonymous] () => "Hello from DotnetCore!");
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
