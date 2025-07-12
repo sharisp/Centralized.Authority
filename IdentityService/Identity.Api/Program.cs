@@ -78,7 +78,7 @@ namespace Identity.Api
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             }); 
             var app = builder.Build();
-
+            app.UseRouting();
             app.UseCors("AllowAll");
             app.UseMiddleware<CustomerExceptionMiddleware>();
 
@@ -88,17 +88,18 @@ namespace Identity.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            else
-            {
-                var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-                app.Urls.Add($"http://*:{port}");
-                
-            }
-
-            app.MapGet("/", [AllowAnonymous] () => "Hello from DotnetCore!");
-            app.UseHttpsRedirection();
 
             app.UseAuthorization();
+            /*   else
+               {
+                   var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+                   app.Urls.Add($"http://*:{port}");
+
+               }*/
+
+            app.MapGet("/", [AllowAnonymous] () => "Hello from DotnetCore!");
+        //    app.UseHttpsRedirection();
+
 
 
             app.MapControllers();
