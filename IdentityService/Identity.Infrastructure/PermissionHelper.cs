@@ -57,9 +57,13 @@ namespace Identity.Infrastructure
         }
         public async Task<bool> CheckPermissionAsync(string systemName, long userId, string permissionKey)
         {
+            var permissionArr = await GetPermissionsByUserId(userId);
+            /*
             var permissionArr = await RedisHelper.LRangeAsync($"{systemName}_user_permissions_{userId}", 0, -1);
 
             if (permissionArr == null || permissionArr.Length == 0)
+            {
+
                 //查询并写入，需要用分布式锁，防止重复写
                 await LockHelper.RedisLock($"lock:user:permission:{userId}", async () =>
                 {
@@ -77,7 +81,9 @@ namespace Identity.Infrastructure
                     //did not get lock, directly query the database
                     permissionArr = await GetPermissionsByUserId(userId);
                 });
-
+            }
+               
+            */
             if (permissionArr.Any(x =>
                     x.Equals((systemName + "." + permissionKey), StringComparison.OrdinalIgnoreCase)) == false)
             {
