@@ -13,12 +13,14 @@ namespace Identity.Api.Controllers
     [ApiController]
     public class CheckPermissionController(PermissionHelper permissionHelper, IValidator<PermissionCheckDto> permissionValidator) : ControllerBase
     {
-        [Authorize] // if you don't want to require authentication for this endpoint, you can remove this line
+        // [Authorize] // if you don't want to require authentication for this endpoint, you can remove this line
+        [AllowAnonymous]
         [HttpPost]
         [PermissionKey("Permission.Check")]
         public async Task<ActionResult<ApiResponse<string>>> CheckPermission(PermissionCheckDto dto)
         {
             await ValidationHelper.ValidateModelAsync(dto, permissionValidator);
+            
 
             var res = await permissionHelper.CheckPermissionAsync(dto.SystemName, dto.UserId, dto.PermissionKey);
             if (res)

@@ -24,10 +24,14 @@ namespace Identity.Infrastructure
 
         public async Task<string[]> GetPermissionsBySystemNameAndUidAsync(long userId, string systemName)
         {
-            var permissions = await dbContext.Users.Where(u => u.Id == userId)
+            var permissionQuery = dbContext.Users.Where(u => u.Id == userId)
                 .SelectMany(u => u.Roles)
-                .SelectMany(r => r.Permissions).Where(t => t.SystemName == systemName)
-                .Distinct()
+                .SelectMany(r => r.Permissions);
+            if (!string.IsNullOrWhiteSpace(systemName))
+            {
+                permissionQuery = permissionQuery.Where(t => t.SystemName == systemName);
+            }
+            var permissions = await permissionQuery.Distinct()
                 .Select(t => (t.SystemName + "." + t.PermissionKey))
                 .ToArrayAsync();
             return permissions;
@@ -39,6 +43,20 @@ namespace Identity.Infrastructure
                 .SelectMany(r => r.Menus).Where(t => t.SystemName == systemName)
                 .Distinct()
                 .ToArrayAsync();
+            return menus;
+        }
+        public async Task<Menu[]> GetMenusWithBySystemNameAndUid(long userId, string systemName)
+        {
+            var menuQuery = dbContext.Users.Where(u => u.Id == userId)
+                .SelectMany(u => u.Roles)
+                .SelectMany(r => r.Menus);
+            if (!string.IsNullOrWhiteSpace(systemName))
+            {
+                menuQuery = menuQuery.Where(t => t.SystemName == systemName);
+            }
+
+            var menus = await menuQuery.Distinct()
+                   .ToArrayAsync();
             return menus;
         }
         public async Task<Menu[]> GetMenusWithPermissionBySystemNameAndUid(long userId, string systemName)
@@ -57,8 +75,8 @@ namespace Identity.Infrastructure
         }
         public async Task<bool> CheckPermissionAsync(string systemName, long userId, string permissionKey)
         {
-            var permissionArr = await GetPermissionsByUserId(userId);
-            /*
+            //   var permissionArr = await GetPermissionsByUserId(userId);
+
             var permissionArr = await RedisHelper.LRangeAsync($"{systemName}_user_permissions_{userId}", 0, -1);
 
             if (permissionArr == null || permissionArr.Length == 0)
@@ -82,8 +100,8 @@ namespace Identity.Infrastructure
                     permissionArr = await GetPermissionsByUserId(userId);
                 });
             }
-               
-            */
+
+
             if (permissionArr.Any(x =>
                     x.Equals((systemName + "." + permissionKey), StringComparison.OrdinalIgnoreCase)) == false)
             {

@@ -87,6 +87,7 @@ namespace Identity.Api
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.Urls.Add($"http://*:5016");
             }
 
             app.UseAuthorization();

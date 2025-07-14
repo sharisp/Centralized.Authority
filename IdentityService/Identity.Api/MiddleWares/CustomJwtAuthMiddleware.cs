@@ -70,9 +70,22 @@ public class CustomJwtAuthMiddleware(
             await next(context);
             return;
         }
+
+        string? permissionStr = context?.User.FindFirst("permissions")?.Value;
+        if (!string.IsNullOrWhiteSpace(permissionStr))
+        {
+            var permissions = permissionStr.Split(';', StringSplitOptions.RemoveEmptyEntries);
+            if (permissions.Contains(ConstantValues.SystemName + "." + permissionKey, StringComparer.OrdinalIgnoreCase))
+            {
+                await next(context);
+                return;
+            }
+        }
+
         //can not use DI here
         var permissionHelper = context.RequestServices.GetRequiredService<PermissionHelper>();
 
+        
         var userIDInt = Convert.ToInt64(userId);
         var resFlag = await permissionHelper.CheckPermissionAsync(ConstantValues.SystemName, userIDInt, permissionKey);
 

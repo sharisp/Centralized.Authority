@@ -63,17 +63,20 @@ namespace Identity.Api.Controllers
             else
             {
 
-                var menus = await permissionHelper.GetMenusWithPermissionBySystemNameAndUid(user.Id, loginRequestDto.SystemName);
-            
-                var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName);
+                var menus = await permissionHelper.GetMenusWithBySystemNameAndUid(user.Id, loginRequestDto.SystemName);
+                var permissions = await permissionHelper.GetPermissionsBySystemNameAndUidAsync(user.Id, loginRequestDto.SystemName);
+                var dict = new Dictionary<string, string>();
+                dict.Add("permissions", string.Join(';', permissions));
+                var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName, null, dict);
                 user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
                 return this.OkResponse(new LoginWebResponseDto(
                     user.UserName,
                     user.Email,
                     user.NickName,
-                    user.Id,                    
+                    user.Id,
                     token,
-                    menus
+                    menus,
+                    permissions
 
                 ));
             }
