@@ -4,6 +4,7 @@ using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
+using Identity.Api.Contracts.Validator;
 using Identity.Domain.Entity;
 using Identity.Domain.Events;
 using Identity.Domain.Interfaces;
@@ -15,7 +16,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Security.Claims;
 
 namespace Identity.Api.Controllers
 {
@@ -23,7 +24,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, PermissionHelper permissionHelper, ICurrentUser currentUser, RoleRepository roleRepository) : ControllerBase
+    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, PermissionHelper permissionHelper, ICurrentUser currentUser, RoleRepository roleRepository, IValidator<ChangePwdDto> pwdValidator) : ControllerBase
     {
 
         [HttpGet]
@@ -119,6 +120,30 @@ namespace Identity.Api.Controllers
             return this.OkResponse(id);
         }
 
+
+        [HttpPut("ChangePwd")]
+        [PermissionKey("User.ChangeOwnPwd")]
+        public async Task<ActionResult<ApiResponse<string>>> ChangeOwnPwd([FromBody] ChangePwdDto changePwdDto)
+        {
+
+            await ValidationHelper.ValidateModelAsync(changePwdDto, pwdValidator);
+            var userId = this.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                return this.FailResponse("please login");
+            }
+            var user = await userRepository.GetUserByIdAsync(Convert.ToInt64(userId));
+            if (user == null) return this.FailResponse("user not found");
+
+            if (user.CheckPassword(changePwdDto.OldPassword) == false)
+            {
+
+                return this.FailResponse("wrong password");
+            }
+            user.ChangePassword(changePwdDto.NewPassword);
+
+            return this.OkResponse("success");
+        }
         [HttpDelete("{id}")]
         [PermissionKey("User.Delete")]
         public async Task<ActionResult<ApiResponse<BaseResponse>>> Delete(long id)
