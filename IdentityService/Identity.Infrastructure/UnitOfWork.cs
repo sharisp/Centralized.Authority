@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.SharedKernel.Interfaces;
-using Identity.Domain;
-using Identity.Domain.Interfaces;
-using Identity.Infrastructure.Extensions;
+﻿using Identity.Infrastructure.Extensions;
 using Identity.Infrastructure.Repository;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure
 {

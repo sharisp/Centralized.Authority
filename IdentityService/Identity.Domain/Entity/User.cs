@@ -1,6 +1,5 @@
 ﻿using Domain.SharedKernel.HelperFunctions;
 using Identity.Domain.Events;
-using Identity.Domain.Interfaces;
 using Identity.Domain.ValueObject;
 
 namespace Identity.Domain.Entity

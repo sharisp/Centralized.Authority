@@ -1,9 +1,4 @@
-﻿
-using Domain.SharedKernel.BaseEntity;
-using Domain.SharedKernel.Interfaces;
-using Identity.Domain.Events;
-using Identity.Domain.Interfaces;
-using System.Collections.Generic;
+﻿using Identity.Domain.Events;
 
 namespace Identity.Domain.Entity
 {
