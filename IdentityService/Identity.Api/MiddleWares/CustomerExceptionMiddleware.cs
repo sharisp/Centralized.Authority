@@ -4,7 +4,11 @@ using System.Net;
 namespace Identity.Api.MiddleWares
 {
 
-
+    /// <summary>
+    /// global exception middleware
+    /// </summary>
+    /// <param name="next"></param>
+    /// <param name="logger"></param>
     public class CustomerExceptionMiddleware(RequestDelegate next, ILogger<CustomerExceptionMiddleware> logger)
     {
         public async Task Invoke(HttpContext httpContext)
