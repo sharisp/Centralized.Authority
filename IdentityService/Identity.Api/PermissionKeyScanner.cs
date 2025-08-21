@@ -15,11 +15,11 @@ namespace Identity.Api
 
             foreach (var controller in controllerTypes)
             {
-                // 类级特性
+              
                 var classAttributes = controller.GetCustomAttributes<PermissionKeyAttribute>();
                 permissions.AddRange(classAttributes.Select(attr => attr.Key));
 
-                // 方法级特性
+            
                 var methods = controller.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
                 foreach (var method in methods)
                 {
