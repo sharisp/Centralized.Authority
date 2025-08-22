@@ -9,7 +9,12 @@ using System.Security.Claims;
 
 namespace ApiAuth.Api.Middles;
 
-
+/// <summary>
+/// permission check middleware
+/// </summary>
+/// <param name="next"></param>
+/// <param name="logger"></param>
+/// <param name="serviceScopeFactory"></param>
 public class CustomJwtAuthMiddleware(
     RequestDelegate next,
     ILogger<CustomerExceptionMiddleware> logger,
