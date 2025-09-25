@@ -67,7 +67,14 @@ namespace Identity.Api.Controllers
                 var permissions = await permissionHelper.GetPermissionsBySystemNameAndUidAsync(user.Id, loginRequestDto.SystemName);
                 var dict = new Dictionary<string, string>();
                 dict.Add("permissions", string.Join(';', permissions));
-                var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName, null, dict);
+                var roleNames = new List<string>();
+
+                foreach (var role in user.Roles)
+                {
+                    roleNames.Add(role.RoleName);
+                    dict.Add($"RoleId", role.Id.ToString());
+                }
+                var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName, roleNames, dict);
                 user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
                 return this.OkResponse(new LoginWebResponseDto(
                     user.UserName,

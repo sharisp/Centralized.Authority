@@ -28,12 +28,16 @@ namespace Identity.Infrastructure.DbContext
 
         
 
-        public async Task<User?> GetUseByNameAsync(string userName)
+        public async Task<User?> GetUserByNameAsync(string userName)
         {
           var res=  await dbContext.Users.Include(t=>t.AccessFail).FirstOrDefaultAsync(t => t.UserName == userName);
           return res;
         }
-
+        public async Task<User?> GetUserWithRolesByNameAsync(string userName)
+        {
+            var res = await dbContext.Users.Include(t => t.AccessFail).Include(t=>t.Roles).FirstOrDefaultAsync(t => t.UserName == userName);
+            return res;
+        }
         public async Task<User?> GetUserByIdAsync(long userId)
         {
             var res = await dbContext.Users.FirstOrDefaultAsync(t => t.Id == userId);

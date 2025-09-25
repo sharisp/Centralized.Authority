@@ -73,7 +73,7 @@ namespace Identity.Api.Controllers
         {
             await ValidationHelper.ValidateModelAsync(userDto, validator);
 
-            var user = await userRepository.GetUseByNameAsync(userDto.UserName);
+            var user = await userRepository.GetUserByNameAsync(userDto.UserName);
             if (user != null) return this.FailResponse("username exists");
 
             var userinfo = mapper.ToEntity(userDto);
@@ -102,7 +102,7 @@ namespace Identity.Api.Controllers
 
             if (!string.IsNullOrEmpty(userDto.UserName) && userDto.UserName != user.UserName)
             {
-                if ((await userRepository.GetUseByNameAsync(userDto.UserName)) != null)
+                if ((await userRepository.GetUserByNameAsync(userDto.UserName)) != null)
                 {
                     return this.FailResponse("user name already exists");
                 }
