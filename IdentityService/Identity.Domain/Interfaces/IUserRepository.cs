@@ -6,8 +6,10 @@ namespace Identity.Domain.Interfaces
     {
         IQueryable<User> Query(bool isIncludeRole = false);
         Task<User?> GetUserByIdAsync(long userId);
-         Task<User?> GetUseByNameAsync(string userName);
-         Task<List<User>> GetUsersAsync();
+         Task<User?> GetUserByNameAsync(string userName);
+
+        Task<User?> GetUserWithRolesByNameAsync(string userName);
+        Task<List<User>> GetUsersAsync();
           Task AddUserAsync(User user);
          void UpdateUserAsync(User user);
      

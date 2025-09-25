@@ -13,7 +13,7 @@ namespace Identity.Domain.Services
                 return (null,LoginResult.Fail);
             }
 
-            var existUser = await userRepository.GetUseByNameAsync(userName);
+            var existUser = await userRepository.GetUserWithRolesByNameAsync(userName);
 
             if (existUser == null)
             {
@@ -47,7 +47,7 @@ namespace Identity.Domain.Services
                 throw new ArgumentException("用户名或密码不能为空");
             }
 
-            var existUser = await userRepository.GetUseByNameAsync(user.UserName);
+            var existUser = await userRepository.GetUserByNameAsync(user.UserName);
             if (existUser != null)
             {
                 throw new Exception("用户已存在");
