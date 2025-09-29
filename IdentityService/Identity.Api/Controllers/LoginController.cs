@@ -2,6 +2,7 @@
 using FluentValidation;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
+using Identity.Domain.Entity;
 using Identity.Domain.Enums;
 using Identity.Domain.Interfaces;
 using Identity.Domain.Services;
@@ -68,12 +69,14 @@ namespace Identity.Api.Controllers
                 var dict = new Dictionary<string, string>();
                 dict.Add("permissions", string.Join(';', permissions));
                 var roleNames = new List<string>();
-
+                var roleIds = new List<long>();
                 foreach (var role in user.Roles)
                 {
                     roleNames.Add(role.RoleName);
-                    dict.Add($"RoleId", role.Id.ToString());
+
+                    roleIds.Add(role.Id);
                 }
+                dict.Add($"RoleIds", string.Join(',', roleIds));
                 var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName, roleNames, dict);
                 user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
                 return this.OkResponse(new LoginWebResponseDto(
