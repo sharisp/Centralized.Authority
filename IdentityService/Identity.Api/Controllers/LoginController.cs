@@ -59,7 +59,11 @@ namespace Identity.Api.Controllers
                 await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName.Trim(), loginRequestDto.Password.Trim());
             if (res != LoginResult.Success)
             {
-                return this.FailResponse("login fail", 401);
+                if (res == LoginResult.UserLocked)
+                {
+                    return this.FailResponse("User has been locked. Please try again later", 401);
+                }
+                return this.FailResponse("Login failed. Please check your credentials", 401);
             }
             else
             {
