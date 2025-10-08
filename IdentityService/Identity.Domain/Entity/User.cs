@@ -21,7 +21,7 @@ namespace Identity.Domain.Entity
         //  public string? Description { get; private set; }
         public List<Role> Roles { get; private set; } = new List<Role>();
 
-        public UserAccessFail AccessFail { get; private set; }
+        public UserAccessFail? AccessFail { get; private set; }
         public string? RefreshToken { get; private set; }
         public DateTimeOffset? RefreshTokenExpireAt { get; private set; }
         public User(string userName, string email, string passwordHash = "", PhoneNumber? phone = null, string? nickName = null, string? realName = null, string? description = null)

@@ -21,6 +21,7 @@
             builder.Property(e => e.RefreshToken).HasMaxLength(36).IsUnicode();
             builder.Property(e => e.PasswordHash).HasMaxLength(100).IsRequired();
 
+            builder.HasOne(e => e.AccessFail).WithOne(t => t.UserInfo).HasForeignKey<UserAccessFail>(e => e.UserId).IsRequired(false);
             builder.HasMany(e => e.Roles).WithMany(t => t.Users).UsingEntity(j => j.ToTable("T_UserRole"));
 
             builder.HasQueryFilter(t => t.IsDel == false);

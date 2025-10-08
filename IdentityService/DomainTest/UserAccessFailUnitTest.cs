@@ -44,10 +44,13 @@ namespace DomainTest
             Assert.NotNull(access.LockEndTime);
             Assert.True(access.FailCount == 3);
 
+            Assert.True(access.IsLocked);
             access.Fail();
             Assert.NotNull(access.LockEndTime);
             Assert.True(access.FailCount == 4);
             access.Reset();
+
+            Assert.True(!access.IsLocked);
             Assert.Null(access.LockEndTime);
             Assert.True(access.FailCount == 0);
 

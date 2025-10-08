@@ -6,31 +6,31 @@ namespace Identity.Domain.Entity
     {
         public long UserId { get; private set; }
         public User UserInfo { get; init; }
-        private bool isLocked;
+        public bool IsLocked { get; private set; }
 
         public DateTime? LockEndTime { get; private set; }
         public int FailCount { get; private set; }
 
         public bool CheckIfLocked()
         {
-            if (isLocked && LockEndTime != null && LockEndTime.Value < DateTime.Now)
+            if (IsLocked && LockEndTime != null && LockEndTime.Value < DateTime.Now)
             {
                 Reset();
             }
             //finnaly check if still locked,after checking the passwrod
-            if (isLocked==false)
+            if (IsLocked==false)
             {
                 AddDomainEvent(new LoginSuccessEvent(UserInfo));
             }
             //
-            return isLocked;
+            return IsLocked;
         }
         public void Fail()
         {
             FailCount++;
             if (FailCount >= 3)
             {
-                isLocked = true;
+                IsLocked = true;
                 LockEndTime = DateTime.Now.AddMinutes(5);
             }
             AddDomainEvent(new LoginFailEvent(UserInfo));
@@ -38,7 +38,7 @@ namespace Identity.Domain.Entity
 
         public void Reset()
         {
-            isLocked = false;
+            IsLocked = false;
             LockEndTime = null;
             FailCount = 0;
         }
@@ -50,7 +50,7 @@ namespace Identity.Domain.Entity
         {
             UserInfo = user;
             UserId = user.Id;
-            isLocked = false;
+            IsLocked = false;
             LockEndTime = null;
             FailCount = 0;
         }
