@@ -6,15 +6,11 @@ using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
 using Identity.Domain.Entity;
 using Identity.Infrastructure.Extensions;
-using Identity.Infrastructure.Migrations;
 using Identity.Infrastructure.Options;
 using Identity.Infrastructure.Repository;
-using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Identity.Api.Controllers
 {
