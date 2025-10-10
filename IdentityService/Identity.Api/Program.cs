@@ -17,7 +17,7 @@ using System.Text.Json.Serialization;
 
 namespace Identity.Api
 {
-    public class Program
+    public partial class Program
     {
         public static void Main(string[] args)
         {
