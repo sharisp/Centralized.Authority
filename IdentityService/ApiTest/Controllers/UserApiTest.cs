@@ -25,11 +25,10 @@ namespace ApiTest.Controllers
 
         public UserApiTest(WebApplicationFactory<Program> factory)
         {
-            // 构造函数只做同步初始化
+            // constructor for sync init
             _factory = factory;
         }
 
-        // or use constructor for sync init
         public async Task InitializeAsync()
         {
             client = _factory.CreateClient();
@@ -42,12 +41,11 @@ namespace ApiTest.Controllers
             var content = await loginResponse.Content.ReadFromJsonAsync<ApiResponse<LoginResponseDto>>();
             token = content?.Data?.Token.AccessToken ?? throw new Exception("Login failed");
 
-            // 设置 Authorization Header
+            // set jwt token for subsequent requests
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", token);
         }
 
-        // 测试结束时释放资源
         public Task DisposeAsync()
         {
             client.Dispose();
