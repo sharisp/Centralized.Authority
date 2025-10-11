@@ -65,13 +65,25 @@ namespace ApiTest.Controllers
         }
 
         [Fact]
-        public async Task Test2_GetUser()
+        public async Task Test2_GetUserList()
         {
             var response = await client.GetAsync("/api/User");
             response.EnsureSuccessStatusCode();
 
-            var responseContent = await response.Content.ReadAsStringAsync();
-            Assert.NotNull(responseContent);
+            var content = await response.Content.ReadFromJsonAsync<ApiResponse<List<UserResponseDto>>>();
+           
+            Assert.True(content.Success);
+        }
+
+        [Fact]
+        public async Task Test2_GetUser()
+        {
+            var response = await client.GetAsync("/api/User/1390662790494031872");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadFromJsonAsync<ApiResponse<UserResponseDto>>();
+
+            Assert.True(content.Success);
         }
     }
 
