@@ -16,6 +16,8 @@ namespace ApiTest.Controllers
     using System.Net.Http.Json;
     using Xunit;
     using Identity.Api.Contracts.Dtos.Request;
+    using Identity.Infrastructure.Options;
+    using Identity.Domain.Entity;
 
     public class UserApiTest : IClassFixture<WebApplicationFactory<Program>>, IAsyncLifetime
     {
@@ -53,7 +55,7 @@ namespace ApiTest.Controllers
         }
 
         [Fact]
-        public async Task Test1_Login()
+        public async Task Test_Login()
         {
             var response = await client.PostAsJsonAsync("/api/Login",
                 new LoginRequestDto { UserName = "guest", Password = "123456" });
@@ -65,7 +67,7 @@ namespace ApiTest.Controllers
         }
 
         [Fact]
-        public async Task Test2_GetUserList()
+        public async Task Test_GetUserList()
         {
             var response = await client.GetAsync("/api/User");
             response.EnsureSuccessStatusCode();
@@ -76,12 +78,23 @@ namespace ApiTest.Controllers
         }
 
         [Fact]
-        public async Task Test2_GetUser()
+        public async Task Test_GetUser()
         {
             var response = await client.GetAsync("/api/User/1390662790494031872");
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadFromJsonAsync<ApiResponse<UserResponseDto>>();
+
+            Assert.True(content.Success);
+        }
+
+        [Fact]
+        public async Task Test_GetPaginationUser()
+        {
+            var response = await client.GetAsync("/api/User/Pagination");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadFromJsonAsync<ApiResponse<PaginationResponse<User>>>();
 
             Assert.True(content.Success);
         }
