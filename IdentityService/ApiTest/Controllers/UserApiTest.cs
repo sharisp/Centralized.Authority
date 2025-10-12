@@ -1,23 +1,14 @@
 ﻿using Identity.Api;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
-using Microsoft.AspNetCore.Identity.Data;
+using Identity.Domain.Entity;
+using Identity.Infrastructure.Options;
 using Microsoft.AspNetCore.Mvc.Testing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Http.Headers;
 
 namespace ApiTest.Controllers
 {
-    using System.Net.Http.Headers;
-    using System.Net.Http.Json;
-    using Xunit;
-    using Identity.Api.Contracts.Dtos.Request;
-    using Identity.Infrastructure.Options;
-    using Identity.Domain.Entity;
+
 
     public class UserApiTest : IClassFixture<WebApplicationFactory<Program>>, IAsyncLifetime
     {
