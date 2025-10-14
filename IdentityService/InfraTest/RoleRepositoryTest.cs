@@ -64,6 +64,7 @@ namespace InfraTest
          new Permission("Perm2", "Perm2", "Test"),
 
             });
+        
             context.Roles.Add(role);
 
             context.SaveChanges();
@@ -75,6 +76,34 @@ namespace InfraTest
             var modelNew = repo.Query(true, false).FirstOrDefault();
             Assert.NotNull(modelNew?.Permissions);
 
+        }
+
+        [Fact]
+        public void TestWithMenuPermissions()
+        {
+
+            var role = new Role("TestRole");
+            role.AddPermissions(new List<Permission> {
+         new Permission("Perm1", "Perm1", "Test"),
+         new Permission("Perm2", "Perm2", "Test"),
+
+            });
+            role.AddMenus(new List<Menu> {
+            new Menu("Menu1", "Menu1", 0, 1, MenuType.Menu, "TES", null),
+            new Menu("Menu2", "Menu2", 0, 1, MenuType.Menu, "TES", null)
+
+            });
+            context.Roles.Add(role);
+
+            context.SaveChanges();
+
+            var repo = new RoleRepository(context);
+            var model = repo.Query().FirstOrDefault();
+            Assert.NotNull(model);
+
+            var modelNew = repo.Query(true, true).FirstOrDefault();
+            Assert.NotNull(modelNew?.Permissions);
+            Assert.NotNull(modelNew?.Menus);
         }
     }
 }
