@@ -105,5 +105,20 @@ namespace InfraTest
             Assert.NotNull(modelNew?.Permissions);
             Assert.NotNull(modelNew?.Menus);
         }
+
+        [Fact]
+        public void TestGetByName()
+        {
+
+            var role = new Role("TestRole");
+            context.Roles.Add(role);
+            context.SaveChanges();
+
+            var repo = new RoleRepository(context);
+            var model = repo.GetByNameAsync("TestRole")?.Result;
+            Assert.NotNull(model);
+            Assert.Equal("TestRole", model?.RoleName);
+
+        }
     }
 }
