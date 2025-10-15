@@ -80,11 +80,11 @@ namespace DomainTest
             // Arrange
             //    var mockUserRepo = new Mock<IUserRepository>();
 
-            // 1️⃣ 模拟：存在的正常用户
+          
             _userRepoMock.Setup(r => r.GetUserWithRolesByNameAsync(It.Is<string>(x => x == "normalUser")))
                         .ReturnsAsync(new User("normalUser", "user@test.com", "123456"));
 
-            // 2️⃣ 模拟：被锁定用户
+         
             var lockedUser = new User("lockedUser", "locked@test.com", "123456");
 
             lockedUser.AccessFail.Fail(); // 模拟失败次数达到锁定条件
@@ -94,7 +94,7 @@ namespace DomainTest
             _userRepoMock.Setup(r => r.GetUserWithRolesByNameAsync(It.Is<string>(x => x == "lockedUser")))
                         .ReturnsAsync(lockedUser);
 
-            // 3️⃣ 模拟：不存在的用户
+           
             _userRepoMock.Setup(r => r.GetUserWithRolesByNameAsync(It.Is<string>(x => x == "notfound")))
                         .ReturnsAsync((User)null);
 
@@ -102,12 +102,12 @@ namespace DomainTest
 
             // Act & Assert
 
-            // ✅ Case 1: 正常用户
+            // ✅ Case 1: normal user
             var (user1, result1) = await _userDomainService.LoginByNameAndPwdAsync("normalUser", "123456");
             Assert.Equal(LoginResult.Success, result1);
             Assert.NotNull(user1);
 
-            // ✅ Case 2: 被锁用户
+            // ✅ Case 2: locked user
             var (user2, result2) = await _userDomainService.LoginByNameAndPwdAsync("lockedUser", "123456");
             Assert.Equal(LoginResult.UserLocked, result2);
 
