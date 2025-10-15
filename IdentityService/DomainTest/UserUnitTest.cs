@@ -32,8 +32,8 @@ namespace DomainTest
             var phone1 = new PhoneNumber("61", "123456");
             var phone2 = new PhoneNumber("61", "123456");
 
-            Assert.Equal(phone1, phone2); // 值相等
-            Assert.False(object.ReferenceEquals(phone1, phone2)); // 引用不同
+            Assert.Equal(phone1, phone2); 
+            Assert.False(object.ReferenceEquals(phone1, phone2)); 
         }
 
 

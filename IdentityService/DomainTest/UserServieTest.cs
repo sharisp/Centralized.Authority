@@ -111,7 +111,7 @@ namespace DomainTest
             var (user2, result2) = await _userDomainService.LoginByNameAndPwdAsync("lockedUser", "123456");
             Assert.Equal(LoginResult.UserLocked, result2);
 
-            // ✅ Case 3: 用户不存在
+            // ✅ Case 3: user not exist
             var (user3, result3) = await _userDomainService.LoginByNameAndPwdAsync("notfound", "whatever");
             Assert.Equal(LoginResult.UserNotFound, result3);
         }
