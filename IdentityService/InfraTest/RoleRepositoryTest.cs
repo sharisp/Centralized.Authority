@@ -120,5 +120,18 @@ namespace InfraTest
             Assert.Equal("TestRole", model?.RoleName);
 
         }
+        [Fact]
+        public void TestGetByNameNotExist()
+        {
+
+            var role = new Role("TestRole");
+            context.Roles.Add(role);
+            context.SaveChanges();
+
+            var repo = new RoleRepository(context);
+            var model = repo.GetByNameAsync("TestRole1")?.Result;
+            Assert.Null(model);
+
+        }
     }
 }

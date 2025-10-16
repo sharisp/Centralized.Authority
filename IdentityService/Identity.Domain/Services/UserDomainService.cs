@@ -44,15 +44,14 @@ namespace Identity.Domain.Services
         {
             if (string.IsNullOrEmpty(user.UserName) || string.IsNullOrEmpty(user.PasswordHash))
             {
-                throw new ArgumentException("用户名或密码不能为空");
+                throw new ArgumentException("username or password can not be emputy");
             }
 
             var existUser = await userRepository.GetUserByNameAsync(user.UserName);
             if (existUser != null)
             {
-                throw new Exception("用户已存在");
+                throw new Exception("username already exists");
             }
-
             await userRepository.AddUserAsync(user);
 
 
