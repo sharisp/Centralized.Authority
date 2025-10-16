@@ -1,8 +1,10 @@
 using Domain.SharedKernel.HelperFunctions;
 using Identity.Domain.Entity;
+using Identity.Domain.Events;
 using Identity.Domain.ValueObject;
 using IdGen;
 using Moq;
+using System.Numerics;
 
 namespace DomainTest
 {
@@ -36,7 +38,15 @@ namespace DomainTest
             Assert.False(object.ReferenceEquals(phone1, phone2)); 
         }
 
+        [Fact]
+        public void UserCreateEvent()
+        {
+            
+            var user = new User("test", "aa@aa.com", "123456", null);
 
-
+          var events=  user.GetDomainEvents();
+            Assert.NotNull(events);
+            Assert.True(events.Any());
+        }
     }
 }
