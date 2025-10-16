@@ -4,7 +4,6 @@ using Identity.Api.Attributes;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
-using Identity.Api.Contracts.Validator;
 using Identity.Domain.Entity;
 using Identity.Domain.Events;
 using Identity.Domain.Interfaces;
