@@ -41,6 +41,8 @@ namespace Identity.Infrastructure
             services.AddScoped<PermissionHelper>();
             // Register repositories
 
+          //  services.AddHttpClient<ApiClientHelper>();
+
             // Register event handlers
             services.AddScoped<UserAddEventHandler>();
 
