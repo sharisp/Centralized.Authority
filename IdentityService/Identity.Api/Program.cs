@@ -12,6 +12,7 @@ using Identity.Infrastructure;
 using Identity.Infrastructure.EventHandler;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using OAuthService;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -37,8 +38,8 @@ namespace Identity.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddJWTAuthentication(builder.Configuration);
-
-            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddOAuthService(builder.Configuration);
+             builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddMediatR(cfg =>
             {
