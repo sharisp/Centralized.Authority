@@ -16,13 +16,20 @@ namespace Identity.Infrastructure.Repository
         }
         public async Task<List<SystemConfig>> GetAllActive()
         {
-            var configs = await this.dbContext.SysConfigs.Where(t => t.IsActive == true).ToListAsync();
+            var configs = await this.dbContext.SysConfigs.AsNoTracking().Where(t => t.IsActive == true).ToListAsync();
             return configs;
         }
 
-        public Task<SystemConfig?> GetByConfigKey(string configKey, string? systemName)
+        public async Task<SystemConfig?> GetByConfigKey(string configKey, string? systemName)
         {
-            throw new NotImplementedException();
+            var query = this.dbContext.SysConfigs.AsQueryable().AsNoTracking();
+            if (!string.IsNullOrWhiteSpace(systemName))
+            {
+                query = query.Where(t => t.SystemName == systemName);
+            }
+            query = query.Where(t => t.ConfigKey == configKey);
+            var config = await query.FirstOrDefaultAsync();
+            return config;
         }
     }
 }
