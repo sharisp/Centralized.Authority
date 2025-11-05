@@ -21,7 +21,7 @@ namespace Identity.Infrastructure.Config
             builder.Property(e => e.ConfigKey)
                          .HasMaxLength(100);
             builder.Property(e => e.Id).ValueGeneratedNever();
-            builder.HasQueryFilter(t => t.IsActive == true);
+           // builder.HasQueryFilter(t => t.IsActive == true);
             builder.HasQueryFilter(t => t.IsDel == false);
 
         }
