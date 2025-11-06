@@ -3,7 +3,7 @@ using Identity.Domain.Enums;
 
 namespace Identity.Domain.Services
 {
-    public class UserDomainService(IUserRepository userRepository, ISystemConfigRepository systemConfigRepository, IRoleRepository roleRepository)
+    public class UserDomainService(IUserRepository userRepository, RoleDomainService roleDomainService)
     {
 
         public async Task<(User?, LoginResult)> LoginByNameAndPwdAsync(string userName, string passWord)
@@ -53,25 +53,13 @@ namespace Identity.Domain.Services
                 throw new Exception("username already exists");
             }
             await userRepository.AddUserAsync(user);
-            var roleConfig = await systemConfigRepository.GetByConfigKey("DefaultUserRole", null);
-            if (roleConfig != null)
+            var defaultRoles = await roleDomainService.GetDefaultRoles();
+            if (defaultRoles != null && defaultRoles.Count > 0)
             {
-                var defaultRoleIds = roleConfig.ConfigValue?.Split(',');
-                if (defaultRoleIds != null && defaultRoleIds.Length > 0)
-                {
-                    var roleIdLong = defaultRoleIds.Select(t => Convert.ToInt64(t)).ToList();
-                    var defaultRoles =await roleRepository.GetRolesByIds(roleIdLong);
-                    if (defaultRoles != null)
-                    {
-                        user.AddRoles(defaultRoles);
-                    }
-                }
+                user.AddRoles(defaultRoles);
             }
 
         }
-
-
-
 
     }
 }
