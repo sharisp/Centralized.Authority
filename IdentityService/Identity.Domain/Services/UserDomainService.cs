@@ -3,14 +3,14 @@ using Identity.Domain.Enums;
 
 namespace Identity.Domain.Services
 {
-    public class UserDomainService(IUserRepository userRepository)
+    public class UserDomainService(IUserRepository userRepository, ISystemConfigRepository systemConfigRepository, IRoleRepository roleRepository)
     {
 
-        public async Task<(User?,LoginResult)> LoginByNameAndPwdAsync(string userName, string passWord)
+        public async Task<(User?, LoginResult)> LoginByNameAndPwdAsync(string userName, string passWord)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(passWord))
             {
-                return (null,LoginResult.Fail);
+                return (null, LoginResult.Fail);
             }
 
             var existUser = await userRepository.GetUserWithRolesByNameAsync(userName);
@@ -19,7 +19,7 @@ namespace Identity.Domain.Services
             {
                 return (null, LoginResult.UserNotFound);
             }
-            if (existUser.AccessFail==null)
+            if (existUser.AccessFail == null)
             {
                 existUser.InitializeAccessFailIfNeeded();
             }
@@ -34,7 +34,7 @@ namespace Identity.Domain.Services
                 existUser.AccessFail.Fail();
                 return (null, LoginResult.UserLocked);
             }
-           
+
             existUser.AccessFail.Reset();
 
             return (existUser, LoginResult.Success);
@@ -53,12 +53,25 @@ namespace Identity.Domain.Services
                 throw new Exception("username already exists");
             }
             await userRepository.AddUserAsync(user);
-
+            var roleConfig = await systemConfigRepository.GetByConfigKey("DefaultUserRole", null);
+            if (roleConfig != null)
+            {
+                var defaultRoleIds = roleConfig.ConfigValue?.Split(',');
+                if (defaultRoleIds != null && defaultRoleIds.Length > 0)
+                {
+                    var roleIdLong = defaultRoleIds.Select(t => Convert.ToInt64(t)).ToList();
+                    var defaultRoles =await roleRepository.GetRolesByIds(roleIdLong);
+                    if (defaultRoles != null)
+                    {
+                        user.AddRoles(defaultRoles);
+                    }
+                }
+            }
 
         }
 
-      
 
-     
+
+
     }
 }
