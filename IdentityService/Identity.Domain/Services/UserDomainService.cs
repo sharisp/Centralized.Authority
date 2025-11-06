@@ -53,7 +53,7 @@ namespace Identity.Domain.Services
                 throw new Exception("username already exists");
             }
             await userRepository.AddUserAsync(user);
-            var defaultRoles = await roleDomainService.GetDefaultRoles();
+            var defaultRoles = await roleDomainService.GetDefaultRolesAsync();
             if (defaultRoles != null && defaultRoles.Count > 0)
             {
                 user.AddRoles(defaultRoles);

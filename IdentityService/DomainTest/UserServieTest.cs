@@ -18,11 +18,11 @@ namespace DomainTest
 
         private readonly Mock<IUserRepository> _userRepoMock;
         private readonly UserDomainService _userDomainService;
-
         public UserServieTest()
         {
             _userRepoMock = new Mock<IUserRepository>();
-            _userDomainService = new UserDomainService(_userRepoMock.Object);
+            _userDomainService = new UserDomainService(_userRepoMock.Object,null);
+           
         }
 
         [Fact]

@@ -5,7 +5,7 @@ namespace Identity.Domain.Services
 {
     public class RoleDomainService(ISystemConfigRepository systemConfigRepository, IRoleRepository roleRepository)
     {
-        public async Task<List<Role>?> GetDefaultRoles()
+        public async Task<List<Role>?> GetDefaultRolesAsync()
         {
             List<Role>? roles = null;
             var roleConfig = await systemConfigRepository.GetByConfigKey("DefaultUserRole", null);
