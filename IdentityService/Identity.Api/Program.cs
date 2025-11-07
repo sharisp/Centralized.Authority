@@ -38,7 +38,7 @@ namespace Identity.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddJWTAuthentication(builder.Configuration);
-            builder.Services.AddOAuthService(builder.Configuration);
+        
              builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddMediatR(cfg =>

@@ -6,6 +6,7 @@ using Identity.Infrastructure.EventHandler;
 using Identity.Infrastructure.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OAuthService;
 
 
 namespace Identity.Infrastructure
@@ -39,9 +40,11 @@ namespace Identity.Infrastructure
             AppHelper.Init(configuration);
             services.AddScoped<UserDomainService>();
             services.AddScoped<PermissionHelper>();
+
+            services.AddOAuthService(configuration);
             // Register repositories
 
-          //  services.AddHttpClient<ApiClientHelper>();
+            //  services.AddHttpClient<ApiClientHelper>();
 
             // Register event handlers
             services.AddScoped<UserAddEventHandler>();
