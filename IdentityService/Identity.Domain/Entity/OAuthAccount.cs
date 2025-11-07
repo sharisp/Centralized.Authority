@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Identity.Domain.Entity
 {
-    public class OAuthAccounts : BaseAuditableEntity
+    public class OAuthAccount : BaseAuditableEntity,IAggregateRoot
     {
-      //  public long UserId { get; set; }
+        public long UserId { get; set; }
 
         public string Provider { get; set; } = "";
         public string ProviderUserId { get; set; } = "";
@@ -16,6 +16,6 @@ namespace Identity.Domain.Entity
         public string ProviderUserName { get; set; } = "";
         public string Avatar { get; set; } = "";
 
-        public User User { get; set; } = null!;
+      //  public User User { get; set; } = null!;
     }
 }

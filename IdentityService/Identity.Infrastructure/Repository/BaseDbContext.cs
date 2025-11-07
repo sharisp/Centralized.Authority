@@ -15,7 +15,7 @@
         public DbSet<LoginHistory> LoginHistories { get; set; }
         public DbSet<Sys> Sys { get; set; }
         public DbSet<SystemConfig> SysConfigs { get; set; }
-
+        public DbSet<OAuthAccount> OAuthAccounts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

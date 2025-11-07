@@ -26,7 +26,6 @@ namespace Identity.Domain.Entity
         public DateTimeOffset? RefreshTokenExpireAt { get; private set; }
 
         public bool IsOAuth { get; init; } = false;
-        public List<OAuthAccounts> OAuthAccounts { get; set; } = new List<OAuthAccounts>();
         public User(string userName, string email, string passwordHash = "", PhoneNumber? phone = null, string? nickName = null, string? realName = null, string? description = null,bool isOAuth=false)
         {
             if (!string.IsNullOrEmpty(passwordHash))
