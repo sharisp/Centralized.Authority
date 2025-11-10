@@ -1,6 +1,6 @@
 ﻿namespace Identity.Infrastructure.Repository
 {
-    public class RoleRepository 
+    public class RoleRepository: IRoleRepository
     {
         private readonly BaseDbContext dbContext;
 

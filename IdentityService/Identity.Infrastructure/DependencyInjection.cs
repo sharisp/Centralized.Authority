@@ -32,12 +32,14 @@ namespace Identity.Infrastructure
             #endregion
 
             services.AddScoped<ICurrentUser, CurrentUser>();
+            services.AddScoped<ISystemConfigRepository, SystemConfigRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<RoleRepository>();
+            services.AddScoped<IRoleRepository,RoleRepository>();
             services.AddScoped<PermissionRepository>();
             services.AddScoped<MenuRepository>();
             services.AddScoped<SysRepository>();
             AppHelper.Init(configuration);
+            services.AddScoped<RoleDomainService>();
             services.AddScoped<UserDomainService>();
             services.AddScoped<PermissionHelper>();
 
