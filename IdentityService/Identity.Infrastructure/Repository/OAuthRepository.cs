@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 namespace Identity.Infrastructure.Repository
 {
     // public class OAuthRepository([FromKeyedServices(OAuthProviderEnum.Google)] IOAuthService googleOAuthService)
-    public class OAuthRepository( BaseDbContext dbContext)
+    public class OAuthRepository(BaseDbContext dbContext)
     {
-       
+
 
 
         public async Task AddAsync(OAuthAccount oAuthAccount)
@@ -23,11 +23,11 @@ namespace Identity.Infrastructure.Repository
         }
 
 
-        public async Task<OAuthAccount?> GetByProviderAndProviderUserIdAsync(string provider,string providerUserId)
+        public async Task<OAuthAccount?> GetByProviderAndProviderUserIdAsync(string provider, string providerUserId)
         {
-            var res = await dbContext.OAuthAccounts.FirstOrDefaultAsync(t=>t.ProviderUserId== providerUserId&&t.Provider== provider);
+            var res = await dbContext.OAuthAccounts.FirstOrDefaultAsync(t => t.ProviderUserId == providerUserId && t.Provider == provider);
             return res;
         }
-       
+
     }
 }

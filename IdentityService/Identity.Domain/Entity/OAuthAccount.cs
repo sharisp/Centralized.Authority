@@ -17,5 +17,15 @@ namespace Identity.Domain.Entity
         public string Avatar { get; set; } = "";
 
       //  public User User { get; set; } = null!;
+
+     public OAuthAccount(long userId, string provider, string providerUserId, string email, string providerUserName, string avatar="")
+        {
+            UserId = userId;
+            Provider = provider;
+            ProviderUserId = providerUserId;
+            Email = email;
+            ProviderUserName = providerUserName;
+            Avatar = avatar;
+        }
     }
 }
