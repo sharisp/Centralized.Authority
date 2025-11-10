@@ -23,7 +23,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, PermissionHelper permissionHelper, ICurrentUser currentUser, RoleRepository roleRepository, IValidator<ChangePwdDto> pwdValidator) : ControllerBase
+    public class UserController(IValidator<CreateUserRequestDto> validator, UserMapper mapper, IUserRepository userRepository, IMediator mediator, PermissionHelper permissionHelper, ICurrentUser currentUser, IRoleRepository roleRepository, IValidator<ChangePwdDto> pwdValidator) : ControllerBase
     {
 
         [HttpGet]

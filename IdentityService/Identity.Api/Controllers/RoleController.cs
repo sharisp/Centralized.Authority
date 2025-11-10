@@ -5,6 +5,7 @@ using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
 using Identity.Domain.Entity;
+using Identity.Domain.Interfaces;
 using Identity.Infrastructure.Extensions;
 using Identity.Infrastructure.Options;
 using Identity.Infrastructure.Repository;
@@ -21,7 +22,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, RoleRepository repository, PermissionRepository permissionRepository, MenuRepository menuRepository, ICurrentUser currentUser) : ControllerBase
+    public class RoleController(IValidator<CreateRoleDto> validator, RoleMapper mapper, IRoleRepository repository, PermissionRepository permissionRepository, MenuRepository menuRepository, ICurrentUser currentUser) : ControllerBase
     {
         [HttpGet]
         [PermissionKey("Role.List")]

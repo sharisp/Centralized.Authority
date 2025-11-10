@@ -13,7 +13,7 @@ namespace Identity.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class InitPermissionController(IUnitOfWork unitOfWork, PermissionRepository permissionRepository,RoleRepository roleRepository,IUserRepository userRepository) : ControllerBase
+    public class InitPermissionController(IUnitOfWork unitOfWork, PermissionRepository permissionRepository,IRoleRepository roleRepository,IUserRepository userRepository) : ControllerBase
     {
 
         //be careful, this is only for init permissions, should not be used in production environment
