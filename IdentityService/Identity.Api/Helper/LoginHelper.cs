@@ -8,10 +8,10 @@ namespace Identity.Api.Helper
 {
     public  class LoginHelper(PermissionHelper permissionHelper, AuthenticationTokenResponse authenticationTokenResponse)
     {
-        public async Task<LoginWebResponseDto> WebLogin(User user,LoginRequestWebDto loginRequestDto)
+        public async Task<LoginWebResponseDto> WebLogin(User user,string systemName="")
         {
-            var menus = await permissionHelper.GetMenusWithBySystemNameAndUid(user.Id, loginRequestDto.SystemName);
-            var permissions = await permissionHelper.GetPermissionsBySystemNameAndUidAsync(user.Id, loginRequestDto.SystemName);
+            var menus = await permissionHelper.GetMenusWithBySystemNameAndUid(user.Id, systemName);
+            var permissions = await permissionHelper.GetPermissionsBySystemNameAndUidAsync(user.Id, systemName);
             var dict = new Dictionary<string, string>();
             dict.Add("permissions", string.Join(';', permissions));
             var roleNames = new List<string>();

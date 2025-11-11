@@ -7,6 +7,7 @@ using Identity.Api.ActionFilter;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Contracts.Mapping;
 using Identity.Api.Controllers;
+using Identity.Api.Helper;
 using Identity.Api.MiddleWares;
 using Identity.Infrastructure;
 using Identity.Infrastructure.EventHandler;
@@ -59,7 +60,7 @@ namespace Identity.Api
             builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<UnitOfWorkActionFilter>();
-
+            builder.Services.AddScoped<LoginHelper>();
             builder.Services.AddAllMapper();
             builder.Services.AddControllers(options =>
             {

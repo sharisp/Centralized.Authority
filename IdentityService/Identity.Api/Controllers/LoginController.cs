@@ -2,6 +2,7 @@
 using FluentValidation;
 using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
+using Identity.Api.Helper;
 using Identity.Domain.Entity;
 using Identity.Domain.Enums;
 using Identity.Domain.Interfaces;
@@ -16,7 +17,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController(UserDomainService userDomainService,
-        AuthenticationTokenResponse authenticationTokenResponse, IValidator<LoginRequestDto> validator, IValidator<RefreshTokenRequestDto> tokenValidator, IUserRepository userRepository, PermissionHelper permissionHelper) : ControllerBase
+        AuthenticationTokenResponse authenticationTokenResponse, IValidator<LoginRequestDto> validator, IValidator<RefreshTokenRequestDto> tokenValidator, IUserRepository userRepository, PermissionHelper permissionHelper,LoginHelper loginHelper) : ControllerBase
     {
         [AllowAnonymous]
         [HttpPost]
@@ -67,32 +68,9 @@ namespace Identity.Api.Controllers
             }
             else
             {
-
-                var menus = await permissionHelper.GetMenusWithBySystemNameAndUid(user.Id, loginRequestDto.SystemName);
-                var permissions = await permissionHelper.GetPermissionsBySystemNameAndUidAsync(user.Id, loginRequestDto.SystemName);
-                var dict = new Dictionary<string, string>();
-                dict.Add("permissions", string.Join(';', permissions));
-                var roleNames = new List<string>();
-                var roleIds = new List<long>();
-                foreach (var role in user.Roles)
-                {
-                    roleNames.Add(role.RoleName);
-
-                    roleIds.Add(role.Id);
-                }
-                dict.Add($"RoleIds", string.Join(',', roleIds));
-                var token = authenticationTokenResponse.GetResponseToken(user.Id, user.UserName, roleNames, dict);
-                user.SetRefreshToken(token.RefreshToken, token.RefreshTokenExpiresAt);
-                return this.OkResponse(new LoginWebResponseDto(
-                    user.UserName,
-                    user.Email,
-                    user.NickName,
-                    user.Id,
-                    token,
-                    menus,
-                    permissions
-
-                ));
+                var info = await loginHelper.WebLogin(user, loginRequestDto.SystemName);
+               
+                return this.OkResponse(info);
             }
 
         }

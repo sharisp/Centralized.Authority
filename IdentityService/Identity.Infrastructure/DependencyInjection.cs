@@ -44,7 +44,7 @@ namespace Identity.Infrastructure
             services.AddScoped<UserDomainService>();
             services.AddScoped<IOAuthHelper, OAuthHelper>();
             services.AddScoped<PermissionHelper>();
-
+          
             services.AddOAuthService(configuration);
             // Register repositories
 
