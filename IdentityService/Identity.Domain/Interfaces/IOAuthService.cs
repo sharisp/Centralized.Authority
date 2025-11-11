@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Domain.Interfaces
 {
-    public interface IOAuthService
+    public interface IOAuthHelper
     {
         Task<OAuthResponse?> OAuthCallBack(OAuthProviderEnum oAuthProviderEnum, string state, string code = "", string error = "");
 

@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Identity.Domain.Services
 {
-    public class OAuthDomainService(IOAuthService oAuthService, IOAuthRepository oAuthRepository, IUserRepository userRepository)
+    public class OAuthDomainService(IOAuthHelper oAuthHelper, IOAuthRepository oAuthRepository, IUserRepository userRepository)
     {
 
         public async Task<User?> OAuthLoginAsync(OAuthProviderEnum oAuthProviderEnum, string state, string code = "", string error = "")
         {
-            var oauthResp = await oAuthService.OAuthCallBack(oAuthProviderEnum, state, code, error);
+            var oauthResp = await oAuthHelper.OAuthCallBack(oAuthProviderEnum, state, code, error);
             if (oauthResp == null || oauthResp.Success == false || oauthResp.UserInfo == null)
             {
                 return null; 

@@ -4,6 +4,7 @@ using Identity.Domain.Services;
 using Identity.Infrastructure.DbContext;
 using Identity.Infrastructure.EventHandler;
 using Identity.Infrastructure.Repository;
+using Identity.Infrastructure.Service;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OAuthService;
@@ -41,6 +42,7 @@ namespace Identity.Infrastructure
             AppHelper.Init(configuration);
             services.AddScoped<RoleDomainService>();
             services.AddScoped<UserDomainService>();
+            services.AddScoped<IOAuthHelper, OAuthHelper>();
             services.AddScoped<PermissionHelper>();
 
             services.AddOAuthService(configuration);
