@@ -1,4 +1,5 @@
 ﻿using Identity.Domain.Entity;
+using OAuthService.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Identity.Domain.Interfaces
     public interface IOAuthRepository
     {
         Task AddAsync(OAuthAccount oAuthAccount);
-        Task<OAuthAccount?> GetByProviderAndProviderUserIdAsync(string provider, string providerUserId);
+        Task<OAuthAccount?> GetByProviderAndProviderUserIdAsync(OAuthProviderEnum provider, string providerUserId);
 
     }
 }
