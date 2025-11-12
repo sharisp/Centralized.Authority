@@ -7,12 +7,12 @@ namespace Identity.Infrastructure.Service
     {
         public async Task<OAuthResponse?> OAuthCallBack(OAuthProviderEnum oAuthProviderEnum, string state, string code = "", string error = "")
         {
-            var oAuthService = serviceProvider.GetRequiredKeyedService<Domain.Interfaces.IOAuthHelper>(oAuthProviderEnum);
+            var oAuthService = serviceProvider.GetRequiredKeyedService<OAuthService.IOAuthService>(oAuthProviderEnum);
             if (!string.IsNullOrEmpty(error))
             {
                 return null;
             }
-            var info = await oAuthService.OAuthCallBack(oAuthProviderEnum, state, code, error);
+            var info = await oAuthService.OAuthCallBack(state, code, error);
           
             return info;
         }

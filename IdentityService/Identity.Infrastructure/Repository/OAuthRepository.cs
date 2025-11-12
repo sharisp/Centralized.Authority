@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Identity.Infrastructure.Repository
 {
     // public class OAuthRepository([FromKeyedServices(OAuthProviderEnum.Google)] IOAuthService googleOAuthService)
-    public class OAuthRepository(BaseDbContext dbContext)
+    public class OAuthRepository(BaseDbContext dbContext): IOAuthRepository
     {
 
 

@@ -42,7 +42,10 @@ namespace Identity.Infrastructure
             AppHelper.Init(configuration);
             services.AddScoped<RoleDomainService>();
             services.AddScoped<UserDomainService>();
+            
+            services.AddScoped<OAuthDomainService>();
             services.AddScoped<IOAuthHelper, OAuthHelper>();
+            services.AddScoped<IOAuthRepository, OAuthRepository>();
             services.AddScoped<PermissionHelper>();
           
             services.AddOAuthService(configuration);

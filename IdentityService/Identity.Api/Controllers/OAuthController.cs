@@ -25,11 +25,17 @@ namespace Identity.Api.Controllers
                 return this.FailResponse(error);
             }
             Enum.TryParse<OAuthProviderEnum>(provider, true, out var oAuthProviderEnum);
-            var user = await oAuthDomainService.OAuthLoginAsync(oAuthProviderEnum, code, error);
+            var user = await oAuthDomainService.OAuthLoginAsync(oAuthProviderEnum,state, code, error);
+            if (user == null)
+            {
+                return this.FailResponse("OAuth login failed");
+            }
             var info = await loginHelper.WebLogin(user, systemName);
 
             await unitOfWork.SaveChangesAsync();
             return this.OkResponse(info);
         }
+
+        
     }
 }
