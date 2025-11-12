@@ -12,7 +12,7 @@ namespace Identity.Domain.Entity
         }
         public string UserName { get; private set; } = default!;
         public string? RealName { get; private set; } = default!;
-        public string PasswordHash { get; private set; } = default!;
+        public string? PasswordHash { get; private set; } = default!;
         public string? Email { get; private set; } = default!;
         public PhoneNumber? Phone { get; private set; } = default!;
 
