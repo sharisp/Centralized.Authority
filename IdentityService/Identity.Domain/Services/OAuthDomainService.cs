@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Domain.Services
 {
-    public class OAuthDomainService(IOAuthHelper oAuthHelper, IOAuthRepository oAuthRepository, IUserRepository userRepository)
+    public class OAuthDomainService(IOAuthHelper oAuthHelper, IOAuthRepository oAuthRepository, IUserRepository userRepository,RoleDomainService roleDomainService)
     {
 
         public async Task<User?> OAuthLoginAsync(OAuthProviderEnum oAuthProviderEnum, string state, string code = "", string error = "")
@@ -24,6 +24,11 @@ namespace Identity.Domain.Services
             {
                 user = new User(oauthResp.UserInfo.Name, oauthResp.UserInfo.Email, "", null, null, null, null, true);
                 await userRepository.AddUserAsync(user);
+                var defaultRoles = await roleDomainService.GetDefaultRolesAsync();
+                if (defaultRoles != null && defaultRoles.Count > 0)
+                {
+                    user.AddRoles(defaultRoles);
+                }
                 var newOAuthAccount = new OAuthAccount(user.Id, oAuthProviderEnum.ToString(), oauthResp.UserInfo.Id, oauthResp.UserInfo.Email, oauthResp.UserInfo.Name, oauthResp.UserInfo.Avatar);
                 await oAuthRepository.AddAsync(newOAuthAccount);
             }

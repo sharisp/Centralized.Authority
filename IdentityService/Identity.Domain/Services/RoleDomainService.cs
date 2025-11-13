@@ -8,7 +8,7 @@ namespace Identity.Domain.Services
         public async Task<List<Role>?> GetDefaultRolesAsync()
         {
             List<Role>? roles = null;
-            var roleConfig = await systemConfigRepository.GetByConfigKey("DefaultUserRole", null);
+            var roleConfig = await systemConfigRepository.GetByConfigKey("DefaultUserRoles", null);
             if (roleConfig != null)
             {
                 var defaultRoleIds = roleConfig.ConfigValue?.Split(',');

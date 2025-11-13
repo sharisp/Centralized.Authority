@@ -1,4 +1,5 @@
 ﻿using Domain.SharedKernel.Interfaces;
+using Identity.Api.Contracts.Dtos.Request;
 using Identity.Api.Contracts.Dtos.Response;
 using Identity.Api.Helper;
 using Identity.Domain.Services;
@@ -17,25 +18,26 @@ namespace Identity.Api.Controllers
     [ApiController]
     public class OAuthController(OAuthDomainService oAuthDomainService, LoginHelper loginHelper, IUnitOfWork unitOfWork) : ControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult<ApiResponse<LoginWebResponseDto>>> OAuthCallBack(string provider, string state, string code = "", string error = "", string systemName = "")
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse<LoginWebResponseDto>>> OAuthCallBack(OAuthLoginDto oAuthLoginDto)
         {
-            if (!string.IsNullOrEmpty(error))
+            if (!Enum.TryParse<OAuthProviderEnum>(oAuthLoginDto.Provider, ignoreCase: true, out var providerEnum))
             {
-                return this.FailResponse(error);
+                return this.FailResponse("OAuth login failed,wrong provider");
             }
-            Enum.TryParse<OAuthProviderEnum>(provider, true, out var oAuthProviderEnum);
-            var user = await oAuthDomainService.OAuthLoginAsync(oAuthProviderEnum,state, code, error);
+            var user = await oAuthDomainService.OAuthLoginAsync(providerEnum, oAuthLoginDto.State, oAuthLoginDto.Code);
             if (user == null)
             {
                 return this.FailResponse("OAuth login failed");
             }
-            var info = await loginHelper.WebLogin(user, systemName);
 
             await unitOfWork.SaveChangesAsync();
+            var info = await loginHelper.WebLogin(user, oAuthLoginDto.SystemName);
+
             return this.OkResponse(info);
         }
 
-        
+
     }
 }
