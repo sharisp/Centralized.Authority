@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Identity.Domain.Services
 {
-    public class OAuthDomainService(IOAuthHelper oAuthHelper, IOAuthRepository oAuthRepository, IUserRepository userRepository,RoleDomainService roleDomainService)
+    public class OAuthDomainService(IOAuthHelper oAuthHelper, IOAuthRepository oAuthRepository, IUserRepository userRepository, RoleDomainService roleDomainService)
     {
 
         public async Task<User?> OAuthLoginAsync(OAuthProviderEnum oAuthProviderEnum, string state, string code = "", string error = "")
@@ -16,13 +16,13 @@ namespace Identity.Domain.Services
             var oauthResp = await oAuthHelper.OAuthCallBack(oAuthProviderEnum, state, code, error);
             if (oauthResp == null || oauthResp.Success == false || oauthResp.UserInfo == null)
             {
-                return null; 
+                return null;
             }
             User? user = null;
             var oauthAccount = await oAuthRepository.GetByProviderAndProviderUserIdAsync(oAuthProviderEnum, oauthResp.UserInfo.Id);
             if (oauthAccount == null)
             {
-                user = new User(oauthResp.UserInfo.Name, oauthResp.UserInfo.Email, "", null, null, null, null, true);
+                user = new User(oAuthProviderEnum.ToString() + "_" + oauthResp.UserInfo.Id, oauthResp.UserInfo.Email, "", null, oauthResp.UserInfo.Name, oauthResp.UserInfo.Name, null, true);
                 await userRepository.AddUserAsync(user);
                 var defaultRoles = await roleDomainService.GetDefaultRolesAsync();
                 if (defaultRoles != null && defaultRoles.Count > 0)

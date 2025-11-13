@@ -26,12 +26,12 @@ namespace Identity.Domain.Entity
         public DateTimeOffset? RefreshTokenExpireAt { get; private set; }
 
         public bool IsOAuth { get; init; } = false;
-        public User(string userName, string email, string passwordHash = "", PhoneNumber? phone = null, string? nickName = null, string? realName = null, string? description = null,bool isOAuth=false)
+        public User(string userName, string email, string passwordHash = "", PhoneNumber? phone = null, string? nickName = null, string? realName = null, string? description = null, bool isOAuth = false)
         {
-            if (!string.IsNullOrEmpty(passwordHash))
-            {
-                PasswordHash = HashHelper.ComputeMd5Hash(passwordHash);
-            }
+            // if (!string.IsNullOrEmpty(passwordHash))
+            //{
+            PasswordHash = HashHelper.ComputeMd5Hash(passwordHash??"");
+            // }
             NickName = nickName;
             UserName = userName;
             RealName = realName;
@@ -95,16 +95,16 @@ namespace Identity.Domain.Entity
 
             AddDomainEvent(new UserUpdateEvents(this));
         }
-        public void ChangePassword(string password,bool isFirst=false)
+        public void ChangePassword(string password, bool isFirst = false)
         {
             PasswordHash = HashHelper.ComputeMd5Hash(password);
-            if (isFirst==false)
+            if (isFirst == false)
             {
 
                 AddDomainEvent(new UserUpdateEvents(this));
             }
         }
-    
+
         public void ChangePhone(PhoneNumber phone)
         {
             Phone = phone;
@@ -134,7 +134,7 @@ namespace Identity.Domain.Entity
             {
                 Roles = new List<Role>();
             }
-            if (!Roles.Any(r => r.Id == role.Id))               
+            if (!Roles.Any(r => r.Id == role.Id))
             {
                 Roles.Add(role);
             }
