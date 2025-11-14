@@ -11,12 +11,12 @@ namespace Identity.Domain.Services
     public class OAuthDomainService(IOAuthHelper oAuthHelper, IOAuthRepository oAuthRepository, IUserRepository userRepository, RoleDomainService roleDomainService)
     {
 
-        public async Task<User?> OAuthLoginAsync(OAuthProviderEnum oAuthProviderEnum, string state, string code = "", string error = "")
+        public async Task<(User?,string)> OAuthLoginAsync(OAuthProviderEnum oAuthProviderEnum, string state, string code = "", string error = "")
         {
             var oauthResp = await oAuthHelper.OAuthCallBack(oAuthProviderEnum, state, code, error);
             if (oauthResp == null || oauthResp.Success == false || oauthResp.UserInfo == null)
             {
-                return null;
+                return (null,oauthResp?.ErrorMsg??"");
             }
             User? user = null;
             var oauthAccount = await oAuthRepository.GetByProviderAndProviderUserIdAsync(oAuthProviderEnum, oauthResp.UserInfo.Id);
@@ -37,7 +37,7 @@ namespace Identity.Domain.Services
                 user = await userRepository.GetUserWithRolesByIdAsync(oauthAccount.UserId);
 
             }
-            return user;
+            return (user,"");
         }
     }
 }

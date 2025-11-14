@@ -26,10 +26,10 @@ namespace Identity.Api.Controllers
             {
                 return this.FailResponse("OAuth login failed,wrong provider");
             }
-            var user = await oAuthDomainService.OAuthLoginAsync(providerEnum, oAuthLoginDto.State, oAuthLoginDto.Code);
+            var (user, errMsg) = await oAuthDomainService.OAuthLoginAsync(providerEnum, oAuthLoginDto.State, oAuthLoginDto.Code);
             if (user == null)
             {
-                return this.FailResponse("OAuth login failed");
+                return this.FailResponse("OAuth login failed," + errMsg);
             }
 
             await unitOfWork.SaveChangesAsync();
