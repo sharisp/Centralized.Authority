@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Andrew.CommonUse.OAuth" Version="1.0.4" />
+    <PackageReference Include="Andrew.CommonUse.OAuth" Version="1.0.5" />
     <PackageReference Include="Andrew.Domain.SharedKernel" Version="1.1.5" />
     <PackageReference Include="IdGen" Version="3.0.7" />
     <PackageReference Include="MediatR" Version="12.5.0" />
