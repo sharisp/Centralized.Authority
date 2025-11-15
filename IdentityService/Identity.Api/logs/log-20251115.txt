@@ -1,0 +1,40 @@
+2025-11-15 15:11:15.654 +11:00 [INF] User profile is available. Using 'C:\Users\王同海\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2025-11-15 15:11:15.887 +11:00 [INF] Now listening on: http://[::]:5016
+2025-11-15 15:11:15.962 +11:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-15 15:11:15.963 +11:00 [INF] Hosting environment: Development
+2025-11-15 15:11:15.963 +11:00 [INF] Content root path: D:\Code\DDD\Centralized.Authority\IdentityService\Identity.Api
+2025-11-15 15:11:18.204 +11:00 [INF] Request starting HTTP/1.1 GET http://localhost:5016/swagger/index.html - null null
+2025-11-15 15:11:19.194 +11:00 [INF] Request finished HTTP/1.1 GET http://localhost:5016/swagger/index.html - 200 null text/html;charset=utf-8 998.4183ms
+2025-11-15 15:11:19.243 +11:00 [INF] Request starting HTTP/1.1 GET http://localhost:5016/_vs/browserLink - null null
+2025-11-15 15:11:19.243 +11:00 [INF] Request starting HTTP/1.1 GET http://localhost:5016/_framework/aspnetcore-browser-refresh.js - null null
+2025-11-15 15:11:19.249 +11:00 [INF] Request finished HTTP/1.1 GET http://localhost:5016/_framework/aspnetcore-browser-refresh.js - 200 16508 application/javascript; charset=utf-8 6.3933ms
+2025-11-15 15:11:19.280 +11:00 [INF] Request finished HTTP/1.1 GET http://localhost:5016/_vs/browserLink - 200 null text/javascript; charset=UTF-8 36.5416ms
+2025-11-15 15:11:19.303 +11:00 [INF] Request starting HTTP/1.1 GET http://localhost:5016/swagger/v1/swagger.json - null null
+2025-11-15 15:11:19.337 +11:00 [INF] Request finished HTTP/1.1 GET http://localhost:5016/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 34.6614ms
+2025-11-15 15:11:29.305 +11:00 [INF] Request starting HTTP/1.1 POST http://localhost:5016/api/Login/WebLogin - application/json 76
+2025-11-15 15:11:29.316 +11:00 [INF] CORS policy execution successful.
+2025-11-15 15:11:29.324 +11:00 [INF] Executing endpoint 'Identity.Api.Controllers.LoginController.LoginForWeb (Identity.Api)'
+2025-11-15 15:11:29.669 +11:00 [INF] Route matched with {action = "LoginForWeb", controller = "Login"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[Identity.Api.Contracts.Dtos.Response.ApiResponse`1[Identity.Api.Contracts.Dtos.Response.LoginWebResponseDto]]] LoginForWeb(Identity.Api.Contracts.Dtos.Request.LoginRequestWebDto) on controller Identity.Api.Controllers.LoginController (Identity.Api).
+2025-11-15 15:11:29.713 +11:00 [INF] weblogin request info LoginRequestWebDto { UserName = string, Password = string, SystemName = string }
+2025-11-15 15:11:31.737 +11:00 [INF] Executed DbCommand (108ms) [Parameters=[@__userName_0='?' (Size = 50) (DbType = AnsiString)], CommandType='"Text"', CommandTimeout='30']
+SELECT [s].[Id], [s].[CreateDateTime], [s].[CreatorUserId], [s].[DeleteDateTime], [s].[DeleterUserId], [s].[Description], [s].[Email], [s].[IsDel], [s].[IsOAuth], [s].[NickName], [s].[PasswordHash], [s].[RealName], [s].[RefreshToken], [s].[RefreshTokenExpireAt], [s].[UpdateDateTime], [s].[UpdaterUserId], [s].[UserName], [s].[Phone_CountryCode], [s].[Phone_Number], [s].[Id0], [s].[FailCount], [s].[IsLocked], [s].[LockEndTime], [s].[UserId], [s0].[RolesId], [s0].[UsersId], [s0].[Id], [s0].[CreateDateTime], [s0].[CreateTime], [s0].[CreatorUserId], [s0].[DeleteDateTime], [s0].[DeleterUserId], [s0].[Description], [s0].[IsDel], [s0].[RoleName], [s0].[UpdateDateTime], [s0].[UpdaterUserId]
+FROM (
+    SELECT TOP(1) [t].[Id], [t].[CreateDateTime], [t].[CreatorUserId], [t].[DeleteDateTime], [t].[DeleterUserId], [t].[Description], [t].[Email], [t].[IsDel], [t].[IsOAuth], [t].[NickName], [t].[PasswordHash], [t].[RealName], [t].[RefreshToken], [t].[RefreshTokenExpireAt], [t].[UpdateDateTime], [t].[UpdaterUserId], [t].[UserName], [t].[Phone_CountryCode], [t].[Phone_Number], [t0].[Id] AS [Id0], [t0].[FailCount], [t0].[IsLocked], [t0].[LockEndTime], [t0].[UserId]
+    FROM [T_Users] AS [t]
+    LEFT JOIN [T_UserAccessFails] AS [t0] ON [t].[Id] = [t0].[UserId]
+    WHERE [t].[IsDel] = CAST(0 AS bit) AND [t].[UserName] = @__userName_0
+) AS [s]
+LEFT JOIN (
+    SELECT [t1].[RolesId], [t1].[UsersId], [t3].[Id], [t3].[CreateDateTime], [t3].[CreateTime], [t3].[CreatorUserId], [t3].[DeleteDateTime], [t3].[DeleterUserId], [t3].[Description], [t3].[IsDel], [t3].[RoleName], [t3].[UpdateDateTime], [t3].[UpdaterUserId]
+    FROM [T_UserRole] AS [t1]
+    INNER JOIN (
+        SELECT [t2].[Id], [t2].[CreateDateTime], [t2].[CreateTime], [t2].[CreatorUserId], [t2].[DeleteDateTime], [t2].[DeleterUserId], [t2].[Description], [t2].[IsDel], [t2].[RoleName], [t2].[UpdateDateTime], [t2].[UpdaterUserId]
+        FROM [T_Roles] AS [t2]
+        WHERE [t2].[IsDel] = CAST(0 AS bit)
+    ) AS [t3] ON [t1].[RolesId] = [t3].[Id]
+) AS [s0] ON [s].[Id] = [s0].[UsersId]
+ORDER BY [s].[Id], [s].[Id0], [s0].[RolesId], [s0].[UsersId]
+2025-11-15 15:11:31.776 +11:00 [INF] Executing OkObjectResult, writing value of type 'Identity.Api.Contracts.Dtos.Response.ApiResponse`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-11-15 15:11:31.784 +11:00 [INF] Executed action Identity.Api.Controllers.LoginController.LoginForWeb (Identity.Api) in 2111.8027ms
+2025-11-15 15:11:31.786 +11:00 [INF] Executed endpoint 'Identity.Api.Controllers.LoginController.LoginForWeb (Identity.Api)'
+2025-11-15 15:11:31.792 +11:00 [INF] Request finished HTTP/1.1 POST http://localhost:5016/api/Login/WebLogin - 200 null application/json; charset=utf-8 2487.2416ms

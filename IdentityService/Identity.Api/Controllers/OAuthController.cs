@@ -16,12 +16,13 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [AllowAnonymous]
     [ApiController]
-    public class OAuthController(OAuthDomainService oAuthDomainService, LoginHelper loginHelper, IUnitOfWork unitOfWork) : ControllerBase
+    public class OAuthController(OAuthDomainService oAuthDomainService, LoginHelper loginHelper, IUnitOfWork unitOfWork, ILogger<OAuthController> logger) : ControllerBase
     {
         [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<ApiResponse<LoginWebResponseDto>>> OAuthCallBack(OAuthLoginDto oAuthLoginDto)
         {
+            logger.LogDebug($"OAuth login request received : {oAuthLoginDto}");
             if (!Enum.TryParse<OAuthProviderEnum>(oAuthLoginDto.Provider, ignoreCase: true, out var providerEnum))
             {
                 return this.FailResponse("OAuth login failed,wrong provider");

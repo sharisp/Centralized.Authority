@@ -14,6 +14,7 @@ using Identity.Infrastructure.EventHandler;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OAuthService;
+using Serilog;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -25,7 +26,7 @@ namespace Identity.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-           
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
@@ -39,18 +40,18 @@ namespace Identity.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddJWTAuthentication(builder.Configuration);
-        
-             builder.Services.AddHttpContextAccessor();
+
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddMediatR(cfg =>
             {
-              //  cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                //  cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
 
 
-                 cfg.RegisterServicesFromAssemblies(
-                     typeof(LoginFailEventHandler).Assembly,  // Application
-                     typeof(UserController).Assembly     // 如果有 Domain Event
-                 );
+                cfg.RegisterServicesFromAssemblies(
+                    typeof(LoginFailEventHandler).Assembly,  // Application
+                    typeof(UserController).Assembly     // 如果有 Domain Event
+                );
             });
 
             //  builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestDtoValidator>();
@@ -79,8 +80,22 @@ namespace Identity.Api
                 // 忽略循环引用（防止对象环导致异常）
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 //枚举类型
-              //  options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            }); 
+                //  options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
+            /*     Log.Logger = new LoggerConfiguration()
+                         .MinimumLevel.Debug()
+       .WriteTo.Console()
+       .WriteTo.File("logs/app-.log", rollingInterval: RollingInterval.Day)
+       .CreateLogger();*/
+
+
+            //builder.Host.UseSerilog();
+            builder.Host.UseSerilog((context, services, loggerConfig) =>
+            {
+                loggerConfig.ReadFrom.Configuration(context.Configuration);
+            });
+
             var app = builder.Build();
             app.UseRouting();
             app.UseCors("AllowAll");
@@ -103,7 +118,7 @@ namespace Identity.Api
                }*/
 
             app.MapGet("/", [AllowAnonymous] () => "Hello from DotnetCore!");
-        //    app.UseHttpsRedirection();
+            //    app.UseHttpsRedirection();
 
 
 

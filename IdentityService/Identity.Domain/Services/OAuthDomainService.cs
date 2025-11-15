@@ -1,4 +1,5 @@
 ﻿using Identity.Domain.Entity;
+using Microsoft.Extensions.Logging;
 using OAuthService.Options;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ namespace Identity.Domain.Services
             }
             User? user = null;
             var oauthAccount = await oAuthRepository.GetByProviderAndProviderUserIdAsync(oAuthProviderEnum, oauthResp.UserInfo.Id);
+            
             if (oauthAccount == null)
             {
                 user = new User(oAuthProviderEnum.ToString() + "_" + oauthResp.UserInfo.Id, oauthResp.UserInfo.Email, "", null, oauthResp.UserInfo.Name, oauthResp.UserInfo.Name, null, true);

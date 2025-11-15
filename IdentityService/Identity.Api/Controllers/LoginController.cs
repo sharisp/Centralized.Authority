@@ -17,7 +17,7 @@ namespace Identity.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController(UserDomainService userDomainService,
-        AuthenticationTokenResponse authenticationTokenResponse, IValidator<LoginRequestDto> validator, IValidator<RefreshTokenRequestDto> tokenValidator, IUserRepository userRepository, PermissionHelper permissionHelper,LoginHelper loginHelper) : ControllerBase
+        AuthenticationTokenResponse authenticationTokenResponse, IValidator<LoginRequestDto> validator, IValidator<RefreshTokenRequestDto> tokenValidator, IUserRepository userRepository, LoginHelper loginHelper) : ControllerBase
     {
         [AllowAnonymous]
         [HttpPost]
@@ -55,7 +55,7 @@ namespace Identity.Api.Controllers
         public async Task<ActionResult<ApiResponse<LoginWebResponseDto>>> LoginForWeb(LoginRequestWebDto loginRequestDto)
         {
             await ValidationHelper.ValidateModelAsync(loginRequestDto, validator);
-
+         
             var (user, res) =
                 await userDomainService.LoginByNameAndPwdAsync(loginRequestDto.UserName.Trim(), loginRequestDto.Password.Trim());
             if (res != LoginResult.Success)

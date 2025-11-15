@@ -8,6 +8,7 @@ using Identity.Infrastructure.Service;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OAuthService;
+using Serilog;
 
 
 namespace Identity.Infrastructure
@@ -17,6 +18,8 @@ namespace Identity.Infrastructure
         public static IServiceCollection AddIdentityInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
+
+         
 
 
             services.AddDomainShardKernelCollection(configuration);
